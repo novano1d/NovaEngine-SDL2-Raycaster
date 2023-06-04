@@ -15,6 +15,21 @@ void playLoop()
     SDL_Delay(100);
 }
 
+void eventHandler(SDL_Event event)
+{
+    if (event.type == SDL_KEYDOWN)
+    {
+        switch (event.key.keysym.sym)
+        {
+        case SDLK_w:
+            SDL_Delay(1000);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 int main(int argc, char** argv)
 {
     SDL_Renderer* renderer = nullptr;
@@ -22,6 +37,7 @@ int main(int argc, char** argv)
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     game = new Game(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
+    game->setEventHandler(eventHandler);
     game->gameplayLoop(playLoop);
     return 0;
 }

@@ -23,7 +23,20 @@ void Game::gameplayLoop(void(*ptr)(void))
                 SDL_DestroyWindow(window);
                 SDL_Quit();
                 keepRunning = false;
+                break;
+            }
+            else if (event.type)
+            {
+                if (eventMethod)
+                {
+                    eventMethod(event);
+                }
             }
         }
     }
+}
+
+void Game::setEventHandler(void(*ptr)(SDL_Event))
+{
+    eventMethod = ptr;
 }
