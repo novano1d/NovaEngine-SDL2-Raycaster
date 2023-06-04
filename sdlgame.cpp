@@ -1,5 +1,7 @@
 #include "sdlgame.hpp"
 
+// Game class implementation
+
 // Sets screen color immediately
 void Game::clrScreen(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
@@ -36,4 +38,16 @@ void Game::gameplayLoop(void(*ptr)(void))
 void Game::setEventHandler(void(*ptr)(SDL_Event))
 {
     eventMethod = ptr;
+}
+
+
+//GridGame implementation
+
+void GridGame::drawGrid(int rows, int cols, rgba c)
+{
+    SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, c.a);
+    int cellWidth = SCREEN_WIDTH / cols;
+    int cellHeight = SCREEN_HEIGHT / rows;
+    for (int i = 1; i <= rows; i++) SDL_RenderDrawLine(renderer, 0, i*cellHeight, SCREEN_WIDTH, i*cellHeight);
+    for (int i = 1; i <= cols; i++) SDL_RenderDrawLine(renderer, i*cellWidth, 0, i*cellWidth, SCREEN_HEIGHT);
 }

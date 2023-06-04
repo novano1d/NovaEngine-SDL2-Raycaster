@@ -2,6 +2,9 @@
 #include <math.h>
 #include <vector>
 
+//Convenience
+struct rgba { Uint8 r,g,b,a; } ;
+
 //Point structure that acts as a point and doubles as a 2d vector structure
 struct Point
 {
@@ -56,6 +59,6 @@ private:
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
     void setMap(Map* m) { map = m; };
-    
+    void drawGrid(int rows, int cols, rgba color);
     ~GridGame();
 };
