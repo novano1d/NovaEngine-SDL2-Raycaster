@@ -22,6 +22,7 @@ void eventHandler(SDL_Event event)
         switch (event.key.keysym.sym)
         {
         case SDLK_w:
+            game->clrScreen(0, 0, 255, 255);
             SDL_Delay(1000);
             break;
         default:

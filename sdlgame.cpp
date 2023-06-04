@@ -25,12 +25,9 @@ void Game::gameplayLoop(void(*ptr)(void))
                 keepRunning = false;
                 break;
             }
-            else if (event.type)
+            else if (event.type && eventMethod)
             {
-                if (eventMethod)
-                {
-                    eventMethod(event);
-                }
+                eventMethod(event);
             }
         }
     }
