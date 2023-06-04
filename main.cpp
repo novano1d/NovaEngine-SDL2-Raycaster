@@ -23,4 +23,5 @@ int main(int argc, char** argv)
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     game = new Game(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
     game->gameplayLoop(playLoop);
+    return 0;
 }

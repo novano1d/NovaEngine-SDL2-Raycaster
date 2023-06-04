@@ -1,5 +1,6 @@
 #include "sdlgame.hpp"
 
+// Sets screen color immediately
 void Game::clrScreen(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
@@ -9,15 +10,20 @@ void Game::clrScreen(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 
 void Game::gameplayLoop(void(*ptr)(void)) 
 {
-    while (true)
+    bool keepRunning = true;
+    while (keepRunning)
     {
         ptr();
         SDL_Event event;
-        while (SDL_PollEvent(&event)) 
-            if (event.type == SDL_QUIT) { 
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT) 
+            { 
                 SDL_DestroyRenderer(renderer);
                 SDL_DestroyWindow(window);
                 SDL_Quit();
+                keepRunning = false;
             }
+        }
     }
 }
