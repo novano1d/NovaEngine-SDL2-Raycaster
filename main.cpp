@@ -13,6 +13,8 @@ SDL_Window* window = nullptr;
 void playLoop()
 {
     game->clrScreen(255, 0, 0, 255);
+    game->drawGrid(5, 10, {255, 255, 255, 255});
+    SDL_RenderPresent(renderer);
 }
 
 void eventHandler(SDL_Event event)
@@ -37,7 +39,7 @@ int main(int argc, char** argv)
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
-    game->setEventHandler(eventHandler);
+    //game->setEventHandler(eventHandler);
     game->gameplayLoop(playLoop);
     return 0;
 }

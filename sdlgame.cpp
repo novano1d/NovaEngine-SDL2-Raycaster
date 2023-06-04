@@ -7,7 +7,6 @@ void Game::clrScreen(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
     SDL_SetRenderDrawColor(renderer, r, g, b, a);
     SDL_RenderClear(renderer);
-    SDL_RenderPresent(renderer);
 }
 
 void Game::gameplayLoop(void(*ptr)(void)) 
