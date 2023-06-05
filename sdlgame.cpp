@@ -107,7 +107,7 @@ Point GridGame::ddaRaycast(Point start, double angle)
         rayLength.y = (mapCheck.y + 1 - start.y) * rayUnitStepSize.y;
     }
     bool tileFound = false;
-    int maxDistance = (SCREEN_WIDTH > SCREEN_HEIGHT) ? SCREEN_WIDTH : SCREEN_HEIGHT;
+    int maxDistance = (map->xSize() > map->ySize()) ? map->xSize() : map->ySize();
     double distance = 0;
     while (!tileFound && distance < maxDistance)
     {
@@ -123,13 +123,14 @@ Point GridGame::ddaRaycast(Point start, double angle)
             distance = rayLength.y;
             rayLength.y += rayUnitStepSize.y;
         }
-        if (mapCheck.x >= 0 && mapCheck.x < SCREEN_WIDTH && mapCheck.y >= 0 && mapCheck.y < SCREEN_HEIGHT)
+        if (mapCheck.x >= 0 && mapCheck.x < map->xSize() && mapCheck.y >= 0 && mapCheck.y < map->ySize())
         {
             if (map->getTileAt(mapCheck.x, mapCheck.y))
             {
                 return start + rayDir * distance;
             } 
         }
+        else return {-1, -1};
     }
     return {-1, -1}; //invalid
 }

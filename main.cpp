@@ -40,10 +40,13 @@ void eventHandler(SDL_Event event)
         game->setPlayerPos({(event.motion.x/(double)game->getCellWidth()), (event.motion.y/(double)game->getCellHeight())});
         std::cout << "(" << game->getPlayerPos().x << ", "  << game->getPlayerPos().y << ")";
         Point intersect = game->ddaRaycast(game->getPlayerPos(), 45);
-        std::cout << "(" << intersect.x << ", "  << intersect.y << ")";
-        SDL_RenderDrawLine(renderer, event.motion.x, event.motion.y, intersect.x*game->getCellWidth(), intersect.y*game->getCellHeight());
-        SDL_RenderPresent(renderer);
-        SDL_Delay(1000);
+        if (intersect.x != -1)
+        {
+            std::cout << "(" << intersect.x << ", "  << intersect.y << ")";
+            SDL_RenderDrawLine(renderer, event.motion.x, event.motion.y, intersect.x*game->getCellWidth(), intersect.y*game->getCellHeight());
+            SDL_RenderPresent(renderer);
+            SDL_Delay(1000);
+        }
     }
 }
 

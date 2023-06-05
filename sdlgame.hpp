@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <math.h>
 #include <vector>
+#include <iostream>
 
 //Convenience
 struct rgba { Uint8 r,g,b,a; } ;
