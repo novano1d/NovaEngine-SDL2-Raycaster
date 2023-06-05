@@ -82,6 +82,9 @@ class GridGame : public Game
 private:
     Map* map = nullptr;
     Point playerPos;
+    double angle = 0;
+    double moveSpeed = 5.0;
+    double rotSpeed = 3.0;
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
     //sets the current map pointer
@@ -101,5 +104,11 @@ public:
     Point getPlayerPos() { return playerPos; };
     int getCellWidth() { return SCREEN_WIDTH / map->xSize(); };
     int getCellHeight() { return SCREEN_HEIGHT / map->ySize(); };
+    void setMoveSpeed(double s) { moveSpeed = s; };
+    void setRotSpeed(double s) { rotSpeed = s; };
+    double getMoveSpeed() { return moveSpeed; };
+    double getRotSpeed() { return rotSpeed; };
+    double getAngle() { return angle; };
+    void setAngle(double a) { angle = fmod(a, 360); }; //clamps angle to 0,360 degrees
     ~GridGame();
 };

@@ -138,9 +138,7 @@ CollisionEvent GridGame::ddaRaycast(Point start, double angle)
         {
             if (map->getTileAt(mapCheck.x, mapCheck.y))
             {
-                double perpWallDist;
-                if(side == 0) perpWallDist = (rayLength.x - rayUnitStepSize.x);
-                else          perpWallDist = (rayLength.y - rayUnitStepSize.y);
+                double perpWallDist = (side == 0) ? (rayLength.x - rayUnitStepSize.x) : (rayLength.y - rayUnitStepSize.y);
                 return {true, start + rayDir * distance, side, perpWallDist};
             } 
         }
