@@ -76,7 +76,7 @@ void GridGame::mapGrid(rgba c)
     }
 }
 
-Point GridGame::ddaRaycast(Point start, double angle)
+CollisionEvent GridGame::ddaRaycast(Point start, double angle)
 {
     double angleRadians = angle * M_PI / 180.0;
     //using point as 2d vector to keep clean
@@ -109,6 +109,7 @@ Point GridGame::ddaRaycast(Point start, double angle)
     bool tileFound = false;
     int maxDistance = (map->xSize() > map->ySize()) ? map->xSize() : map->ySize();
     double distance = 0;
+    int side;
     while (!tileFound && distance < maxDistance)
     {
         if (rayLength.x < rayLength.y)
@@ -116,21 +117,23 @@ Point GridGame::ddaRaycast(Point start, double angle)
             mapCheck.x += step.x;
             distance = rayLength.x;
             rayLength.x += rayUnitStepSize.x;
+            side = 0;
         }
         else
         {
             mapCheck.y += step.y;
             distance = rayLength.y;
             rayLength.y += rayUnitStepSize.y;
+            side = 1;
         }
         if (mapCheck.x >= 0 && mapCheck.x < map->xSize() && mapCheck.y >= 0 && mapCheck.y < map->ySize())
         {
             if (map->getTileAt(mapCheck.x, mapCheck.y))
             {
-                return start + rayDir * distance;
+                return {start + rayDir * distance, true, side};
             } 
         }
-        else return {-1, -1};
+        else return {{-1,-1}, false, -1}; //invalid
     }
-    return {-1, -1}; //invalid
+    return {{-1,-1}, false, -1}; //invalid
 }

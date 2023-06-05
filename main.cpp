@@ -10,16 +10,16 @@
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
-Map* myMap = new Map({{1, 0, 1}, 
-                      {0, 0, 2},
-                      {1, 0, 1}});
+Map* myMap = new Map({{1, 0, 1, 1}, 
+                      {0, 0, 2, 0},
+                      {1, 0, 1, 0},
+                      {1, 0, 1, 0}});
 
 void playLoop()
 {
     game->clrScreen(255, 0, 0, 255);
     game->mapGrid({0, 0, 0, 0});
     game->drawGrid(myMap->xSize(), myMap->ySize(), {255, 255, 255, 255});
-    game->drawRect({100, 100, 100, 100}, {0, 0, 0, 0});
     SDL_RenderPresent(renderer);
 }
 
@@ -39,11 +39,11 @@ void eventHandler(SDL_Event event)
     {
         game->setPlayerPos({(event.motion.x/(double)game->getCellWidth()), (event.motion.y/(double)game->getCellHeight())});
         std::cout << "(" << game->getPlayerPos().x << ", "  << game->getPlayerPos().y << ")";
-        Point intersect = game->ddaRaycast(game->getPlayerPos(), 45);
-        if (intersect.x != -1)
+        CollisionEvent collision = game->ddaRaycast(game->getPlayerPos(), 45);
+        if (collision.hit)
         {
-            std::cout << "(" << intersect.x << ", "  << intersect.y << ")";
-            SDL_RenderDrawLine(renderer, event.motion.x, event.motion.y, intersect.x*game->getCellWidth(), intersect.y*game->getCellHeight());
+            std::cout << "(" << collision.intersect.x << ", "  << collision.intersect.y << ")";
+            SDL_RenderDrawLine(renderer, event.motion.x, event.motion.y, collision.intersect.x*game->getCellWidth(), collision.intersect.y*game->getCellHeight());
             SDL_RenderPresent(renderer);
             SDL_Delay(1000);
         }

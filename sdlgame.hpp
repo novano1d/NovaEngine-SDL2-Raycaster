@@ -63,6 +63,14 @@ private:
     std::vector<std::vector<int>> map;
 };
 
+//Little object to tidy up raycast return
+struct CollisionEvent
+{
+    Point intersect; //point of intersection
+    bool hit = false; //Hit or not
+    int sideHit; //side hit
+};
+
 //Specific type of game that contains a 2d map and various functions to build a game from such a 2d map
 class GridGame : public Game
 {
@@ -83,7 +91,7 @@ public:
     void drawRect(SDL_Rect, rgba);
     //Performs a raycast from start point at angle on current map
     //Returns point of intersection
-    Point ddaRaycast(Point start, double angle);
+    CollisionEvent ddaRaycast(Point start, double angle);
     void setPlayerPos(Point p) { playerPos = p; };
     Point getPlayerPos() { return playerPos; };
     int getCellWidth() { return SCREEN_WIDTH / map->xSize(); };
