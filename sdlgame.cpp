@@ -74,5 +74,61 @@ void GridGame::mapGrid(rgba c)
             }
         }
     }
-    
+}
+
+Point GridGame::ddaRaycast(Point start, double angle)
+{
+    double angleRadians = angle * M_PI / 180.0;
+    //using point as 2d vector to keep clean
+    Point rayDir = { cos(angleRadians), sin(angleRadians) };
+    Point rayUnitStepSize = { sqrt( 1 + (rayDir.y / rayDir.x) * (rayDir.y / rayDir.x)), sqrt( 1 + (rayDir.x / rayDir.y) * (rayDir.x / rayDir.y)) };
+    Point mapCheck = {start.x, start.y};
+    Point rayLength;
+    Point step;
+    if (rayDir.x < 0) 
+    {
+        step.x = -1;
+        rayLength.x = (start.x - mapCheck.x) * rayUnitStepSize.x;
+    }
+    else
+    {
+        step.x = 1;
+        rayLength.x = (mapCheck.x + 1 - start.x) * rayUnitStepSize.x;
+    } 
+    if (rayDir.y < 0) 
+    {
+        step.y = -1;
+        rayLength.y = (start.y - mapCheck.y) * rayUnitStepSize.y;
+    }
+    else 
+    {
+        step.y = 1;
+        rayLength.y = (mapCheck.y + 1 - start.y) * rayUnitStepSize.y;
+    }
+    bool tileFound = false;
+    int maxDistance = (SCREEN_WIDTH > SCREEN_HEIGHT) ? SCREEN_WIDTH : SCREEN_HEIGHT;
+    double distance = 0;
+    while (!tileFound && distance < maxDistance)
+    {
+        if (rayLength.x < rayLength.y)
+        {
+            mapCheck.x += step.x;
+            distance = rayLength.x;
+            rayLength.x += rayUnitStepSize.x;
+        }
+        else
+        {
+            mapCheck.y += step.y;
+            distance = rayLength.y;
+            rayLength.y += rayUnitStepSize.y;
+        }
+        if (mapCheck.x >= 0 && mapCheck.x < SCREEN_WIDTH && mapCheck.y >= 0 && mapCheck.y < SCREEN_HEIGHT)
+        {
+            if (map->getTileAt(mapCheck.x, mapCheck.y))
+            {
+                return start + rayDir * distance;
+            } 
+        }
+    }
+    return {-1, -1}; //invalid
 }

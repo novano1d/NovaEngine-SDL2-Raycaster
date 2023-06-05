@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include "sdlgame.hpp"
+#include <iostream>
 
 //This file is for testing the functionality of the library
 
@@ -10,8 +11,8 @@ GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
 Map* myMap = new Map({{1, 0, 1}, 
-                      {0, 0, 1},
-                      {0, 0, 1}});
+                      {0, 0, 2},
+                      {1, 0, 1}});
 
 void playLoop()
 {
@@ -28,14 +29,16 @@ void eventHandler(SDL_Event event)
     {
         switch (event.key.keysym.sym)
         {
-        case SDLK_w:
-            game->drawGrid(5, 10, {255, 255, 255, 255});
-            SDL_RenderPresent(renderer);
-            SDL_Delay(1000);
+        case SDL_MOUSEMOTION:
             break;
         default:
             break;
         }
+    }
+    else if (event.type == SDL_MOUSEBUTTONDOWN)
+    {
+        game->setPlayerPos({(event.motion.x/(double)game->getCellWidth()), (event.motion.y/(double)game->getCellHeight())});
+        std::cout << "(" << game->getPlayerPos().x << ", "  << game->getPlayerPos().y << ")";
     }
 }
 
@@ -45,7 +48,7 @@ int main(int argc, char** argv)
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
     game->setMap(myMap);
-    //game->setEventHandler(eventHandler);
+    game->setEventHandler(eventHandler);
     game->gameplayLoop(playLoop);
     return 0;
 }

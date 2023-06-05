@@ -39,7 +39,16 @@ public:
     ~Game();
 };
 
-//Data structure to hold 2d maps
+/*
+Data structure to hold 2d maps
+canvas woks as such:
+(0,0)x+--------->
+y+
+|
+|
+|
+ˇ
+*/
 class Map
 {
 public:
@@ -71,5 +80,12 @@ public:
     void mapGrid(rgba c);
     //Draws a filled rectangle
     void drawRect(SDL_Rect, rgba);
+    //Performs a raycast from start point at angle on current map
+    //Returns point of intersection
+    Point ddaRaycast(Point start, double angle);
+    void setPlayerPos(Point p) { playerPos = p; };
+    Point getPlayerPos() { return playerPos; };
+    int getCellWidth() { return SCREEN_WIDTH / map->xSize(); };
+    int getCellHeight() { return SCREEN_HEIGHT / map->ySize(); };
     ~GridGame();
 };
