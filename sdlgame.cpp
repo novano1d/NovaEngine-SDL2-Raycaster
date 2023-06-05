@@ -82,7 +82,8 @@ Point GridGame::ddaRaycast(Point start, double angle)
     //using point as 2d vector to keep clean
     Point rayDir = { cos(angleRadians), sin(angleRadians) };
     Point rayUnitStepSize = { sqrt( 1 + (rayDir.y / rayDir.x) * (rayDir.y / rayDir.x)), sqrt( 1 + (rayDir.x / rayDir.y) * (rayDir.x / rayDir.y)) };
-    Point mapCheck = {start.x, start.y};
+    Point mapCheck = { floor(start.x), floor(start.y) };
+    
     Point rayLength;
     Point step;
     if (rayDir.x < 0) 

@@ -29,7 +29,7 @@ void eventHandler(SDL_Event event)
     {
         switch (event.key.keysym.sym)
         {
-        case SDL_MOUSEMOTION:
+        case SDLK_0:
             break;
         default:
             break;
@@ -39,6 +39,11 @@ void eventHandler(SDL_Event event)
     {
         game->setPlayerPos({(event.motion.x/(double)game->getCellWidth()), (event.motion.y/(double)game->getCellHeight())});
         std::cout << "(" << game->getPlayerPos().x << ", "  << game->getPlayerPos().y << ")";
+        Point intersect = game->ddaRaycast(game->getPlayerPos(), 45);
+        std::cout << "(" << intersect.x << ", "  << intersect.y << ")";
+        SDL_RenderDrawLine(renderer, event.motion.x, event.motion.y, intersect.x*game->getCellWidth(), intersect.y*game->getCellHeight());
+        SDL_RenderPresent(renderer);
+        SDL_Delay(1000);
     }
 }
 
