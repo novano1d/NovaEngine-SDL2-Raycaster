@@ -2,6 +2,13 @@
 
 // Game class implementation
 
+double Game::frameTime()
+{
+    oldTime = time;
+    time = SDL_GetTicks();
+    return (time - oldTime) / 1000.0;
+}
+
 // Sets screen color
 void Game::clrScreen(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
@@ -76,6 +83,7 @@ void GridGame::mapGrid(rgba c)
     }
 }
 
+//Simple DDA
 CollisionEvent GridGame::ddaRaycast(Point start, double angle)
 {
     double angleRadians = angle * M_PI / 180.0;
@@ -130,10 +138,13 @@ CollisionEvent GridGame::ddaRaycast(Point start, double angle)
         {
             if (map->getTileAt(mapCheck.x, mapCheck.y))
             {
-                return {start + rayDir * distance, true, side};
+                double perpWallDist;
+                if(side == 0) perpWallDist = (rayLength.x - rayUnitStepSize.x);
+                else          perpWallDist = (rayLength.y - rayUnitStepSize.y);
+                return {true, start + rayDir * distance, side, perpWallDist};
             } 
         }
-        else return {{-1,-1}, false, -1}; //invalid
+        else return CollisionEvent(); //invalid
     }
-    return {{-1,-1}, false, -1}; //invalid
+    return CollisionEvent(); //invalid
 }

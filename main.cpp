@@ -48,6 +48,7 @@ void eventHandler(SDL_Event event)
             SDL_Delay(1000);
         }
     }
+    
 }
 
 int main(int argc, char** argv)

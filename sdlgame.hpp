@@ -28,6 +28,8 @@ protected:
     SDL_Window* window = nullptr;
     const int SCREEN_WIDTH;
     const int SCREEN_HEIGHT;
+    double oldTime = 0;
+    double time = 0;
     void(*eventMethod)(SDL_Event) = nullptr;
 public:
     Game(int w, int h, SDL_Window* win, SDL_Renderer* r) : renderer(r), SCREEN_WIDTH(w), SCREEN_HEIGHT(h), window(win) {} 
@@ -37,6 +39,8 @@ public:
     void gameplayLoop(void(*ptr)(void));
     //Takes a function pointer to your event handler (must accept an SDL_Event)
     void setEventHandler(void(*ptr)(SDL_Event));
+    //returns frameTime
+    double frameTime();
     ~Game();
 };
 
@@ -66,9 +70,10 @@ private:
 //Little object to tidy up raycast return
 struct CollisionEvent
 {
-    Point intersect; //point of intersection
     bool hit = false; //Hit or not
-    int sideHit; //side hit
+    Point intersect = {-1,-1}; //point of intersection
+    int sideHit = -1; //side hit
+    double perpWallDist = -1; //perpendicular wall distance (from viewing plane)
 };
 
 //Specific type of game that contains a 2d map and various functions to build a game from such a 2d map
@@ -90,7 +95,7 @@ public:
     //Draws a filled rectangle
     void drawRect(SDL_Rect, rgba);
     //Performs a raycast from start point at angle on current map
-    //Returns point of intersection
+    //Returns CollisionEvent
     CollisionEvent ddaRaycast(Point start, double angle);
     void setPlayerPos(Point p) { playerPos = p; };
     Point getPlayerPos() { return playerPos; };
