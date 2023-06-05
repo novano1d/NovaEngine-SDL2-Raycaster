@@ -39,14 +39,16 @@ void eventHandler(SDL_Event event)
     {
         game->setPlayerPos({(event.motion.x/(double)game->getCellWidth()), (event.motion.y/(double)game->getCellHeight())});
         std::cout << "(" << game->getPlayerPos().x << ", "  << game->getPlayerPos().y << ")";
-        CollisionEvent collision = game->ddaRaycast(game->getPlayerPos(), 45);
-        if (collision.hit)
+        for (int i = 0; i < 360; i++)
         {
-            std::cout << "(" << collision.intersect.x << ", "  << collision.intersect.y << ")";
-            SDL_RenderDrawLine(renderer, event.motion.x, event.motion.y, collision.intersect.x*game->getCellWidth(), collision.intersect.y*game->getCellHeight());
-            SDL_RenderPresent(renderer);
-            SDL_Delay(1000);
+            CollisionEvent collision = game->ddaRaycast(game->getPlayerPos(), i);
+            if (collision.hit)
+            {
+                SDL_RenderDrawLine(renderer, event.motion.x, event.motion.y, collision.intersect.x*game->getCellWidth(), collision.intersect.y*game->getCellHeight());
+            }
         }
+        SDL_RenderPresent(renderer);
+        SDL_Delay(1000);
     }
     
 }
