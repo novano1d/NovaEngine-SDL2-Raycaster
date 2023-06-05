@@ -9,11 +9,16 @@
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
+Map* myMap = new Map({{1, 0, 1}, 
+                      {0, 0, 1},
+                      {0, 0, 1}});
 
 void playLoop()
 {
     game->clrScreen(255, 0, 0, 255);
-    game->drawGrid(5, 10, {255, 255, 255, 255});
+    game->mapGrid({0, 0, 0, 0});
+    game->drawGrid(myMap->xSize(), myMap->ySize(), {255, 255, 255, 255});
+    game->drawRect({100, 100, 100, 100}, {0, 0, 0, 0});
     SDL_RenderPresent(renderer);
 }
 
@@ -39,6 +44,7 @@ int main(int argc, char** argv)
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
+    game->setMap(myMap);
     //game->setEventHandler(eventHandler);
     game->gameplayLoop(playLoop);
     return 0;

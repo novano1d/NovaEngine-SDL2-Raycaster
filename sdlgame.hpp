@@ -19,17 +19,6 @@ struct Point
     }
 };
 
-//Data structure to hold 2d maps
-class Map
-{
-    Map(std::vector<std::vector<int>> m) : map(m) {}
-    int getTileAt(int x, int y) { return map[y][x]; };
-    ~Map();
-private:
-    //Could eventually swap int for a Tile class
-    std::vector<std::vector<int>> map;
-};
-
 //Game Class to clean things up a bit
 class Game
 {
@@ -50,6 +39,20 @@ public:
     ~Game();
 };
 
+//Data structure to hold 2d maps
+class Map
+{
+public:
+    Map(std::vector<std::vector<int>> m) : map(m) {}
+    int getTileAt(int x, int y) { return map[y][x]; };
+    int ySize() { return map[0].size(); };
+    int xSize() { return map.size(); };
+    ~Map();
+private:
+    //Could eventually swap int for a Tile class
+    std::vector<std::vector<int>> map;
+};
+
 //Specific type of game that contains a 2d map and various functions to build a game from such a 2d map
 class GridGame : public Game
 {
@@ -58,7 +61,15 @@ private:
     Point playerPos;
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
+    //sets the current map pointer
     void setMap(Map* m) { map = m; };
+    //returns the current map pointer
+    Map* getCurMap() { return map; };
+    //draws a full screen grid
     void drawGrid(int rows, int cols, rgba color);
+    //Fills rectangles in the grid where the map is not a floor (0)
+    void mapGrid(rgba c);
+    //Draws a filled rectangle
+    void drawRect(SDL_Rect, rgba);
     ~GridGame();
 };
