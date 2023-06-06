@@ -10,12 +10,13 @@
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
-Map* myMap = new Map({{1, 1, 1, 1}, 
-                      {1, 0, 0, 1},
-                      {1, 0, 1, 1},
-                      {1, 1, 1, 1}});
+Map* myMap = new Map({{1, 1, 1, 1, 1}, 
+                      {1, 0, 0, 0, 1},
+                      {1, 0, 0, 0, 1},
+                      {1, 0, 0, 1, 1},
+                      {1, 1, 1, 1, 1}});
 
-const int FOV = 66;
+const int FOV = 60;
 
 void playLoop()
 {
@@ -29,7 +30,7 @@ void playLoop()
     {
         double scanDir = 2*i/(double)SCREEN_WIDTH - 1;
         CollisionEvent collision = game->ddaRaycast(game->getPlayerPos(), game->getAngle() + FOV * scanDir);
-        int lineHeight = (int)(SCREEN_HEIGHT / (collision.perpWallDist * cos(FOV)));
+        int lineHeight = (int)(SCREEN_HEIGHT / (collision.perpWallDist)); //multiply by cos fov to get rid of fisheye
         int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
         if (drawStart < 0) drawStart = 0;
         int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
@@ -47,7 +48,17 @@ void eventHandler(SDL_Event event)
     {
         switch (event.key.keysym.sym)
         {
-        case SDLK_0:
+        case SDLK_w:
+            game->setPlayerPos({game->getPlayerPos().x + game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y + game->getMoveSpeed() * sin(game->getAngle()*M_PI/180)});
+            break;
+        case SDLK_s:
+            game->setPlayerPos({game->getPlayerPos().x - game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y - game->getMoveSpeed() * sin(game->getAngle()*M_PI/180)});
+            break;
+        case SDLK_d:
+            game->setAngle(game->getAngle() + game->getRotSpeed());
+            break;
+        case SDLK_a:
+            game->setAngle(game->getAngle() - game->getRotSpeed());
             break;
         default:
             break;
@@ -75,7 +86,8 @@ int main(int argc, char** argv)
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
-    game->setPlayerPos({0.5,0.5});
+    game->setPlayerPos({1.5,1.5});
+    game->setAngle(45);
     game->setMap(myMap);
     game->setEventHandler(eventHandler);
     game->gameplayLoop(playLoop);
