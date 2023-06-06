@@ -138,8 +138,8 @@ CollisionEvent GridGame::ddaRaycast(Point start, double angle)
         {
             if (map->getTileAt(mapCheck.x, mapCheck.y))
             {
-                return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180)};
-            } 
+                return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180)}; //code fixes fish eye effect
+            }
         }
         else return CollisionEvent(); //invalid
     }

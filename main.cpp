@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include "sdlgame.hpp"
 #include <iostream>
+#include <map>
 
 //This file is for testing the functionality of the library
 
@@ -13,7 +14,7 @@ SDL_Window* window = nullptr;
 Map* myMap = new Map({{1, 1, 1, 1, 1}, 
                       {1, 0, 0, 0, 1},
                       {1, 0, 0, 0, 1},
-                      {1, 0, 0, 1, 1},
+                      {1, 0, 0, 0, 1},
                       {1, 1, 1, 1, 1}});
 
 const int FOV = 66 / 2; // FOV is first number
@@ -24,7 +25,7 @@ void playLoop()
     // game->mapGrid({0, 0, 0, 0});
     // game->drawGrid(myMap->xSize(), myMap->ySize(), {255, 255, 255, 255});
     // SDL_RenderPresent(renderer);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, 74, 74, 74, 255);
     SDL_RenderClear(renderer);
     for (int i = 0; i < SCREEN_WIDTH; i++)
     {
