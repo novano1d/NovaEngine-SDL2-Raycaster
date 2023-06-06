@@ -83,8 +83,8 @@ private:
     Map* map = nullptr;
     Point playerPos;
     double angle = 0;
-    double moveSpeed = 0.1;
-    double rotSpeed = 5;
+    double moveSpeed = 100;
+    double rotSpeed = 1500;
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
     //sets the current map pointer

@@ -19,8 +19,11 @@ Map* myMap = new Map({{1, 1, 1, 1, 1},
 
 const int FOV = 66 / 2; // FOV is first number
 
+double ticktime;
+
 void playLoop()
 {
+    ticktime = game->frameTime();
     // game->clrScreen(255, 0, 0, 255);
     // game->mapGrid({0, 0, 0, 0});
     // game->drawGrid(myMap->xSize(), myMap->ySize(), {255, 255, 255, 255});
@@ -50,16 +53,16 @@ void eventHandler(SDL_Event event)
         switch (event.key.keysym.sym)
         {
         case SDLK_w:
-            game->setPlayerPos({game->getPlayerPos().x + game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y + game->getMoveSpeed() * sin(game->getAngle()*M_PI/180)});
+            game->setPlayerPos({game->getPlayerPos().x + ticktime * game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y + ticktime * game->getMoveSpeed() * sin(game->getAngle()*M_PI/180)});
             break;
         case SDLK_s:
-            game->setPlayerPos({game->getPlayerPos().x - game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y - game->getMoveSpeed() * sin(game->getAngle()*M_PI/180)});
+            game->setPlayerPos({game->getPlayerPos().x - ticktime * game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y - ticktime * game->getMoveSpeed()  * sin(game->getAngle()*M_PI/180)});
             break;
         case SDLK_d:
-            game->setAngle(game->getAngle() + game->getRotSpeed());
+            game->setAngle(game->getAngle() + ticktime * game->getRotSpeed());
             break;
         case SDLK_a:
-            game->setAngle(game->getAngle() - game->getRotSpeed());
+            game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
             break;
         default:
             break;
@@ -67,7 +70,7 @@ void eventHandler(SDL_Event event)
     }
     else if (event.type == SDL_MOUSEBUTTONDOWN)
     {
-        
+    
     }
 }
 
