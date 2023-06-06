@@ -138,7 +138,7 @@ CollisionEvent GridGame::ddaRaycast(Point start, double angle)
         {
             if (map->getTileAt(mapCheck.x, mapCheck.y))
             {
-                return {true, start + rayDir * distance, side, distance};
+                return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180)};
             } 
         }
         else return CollisionEvent(); //invalid
@@ -148,6 +148,7 @@ CollisionEvent GridGame::ddaRaycast(Point start, double angle)
 
 void GridGame::setPlayerPos(Point p)
 {
-    if (!map->getTileAt(p.x, p.y))
-        playerPos = p;
+    if(map) //so you don't crash :)
+        if (!map->getTileAt(p.x, p.y))
+            playerPos = p;
 }

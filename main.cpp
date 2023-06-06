@@ -16,7 +16,7 @@ Map* myMap = new Map({{1, 1, 1, 1, 1},
                       {1, 0, 0, 1, 1},
                       {1, 1, 1, 1, 1}});
 
-const int FOV = 60;
+const int FOV = 66 / 2; // FOV is first number
 
 void playLoop()
 {
