@@ -30,7 +30,7 @@ void playLoop()
     {
         double scanDir = 2*i/(double)SCREEN_WIDTH - 1;
         CollisionEvent collision = game->ddaRaycast(game->getPlayerPos(), game->getAngle() + FOV * scanDir);
-        int lineHeight = (int)(SCREEN_HEIGHT / (collision.perpWallDist)); //multiply by cos fov to get rid of fisheye
+        int lineHeight = (int)(SCREEN_HEIGHT / (collision.perpWallDist));
         int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
         if (drawStart < 0) drawStart = 0;
         int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
@@ -86,9 +86,9 @@ int main(int argc, char** argv)
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
-    game->setPlayerPos({1.5,1.5});
     game->setAngle(45);
     game->setMap(myMap);
+    game->setPlayerPos({1.5,1.5});
     game->setEventHandler(eventHandler);
     game->gameplayLoop(playLoop);
     return 0;

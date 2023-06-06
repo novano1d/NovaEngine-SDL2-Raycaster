@@ -100,7 +100,7 @@ public:
     //Performs a raycast from start point at angle on current map
     //Returns CollisionEvent
     CollisionEvent ddaRaycast(Point start, double angle);
-    void setPlayerPos(Point p) { playerPos = p; };
+    void setPlayerPos(Point p);
     Point getPlayerPos() { return playerPos; };
     int getCellWidth() { return SCREEN_WIDTH / map->xSize(); };
     int getCellHeight() { return SCREEN_HEIGHT / map->ySize(); };

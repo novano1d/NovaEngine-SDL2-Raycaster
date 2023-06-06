@@ -145,3 +145,9 @@ CollisionEvent GridGame::ddaRaycast(Point start, double angle)
     }
     return CollisionEvent(); //invalid
 }
+
+void GridGame::setPlayerPos(Point p)
+{
+    if (!map->getTileAt(p.x, p.y))
+        playerPos = p;
+}
