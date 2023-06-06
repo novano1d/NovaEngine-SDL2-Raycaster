@@ -66,19 +66,8 @@ void eventHandler(SDL_Event event)
     }
     else if (event.type == SDL_MOUSEBUTTONDOWN)
     {
-        game->setPlayerPos({(event.motion.x/(double)game->getCellWidth()), (event.motion.y/(double)game->getCellHeight())});
-        std::cout << "(" << game->getPlayerPos().x << ", "  << game->getPlayerPos().y << ")";
-        for (int i = 0; i < 360; i++)
-        {
-            CollisionEvent collision = game->ddaRaycast(game->getPlayerPos(), i);
-            if (collision.hit)
-            {
-                SDL_RenderDrawLine(renderer, event.motion.x, event.motion.y, collision.intersect.x*game->getCellWidth(), collision.intersect.y*game->getCellHeight());
-            }
-        }
-        SDL_RenderPresent(renderer);
+        
     }
-    
 }
 
 int main(int argc, char** argv)
