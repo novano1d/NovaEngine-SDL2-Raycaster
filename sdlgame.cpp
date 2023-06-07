@@ -151,6 +151,10 @@ void GridGame::setPlayerPos(Point p)
     if(map) //so you don't crash :)
         if (!map->getTileAt(p.x, p.y))
             playerPos = p;
+        else if (!map->getTileAt(p.x, playerPos.y))
+            playerPos.x = p.x;
+        else if (!map->getTileAt(playerPos.x, p.y))
+            playerPos.y = p.y;
 }
 
 void GridGame::pseudo3dRender(int FOV)

@@ -44,14 +44,8 @@ void playLoop()
 
 void eventHandler(SDL_Event event)
 {
-    if (event.type == SDL_KEYDOWN)
-    {
-        keyhandler->keyDown(event.key.keysym.sym);
-    }
-    else if (event.type == SDL_KEYUP)
-    {
-        keyhandler->keyUp(event.key.keysym.sym);
-    }
+    if (event.type == SDL_KEYDOWN) keyhandler->keyDown(event.key.keysym.sym);
+    else if (event.type == SDL_KEYUP) keyhandler->keyUp(event.key.keysym.sym);
 }
 
 int main(int argc, char** argv)
