@@ -100,6 +100,8 @@ public:
     //Performs a raycast from start point at angle on current map
     //Returns CollisionEvent
     CollisionEvent ddaRaycast(Point start, double angle);
+    //Renders false 3d
+    void pseudo3dRender(int FOV);
     void setPlayerPos(Point p);
     Point getPlayerPos() { return playerPos; };
     int getCellWidth() { return SCREEN_WIDTH / map->xSize(); };

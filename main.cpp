@@ -14,37 +14,18 @@ SDL_Window* window = nullptr;
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1}, 
                       {1, 0, 0, 0, 0, 1},
                       {1, 0, 0, 0, 0, 1},
-                      {1, 0, 0, 0, 0, 1},
-                      {1, 1, 1, 1, 0, 1},
+                      {1, 0, 1, 0, 1, 1},
+                      {1, 0, 1, 0, 1, 1},
                       {1, 1, 1, 1, 1, 1}});
 
-const int FOV = 66 / 2; // FOV is first number
+const int FOV = 66; // FOV is first number
 
 double ticktime;
 
 void playLoop()
 {
     ticktime = game->frameTime();
-    // game->clrScreen(255, 0, 0, 255);
-    // game->mapGrid({0, 0, 0, 0});
-    // game->drawGrid(myMap->xSize(), myMap->ySize(), {255, 255, 255, 255});
-    // SDL_RenderPresent(renderer);
-    SDL_SetRenderDrawColor(renderer, 74, 74, 74, 255);
-    SDL_RenderClear(renderer);
-    for (int i = 0; i < SCREEN_WIDTH; i++)
-    {
-        double scanDir = 2*i/(double)SCREEN_WIDTH - 1;
-        CollisionEvent collision = game->ddaRaycast(game->getPlayerPos(), game->getAngle() + FOV * scanDir);
-        int lineHeight = (int)(SCREEN_HEIGHT / (collision.perpWallDist));
-        int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
-        if (drawStart < 0) drawStart = 0;
-        int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
-        if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
-        Uint8 r = (collision.sideHit) ? 255 : 175;
-        SDL_SetRenderDrawColor(renderer, r, 0, 0, 255);
-        SDL_RenderDrawLine(renderer, i, drawStart, i, drawEnd);
-    }
-    SDL_RenderPresent(renderer);
+    game->pseudo3dRender(FOV);
 }
 
 void eventHandler(SDL_Event event)
