@@ -2,6 +2,7 @@
 #include <math.h>
 #include <vector>
 #include <iostream>
+#include <unordered_set>
 
 //Convenience
 struct rgba { Uint8 r,g,b,a; } ;
@@ -83,8 +84,8 @@ private:
     Map* map = nullptr;
     Point playerPos;
     double angle = 0;
-    double moveSpeed = 100;
-    double rotSpeed = 1500;
+    double moveSpeed = 1; //map units per second
+    double rotSpeed = 100; //degrees per second
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
     //sets the current map pointer
@@ -113,4 +114,15 @@ public:
     double getAngle() { return angle; };
     void setAngle(double a) { angle = fmod(a, 360); }; //clamps angle to 0,360 degrees
     ~GridGame();
+};
+
+//Handles checking what keys are currently down at the moment.
+class KeyHandler
+{
+private:
+    std::unordered_set<SDL_Keycode> keysDown;
+public:
+    void keyDown(SDL_Keycode key) { keysDown.insert(key); };
+    void keyUp(SDL_Keycode key) { keysDown.erase(key); };
+    bool isKeyDown(SDL_Keycode key) { return keysDown.count(key) > 0; };
 };

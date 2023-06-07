@@ -1,13 +1,13 @@
 #include <SDL2/SDL.h>
 #include "sdlgame.hpp"
 #include <iostream>
-#include <map> //used for keys
 
 //This file is for testing the functionality of the library
 
 //Global def
 #define SCREEN_WIDTH 1280 
 #define SCREEN_HEIGHT 720
+KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
@@ -18,12 +18,26 @@ Map* myMap = new Map({{1, 1, 1, 1, 1, 1},
                       {1, 0, 1, 0, 1, 1},
                       {1, 1, 1, 1, 1, 1}});
 
-const int FOV = 66; // FOV is first number
+const int FOV = 66; 
 
 double ticktime;
 
+//Deals with actions to be performed on certain keypresses
+void handleInput()
+{
+    if (keyhandler->isKeyDown(SDLK_w))
+        game->setPlayerPos({game->getPlayerPos().x + ticktime * game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y + ticktime * game->getMoveSpeed() * sin(game->getAngle()*M_PI/180)});
+    if (keyhandler->isKeyDown(SDLK_s))
+        game->setPlayerPos({game->getPlayerPos().x - ticktime * game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y - ticktime * game->getMoveSpeed()  * sin(game->getAngle()*M_PI/180)});
+    if (keyhandler->isKeyDown(SDLK_d))
+        game->setAngle(game->getAngle() + ticktime * game->getRotSpeed());
+    if (keyhandler->isKeyDown(SDLK_a))
+        game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
+}       
+
 void playLoop()
 {
+    handleInput();
     ticktime = game->frameTime();
     game->pseudo3dRender(FOV);
 }
@@ -32,27 +46,11 @@ void eventHandler(SDL_Event event)
 {
     if (event.type == SDL_KEYDOWN)
     {
-        switch (event.key.keysym.sym)
-        {
-        case SDLK_w:
-            game->setPlayerPos({game->getPlayerPos().x + ticktime * game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y + ticktime * game->getMoveSpeed() * sin(game->getAngle()*M_PI/180)});
-            break;
-        case SDLK_s:
-            game->setPlayerPos({game->getPlayerPos().x - ticktime * game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y - ticktime * game->getMoveSpeed()  * sin(game->getAngle()*M_PI/180)});
-            break;
-        case SDLK_d:
-            game->setAngle(game->getAngle() + ticktime * game->getRotSpeed());
-            break;
-        case SDLK_a:
-            game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
-            break;
-        default:
-            break;
-        }
+        keyhandler->keyDown(event.key.keysym.sym);
     }
-    else if (event.type == SDL_MOUSEBUTTONDOWN)
+    else if (event.type == SDL_KEYUP)
     {
-    
+        keyhandler->keyUp(event.key.keysym.sym);
     }
 }
 
