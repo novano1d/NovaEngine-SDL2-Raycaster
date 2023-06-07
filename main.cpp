@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include "sdlgame.hpp"
 #include <iostream>
-#include <map>
+#include <map> //used for keys
 
 //This file is for testing the functionality of the library
 
@@ -11,11 +11,12 @@
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
-Map* myMap = new Map({{1, 1, 1, 1, 1}, 
-                      {1, 0, 0, 0, 1},
-                      {1, 0, 0, 0, 1},
-                      {1, 0, 0, 0, 1},
-                      {1, 1, 1, 1, 1}});
+Map* myMap = new Map({{1, 1, 1, 1, 1, 1}, 
+                      {1, 0, 0, 0, 0, 1},
+                      {1, 0, 0, 0, 0, 1},
+                      {1, 0, 0, 0, 0, 1},
+                      {1, 1, 1, 1, 0, 1},
+                      {1, 1, 1, 1, 1, 1}});
 
 const int FOV = 66 / 2; // FOV is first number
 
