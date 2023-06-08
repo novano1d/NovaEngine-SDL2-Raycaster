@@ -151,7 +151,7 @@ void GridGame::setPlayerPos(Point p)
     if(map) //so you don't crash :)
         if (!map->getTileAt(p.x, p.y))
             playerPos = p;
-        else if (!map->getTileAt(p.x, playerPos.y))
+        else if (!map->getTileAt(p.x, playerPos.y)) //If the player is pushing against the wall these two lines let them slide against the wall instead of just sticking
             playerPos.x = p.x;
         else if (!map->getTileAt(playerPos.x, p.y))
             playerPos.y = p.y;
@@ -175,5 +175,4 @@ void GridGame::pseudo3dRender(int FOV)
         SDL_SetRenderDrawColor(renderer, r, 0, 0, 255);
         SDL_RenderDrawLine(renderer, i, drawStart, i, drawEnd);
     }
-    SDL_RenderPresent(renderer);
 }

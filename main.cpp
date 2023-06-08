@@ -1,6 +1,8 @@
 #include <SDL2/SDL.h>
 #include "sdlgame.hpp"
 #include <iostream>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 //This file is for testing the functionality of the library
 
@@ -13,9 +15,9 @@ SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1}, 
                       {1, 0, 0, 0, 0, 1},
-                      {1, 0, 0, 0, 0, 1},
-                      {1, 0, 1, 0, 1, 1},
-                      {1, 0, 1, 0, 1, 1},
+                      {1, 0, 0, 1, 0, 1},
+                      {1, 0, 0, 1, 0, 1},
+                      {1, 0, 0, 1, 0, 1},
                       {1, 1, 1, 1, 1, 1}});
 
 const int FOV = 66; 
@@ -40,6 +42,7 @@ void playLoop()
     handleInput();
     ticktime = game->frameTime();
     game->pseudo3dRender(FOV);
+    SDL_RenderPresent(renderer);
 }
 
 void eventHandler(SDL_Event event)
