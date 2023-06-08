@@ -41,7 +41,7 @@ void playLoop()
 {
     handleInput();
     ticktime = game->frameTime();
-    game->pseudo3dRender(FOV);
+    game->pseudo3dRender(FOV, 0.5);
     SDL_RenderPresent(renderer);
 }
 

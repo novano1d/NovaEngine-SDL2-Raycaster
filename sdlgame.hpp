@@ -102,7 +102,7 @@ public:
     //Returns CollisionEvent
     CollisionEvent ddaRaycast(Point start, double angle);
     //Renders false 3d
-    void pseudo3dRender(int FOV);
+    void pseudo3dRender(int FOV, double wallheight=1);
     void setPlayerPos(Point p);
     Point getPlayerPos() { return playerPos; };
     int getCellWidth() { return SCREEN_WIDTH / map->xSize(); };

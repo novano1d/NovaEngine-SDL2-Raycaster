@@ -157,7 +157,7 @@ void GridGame::setPlayerPos(Point p)
             playerPos.y = p.y;
 }
 
-void GridGame::pseudo3dRender(int FOV)
+void GridGame::pseudo3dRender(int FOV, double wallheight)
 {
     FOV /= 2;
     SDL_SetRenderDrawColor(renderer, 74, 74, 74, 255);
@@ -166,7 +166,7 @@ void GridGame::pseudo3dRender(int FOV)
     {
         double scanDir = 2*i/(double)SCREEN_WIDTH - 1; // -1 ---- 0 ---- 1 for the scan across the screen
         CollisionEvent collision = ddaRaycast(getPlayerPos(), getAngle() + FOV * scanDir);
-        int lineHeight = (int)(SCREEN_HEIGHT / (collision.perpWallDist));
+        int lineHeight = (int)(wallheight*(SCREEN_HEIGHT / collision.perpWallDist));
         int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
         if (drawStart < 0) drawStart = 0;
         int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
