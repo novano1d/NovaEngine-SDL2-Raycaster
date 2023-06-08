@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <unordered_set>
+#include <string>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 

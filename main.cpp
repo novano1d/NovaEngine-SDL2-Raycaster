@@ -1,7 +1,6 @@
 #include <SDL2/SDL.h>
 #include "sdlgame.hpp"
 #include <iostream>
-#include <string>
 
 
 //This file is for testing the functionality of the library
