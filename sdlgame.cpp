@@ -1,4 +1,6 @@
 #include "sdlgame.hpp"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 // Game class implementation
 

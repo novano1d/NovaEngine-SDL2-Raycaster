@@ -55,6 +55,20 @@ void eventHandler(SDL_Event event)
 
 int main(int argc, char** argv)
 {
+    std::string filename = "wall.jpg";
+    
+    int width, height;
+    std::vector<unsigned char> image;
+    bool success = game->loadImage(image, filename, width, height);
+    if (!success)
+    {
+        std::cout << "Error loading image\n";
+        return 1;
+    }
+    
+    std::cout << "Image width = " << width << '\n';
+    std::cout << "Image height = " << height << '\n';
+
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);

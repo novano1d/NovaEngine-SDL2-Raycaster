@@ -4,8 +4,9 @@
 #include <iostream>
 #include <unordered_set>
 #include <string>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
+#ifndef SDLGAME_HPP
+#define SDLGAME_HPP
 
 //Convenience
 struct rgba { Uint8 r,g,b,a; } ;
@@ -131,3 +132,6 @@ public:
     void keyUp(SDL_Keycode key) { keysDown.erase(key); };
     bool isKeyDown(SDL_Keycode key) { return keysDown.count(key) > 0; };
 };
+
+
+#endif
