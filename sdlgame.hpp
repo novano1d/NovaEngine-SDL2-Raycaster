@@ -1,3 +1,5 @@
+#ifndef SDLGAME_HPP
+#define SDLGAME_HPP
 #include <SDL2/SDL.h>
 #include <math.h>
 #include <vector>
@@ -5,8 +7,7 @@
 #include <unordered_set>
 #include <string>
 
-#ifndef SDLGAME_HPP
-#define SDLGAME_HPP
+
 
 //Convenience
 struct rgba { Uint8 r,g,b,a; } ;

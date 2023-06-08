@@ -16,9 +16,9 @@ SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1}, 
                       {1, 0, 0, 0, 0, 1},
-                      {1, 0, 0, 1, 0, 1},
-                      {1, 0, 0, 1, 0, 1},
-                      {1, 0, 0, 1, 0, 1},
+                      {1, 0, 1, 1, 1, 1},
+                      {1, 0, 1, 0, 0, 1},
+                      {1, 0, 0, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1}});
 
 
@@ -37,6 +37,10 @@ void handleInput()
         game->setAngle(game->getAngle() + ticktime * game->getRotSpeed());
     if (keyhandler->isKeyDown(SDLK_a))
         game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
+    if (keyhandler->isKeyDown(SDLK_LSHIFT))
+        game->setMoveSpeed(2);
+    else
+        game->setMoveSpeed(1);
 }       
 
 void playLoop()
