@@ -2,8 +2,7 @@
 #include "sdlgame.hpp"
 #include <iostream>
 #include <string>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
 
 //This file is for testing the functionality of the library
 
