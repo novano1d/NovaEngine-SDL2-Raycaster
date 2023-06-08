@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include "sdlgame.hpp"
 #include <iostream>
+#include <string>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -9,6 +10,8 @@
 //Global def
 #define SCREEN_WIDTH 1280 
 #define SCREEN_HEIGHT 720
+// #define SCREEN_WIDTH 1920 
+// #define SCREEN_HEIGHT 1080
 KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
@@ -19,6 +22,7 @@ Map* myMap = new Map({{1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 1, 0, 1},
                       {1, 0, 0, 1, 0, 1},
                       {1, 1, 1, 1, 1, 1}});
+
 
 const int FOV = 66; 
 
@@ -41,7 +45,7 @@ void playLoop()
 {
     handleInput();
     ticktime = game->frameTime();
-    game->pseudo3dRender(FOV, 0.5);
+    game->pseudo3dRender(FOV, 0.8);
     SDL_RenderPresent(renderer);
 }
 

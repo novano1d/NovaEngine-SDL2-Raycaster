@@ -3,6 +3,8 @@
 #include <vector>
 #include <iostream>
 #include <unordered_set>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 //Convenience
 struct rgba { Uint8 r,g,b,a; } ;
@@ -21,7 +23,7 @@ struct Point
     }
 };
 
-//Game Class to clean things up a bit
+//Game Class to clean things up a bit and provide a template
 class Game
 {
 protected:
@@ -42,6 +44,8 @@ public:
     void setEventHandler(void(*ptr)(SDL_Event));
     //returns frameTime
     double frameTime();
+    //loads image from file bc we need to load textures and stuff
+    bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
     ~Game();
 };
 
