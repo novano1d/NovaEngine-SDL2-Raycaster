@@ -8,9 +8,8 @@
 #include <string>
 
 
-
 //Convenience
-struct rgba { Uint8 r,g,b,a; } ;
+struct rgba { int r,g,b,a; } ;
 
 //Point structure that acts as a point and doubles as a 2d vector structure
 struct Point
@@ -30,10 +29,14 @@ struct Point
 class TextureHandler
 {
 private:
-    std::vector<std::vector<unsigned char>> LoadedTextures;
+    std::vector<std::vector<unsigned char>> loadedTextures;
+    std::vector<std::pair<int, int>> loadedTextureSizes; //width height pairs
 public:
     TextureHandler(std::vector<std::string>);
-    int numOfTextures() { return LoadedTextures.size(); };
+    int numOfTextures() { return loadedTextures.size(); };
+    std::vector<unsigned char> textureAt(int i) { return loadedTextures.at(i); };
+    std::pair<int, int> widthHeightAt(int i) {return loadedTextureSizes.at(i); };
+    rgba colorAt(int textureIndex, int x, int y);
 };
 
 //Game Class to clean things up a bit and provide a template
