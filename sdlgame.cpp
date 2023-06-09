@@ -174,21 +174,24 @@ void GridGame::setPlayerPos(Point p)
 //Wolf3d esk renderer
 void GridGame::pseudo3dRender(int FOV, double wallheight)
 {
-    FOV /= 2;
-    SDL_SetRenderDrawColor(renderer, 74, 74, 74, 255);
-    SDL_RenderClear(renderer);
-    for (int i = 0; i < SCREEN_WIDTH; i++)
+    if (!currentTextureSet) //Draws red shaded walls if no current texture set
     {
-        double scanDir = 2*i/(double)SCREEN_WIDTH - 1; // -1 ---- 0 ---- 1 for the scan across the screen
-        CollisionEvent collision = ddaRaycast(getPlayerPos(), getAngle() + FOV * scanDir);
-        int lineHeight = (int)(wallheight*(SCREEN_HEIGHT / collision.perpWallDist));
-        int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
-        if (drawStart < 0) drawStart = 0;
-        int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
-        if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
-        Uint8 r = (collision.sideHit) ? 255 : 175;
-        SDL_SetRenderDrawColor(renderer, r, 0, 0, 255);
-        SDL_RenderDrawLine(renderer, i, drawStart, i, drawEnd);
+        FOV /= 2;
+        SDL_SetRenderDrawColor(renderer, 74, 74, 74, 255);
+        SDL_RenderClear(renderer);
+        for (int i = 0; i < SCREEN_WIDTH; i++)
+        {
+            double scanDir = 2*i/(double)SCREEN_WIDTH - 1; // -1 ---- 0 ---- 1 for the scan across the screen
+            CollisionEvent collision = ddaRaycast(getPlayerPos(), getAngle() + FOV * scanDir);
+            int lineHeight = (int)(wallheight*(SCREEN_HEIGHT / collision.perpWallDist));
+            int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
+            if (drawStart < 0) drawStart = 0;
+            int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
+            if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
+            Uint8 r = (collision.sideHit) ? 255 : 175;
+            SDL_SetRenderDrawColor(renderer, r, 0, 0, 255);
+            SDL_RenderDrawLine(renderer, i, drawStart, i, drawEnd);
+        }
     }
 }
 

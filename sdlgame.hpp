@@ -106,6 +106,7 @@ private:
     double angle = 0;
     double moveSpeed = 1; //map units per second
     double rotSpeed = 100; //degrees per second
+    TextureHandler* currentTextureSet = nullptr;
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
     //sets the current map pointer
@@ -133,6 +134,7 @@ public:
     double getRotSpeed() { return rotSpeed; };
     double getAngle() { return angle; };
     void setAngle(double a) { angle = fmod(a, 360); }; //clamps angle to 0,360 degrees
+    void setTextureSet(TextureHandler* t){ currentTextureSet = t; };
     ~GridGame();
 };
 
