@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     std::string filename = "wall.jpg";
     int width, height;
     std::vector<unsigned char> image;
-    bool success = game->loadImage(image, filename, width, height);
+    bool success = Game::loadImage(image, filename, width, height);
     if (!success)
     {
         std::cout << "Error loading image\n";

@@ -26,6 +26,16 @@ struct Point
     }
 };
 
+//This class will handle loading all necessary texture images
+class TextureHandler
+{
+private:
+    std::vector<std::vector<unsigned char>> LoadedTextures;
+public:
+    TextureHandler(std::vector<std::string>);
+    int numOfTextures() { return LoadedTextures.size(); };
+};
+
 //Game Class to clean things up a bit and provide a template
 class Game
 {
@@ -48,7 +58,7 @@ public:
     //returns frameTime
     double frameTime();
     //loads image from file bc we need to load textures and stuff
-    bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
+    bool static loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
     ~Game();
 };
 
