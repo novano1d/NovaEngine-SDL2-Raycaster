@@ -93,7 +93,7 @@ struct CollisionEvent
 {
     bool hit = false; //Hit or not
     Point intersect = {-1,-1}; //point of intersection
-    int sideHit = -1; //side hit
+    int sideHit = 0; //side hit
     double perpWallDist = -1; //perpendicular wall distance (from viewing plane)
     int tileData = -1; //Contains tile data for texture
 };

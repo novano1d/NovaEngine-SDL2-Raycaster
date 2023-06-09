@@ -211,17 +211,21 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
             if (drawStart < 0) drawStart = 0;
             int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
             if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
-            double texCoord = collision.intersect.x - floor(collision.intersect.x);
+            double texCoord;
+            if (collision.sideHit == 1) texCoord = collision.intersect.x - floor(collision.intersect.x);
+            else texCoord = collision.intersect.y - floor(collision.intersect.y);
             int textureToRender = collision.tileData;
+            int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender-1).first);
             if (textureToRender)
             {
-                int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender-1).first);
                 for (int y = drawStart; y < drawEnd; y++)
                 {
                     int texY = (((y * 2 - SCREEN_HEIGHT + lineHeight) << 6) / lineHeight) / 2;
-                    rgba textureColor = currentTextureSet->colorAt(textureToRender-1, texX, texY);
+                    rgba textureColor;
+                    textureColor = currentTextureSet->colorAt(textureToRender-1, texX, texY);
                     SDL_SetRenderDrawColor(renderer, textureColor.r, textureColor.g, textureColor.b, textureColor.a);
                     SDL_RenderDrawPoint(renderer, i, y);
+                    
                 }
             }
         }
