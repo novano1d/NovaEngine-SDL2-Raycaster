@@ -35,7 +35,7 @@ public:
     TextureHandler(std::vector<std::string>);
     int numOfTextures() { return loadedTextures.size(); };
     std::vector<unsigned char> textureAt(int i) { return loadedTextures.at(i); };
-    std::pair<int, int> widthHeightAt(int i) {return loadedTextureSizes.at(i); };
+    std::pair<int, int> widthHeightAt(int i) { return loadedTextureSizes.at(i); };
     rgba colorAt(int textureIndex, int x, int y);
 };
 
@@ -95,6 +95,7 @@ struct CollisionEvent
     Point intersect = {-1,-1}; //point of intersection
     int sideHit = -1; //side hit
     double perpWallDist = -1; //perpendicular wall distance (from viewing plane)
+    int tileData = -1; //Contains tile data for texture
 };
 
 //Specific type of game that contains a 2d map and various functions to build a game from such a 2d map

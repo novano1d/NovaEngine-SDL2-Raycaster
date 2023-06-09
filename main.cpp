@@ -64,6 +64,7 @@ int main(int argc, char** argv)
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
+    game->setTextureSet(myTexture);
     game->setAngle(45);
     game->setMap(myMap);
     game->setPlayerPos({1.5,1.5});
