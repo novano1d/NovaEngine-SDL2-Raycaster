@@ -16,8 +16,8 @@ SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1}, 
                       {1, 0, 0, 0, 0, 1},
-                      {1, 0, 1, 1, 1, 1},
-                      {1, 0, 1, 0, 0, 1},
+                      {1, 0, 0, 1, 1, 1},
+                      {1, 0, 0, 0, 0, 1},
                       {1, 0, 0, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1}});
 const int FOV = 66; 
