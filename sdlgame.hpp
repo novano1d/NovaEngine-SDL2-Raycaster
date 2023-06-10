@@ -62,7 +62,6 @@ public:
     double frameTime();
     //loads image from file bc we need to load textures and stuff
     bool static loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
-    ~Game();
 };
 
 /*
@@ -82,7 +81,6 @@ public:
     int getTileAt(int x, int y) { return map[y][x]; };
     int ySize() { return map[0].size(); };
     int xSize() { return map.size(); };
-    ~Map();
 private:
     //Could eventually swap int for a Tile class
     std::vector<std::vector<int>> map;
@@ -108,6 +106,7 @@ private:
     double moveSpeed = 1; //map units per second
     double rotSpeed = 100; //degrees per second
     TextureHandler* currentTextureSet = nullptr;
+    SDL_Texture* textureBuffer;
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
     //sets the current map pointer

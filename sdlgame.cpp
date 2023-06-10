@@ -200,7 +200,7 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
 
 void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 {
-    SDL_Texture* textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+    if (!textureBuffer) textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT); //create texture buffer if it's not there
     Uint32* pixels;
     int pitch;
     SDL_LockTexture(textureBuffer, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
@@ -227,13 +227,17 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 int texY = (((y * 2 - SCREEN_HEIGHT + lineHeight) * currentTextureSet->widthHeightAt(textureToRender-1).second) / lineHeight) / 2;
                 rgba textureColor;
                 textureColor = currentTextureSet->colorAt(textureToRender-1, texX, texY);
-                pixels[y * SCREEN_WIDTH + i] = SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), textureColor.r, textureColor.g, textureColor.b, textureColor.a);
+                pixels[y * SCREEN_WIDTH + i] = (collision.sideHit) ? SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), textureColor.r, textureColor.g, textureColor.b, textureColor.a) : SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), textureColor.r/2, textureColor.g/2, textureColor.b/2, textureColor.a);
             }
         }
     }
     SDL_UnlockTexture(textureBuffer);
     SDL_RenderCopy(renderer, textureBuffer, nullptr, nullptr);
     SDL_RenderPresent(renderer);
+}
+
+GridGame::~GridGame()
+{
     SDL_DestroyTexture(textureBuffer);
 }
 
@@ -254,6 +258,8 @@ TextureHandler::TextureHandler(std::vector<std::string> in)
     }
 }
 
+//might prove to be a bottleneck in performance since this function is called for every pixel being rendered on the wall.... therefore we may need to reduce
+//the call time as much as possible and change the loaded textures class to store in an array instead of a vector
 rgba TextureHandler::colorAt(int textureIndex, int x, int y)
 {
     const int RGBA = 4; //This might change if you change the loadimage function
