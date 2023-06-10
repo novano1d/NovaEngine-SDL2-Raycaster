@@ -20,8 +20,6 @@ Map* myMap = new Map({{1, 1, 1, 1, 1, 1},
                       {1, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1}});
-
-
 const int FOV = 66; 
 
 double ticktime;
@@ -47,8 +45,7 @@ void playLoop()
 {
     handleInput();
     ticktime = game->frameTime();
-    game->pseudo3dRender(FOV, 0.8);
-    SDL_RenderPresent(renderer);
+    game->pseudo3dRenderTextured(FOV, 0.8);
 }
 
 void eventHandler(SDL_Event event)
@@ -60,7 +57,6 @@ void eventHandler(SDL_Event event)
 int main(int argc, char** argv)
 {
     TextureHandler *myTexture = new TextureHandler({"wall.jpg"});
-    myTexture->colorAt(0, 0, 0);
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);

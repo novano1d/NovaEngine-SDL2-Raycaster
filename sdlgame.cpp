@@ -105,7 +105,6 @@ CollisionEvent GridGame::ddaRaycast(Point start, double angle)
     Point rayDir = { cos(angleRadians), sin(angleRadians) };
     Point rayUnitStepSize = { sqrt( 1 + (rayDir.y / rayDir.x) * (rayDir.y / rayDir.x)), sqrt( 1 + (rayDir.x / rayDir.y) * (rayDir.x / rayDir.y)) };
     Point mapCheck = { floor(start.x), floor(start.y) };
-    
     Point rayLength;
     Point step;
     if (rayDir.x < 0) 
@@ -174,62 +173,68 @@ void GridGame::setPlayerPos(Point p)
 //Wolf3d esk renderer
 void GridGame::pseudo3dRender(int FOV, double wallheight)
 {
-    if (!currentTextureSet) //Draws red shaded walls if no current texture set
+    FOV /= 2;
+    SDL_SetRenderDrawColor(renderer, 74, 74, 74, 255);
+    SDL_RenderClear(renderer);
+    for (int i = 0; i < SCREEN_WIDTH; i++)
     {
-        FOV /= 2;
-        SDL_SetRenderDrawColor(renderer, 74, 74, 74, 255);
-        SDL_RenderClear(renderer);
-        for (int i = 0; i < SCREEN_WIDTH; i++)
-        {
-            double scanDir = 2*i/(double)SCREEN_WIDTH - 1; // -1 ---- 0 ---- 1 for the scan across the screen
-            CollisionEvent collision = ddaRaycast(getPlayerPos(), getAngle() + FOV * scanDir);
-            int lineHeight = (int)(wallheight*(SCREEN_HEIGHT / collision.perpWallDist));
-            int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
-            if (drawStart < 0) drawStart = 0;
-            int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
-            if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
-            Uint8 r = (collision.sideHit) ? 255 : 175;
-            SDL_SetRenderDrawColor(renderer, r, 0, 0, 255);
-            SDL_RenderDrawLine(renderer, i, drawStart, i, drawEnd);
-            //std::cout << collision.intersect.x << " " << collision.intersect.y << std::endl; //debug
-            // int textureToRender = map->getTileAt((int)collision.intersect.x, (int)collision.intersect.y);
-            // double texCoord = collision.intersect.x - floor(collision.intersect.x);
-            // std::cout << collision.tileData << std::endl;
-        }
+        double scanDir = 2 * i / (double)SCREEN_WIDTH - 1; // -1 ---- 0 ---- 1 for the scan across the screen
+        CollisionEvent collision = ddaRaycast(getPlayerPos(), getAngle() + FOV * scanDir);
+        int lineHeight = (int)(wallheight * (SCREEN_HEIGHT / collision.perpWallDist));
+        int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
+        if (drawStart < 0)
+            drawStart = 0;
+        int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
+        if (drawEnd > SCREEN_HEIGHT)
+            drawEnd = SCREEN_HEIGHT;
+        Uint8 r = (collision.sideHit) ? 255 : 175;
+        SDL_SetRenderDrawColor(renderer, r, 0, 0, 255);
+        SDL_RenderDrawLine(renderer, i, drawStart, i, drawEnd);
+        // std::cout << collision.intersect.x << " " << collision.intersect.y << std::endl; //debug
+        // int textureToRender = map->getTileAt((int)collision.intersect.x, (int)collision.intersect.y);
+        // double texCoord = collision.intersect.x - floor(collision.intersect.x);
+        // std::cout << collision.tileData << std::endl;
     }
-    else //If texture set draws textures
+    SDL_RenderPresent(renderer); // fast enough we don't need a buffer
+}
+
+void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
+{
+    SDL_Texture* textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT);
+    Uint32* pixels;
+    int pitch;
+    SDL_LockTexture(textureBuffer, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
+    FOV /= 2;
+    for (int i = 0; i < SCREEN_WIDTH; i++)
     {
-        FOV /= 2;
-        SDL_SetRenderDrawColor(renderer, 74, 74, 74, 255);
-        SDL_RenderClear(renderer);
-        for (int i = 0; i < SCREEN_WIDTH; i++)
+        double scanDir = 2*i/(double)SCREEN_WIDTH - 1; // -1 ---- 0 ---- 1 for the scan across the screen
+        CollisionEvent collision = ddaRaycast(getPlayerPos(), getAngle() + FOV * scanDir);
+        int lineHeight = (int)(wallheight*(SCREEN_HEIGHT / collision.perpWallDist));
+        int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
+        if (drawStart < 0) drawStart = 0;
+        int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
+        if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
+        double texCoord;
+        //get texture coord
+        if (collision.sideHit == 1) texCoord = collision.intersect.x - floor(collision.intersect.x);
+        else texCoord = collision.intersect.y - floor(collision.intersect.y);
+        int textureToRender = collision.tileData;
+        int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender-1).first);
+        if (textureToRender)
         {
-            double scanDir = 2*i/(double)SCREEN_WIDTH - 1; // -1 ---- 0 ---- 1 for the scan across the screen
-            CollisionEvent collision = ddaRaycast(getPlayerPos(), getAngle() + FOV * scanDir);
-            int lineHeight = (int)(wallheight*(SCREEN_HEIGHT / collision.perpWallDist));
-            int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
-            if (drawStart < 0) drawStart = 0;
-            int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
-            if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
-            double texCoord;
-            if (collision.sideHit == 1) texCoord = collision.intersect.x - floor(collision.intersect.x);
-            else texCoord = collision.intersect.y - floor(collision.intersect.y);
-            int textureToRender = collision.tileData;
-            int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender-1).first);
-            if (textureToRender)
+            for (int y = drawStart; y < drawEnd; y++)
             {
-                for (int y = drawStart; y < drawEnd; y++)
-                {
-                    int texY = (((y * 2 - SCREEN_HEIGHT + lineHeight) << 6) / lineHeight) / 2;
-                    rgba textureColor;
-                    textureColor = currentTextureSet->colorAt(textureToRender-1, texX, texY);
-                    SDL_SetRenderDrawColor(renderer, textureColor.r, textureColor.g, textureColor.b, textureColor.a);
-                    SDL_RenderDrawPoint(renderer, i, y);
-                    
-                }
+                int texY = (((y * 2 - SCREEN_HEIGHT + lineHeight) * currentTextureSet->widthHeightAt(textureToRender-1).second) / lineHeight) / 2;
+                rgba textureColor;
+                textureColor = currentTextureSet->colorAt(textureToRender-1, texX, texY);
+                pixels[y * SCREEN_WIDTH + i] = SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), textureColor.r, textureColor.g, textureColor.b, textureColor.a);
             }
         }
     }
+    SDL_UnlockTexture(textureBuffer);
+    SDL_RenderCopy(renderer, textureBuffer, nullptr, nullptr);
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(textureBuffer);
 }
 
 //Texture handler constructor takes in vector of filenames and loads them in
