@@ -170,7 +170,7 @@ void GridGame::setPlayerPos(Point p)
             playerPos.y = p.y;
 }
 
-//Wolf3d esk renderer
+//super duper simple raycasting with drawing line segments
 void GridGame::pseudo3dRender(int FOV, double wallheight)
 {
     FOV /= 2;
@@ -198,6 +198,7 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
     SDL_RenderPresent(renderer); // fast enough we don't need a buffer
 }
 
+//Wolf3d esk renderer
 void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 {
     if (!textureBuffer) textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT); //create texture buffer if it's not there
@@ -216,7 +217,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
         double texCoord;
         //get texture coord
-        if (collision.sideHit == 1) texCoord = collision.intersect.x - floor(collision.intersect.x);
+        if (collision.sideHit) texCoord = collision.intersect.x - floor(collision.intersect.x);
         else texCoord = collision.intersect.y - floor(collision.intersect.y);
         int textureToRender = collision.tileData;
         int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender-1).first);

@@ -151,5 +151,6 @@ public:
     bool isKeyDown(SDL_Keycode key) { return keysDown.count(key) > 0; };
 };
 
+//TODO: templated class of 1d vector as 2d vector
 
 #endif
