@@ -266,10 +266,10 @@ rgba TextureHandler::colorAt(int textureIndex, int x, int y)
     const int RGBA = 4; //This might change if you change the loadimage function
     int r, g, b, a;
     int index = RGBA * ( y * widthHeightAt(textureIndex).first + x);
-    r = static_cast<int>(loadedTextures.at(textureIndex)[index + 0]);
-    g = static_cast<int>(loadedTextures.at(textureIndex)[index + 1]);
-    b = static_cast<int>(loadedTextures.at(textureIndex)[index + 2]);
-    a = static_cast<int>(loadedTextures.at(textureIndex)[index + 3]);
+    r = static_cast<int>(loadedTextures[textureIndex][index + 0]);
+    g = static_cast<int>(loadedTextures[textureIndex][index + 1]);
+    b = static_cast<int>(loadedTextures[textureIndex][index + 2]);
+    a = static_cast<int>(loadedTextures[textureIndex][index + 3]);
     // std::cout << r << " "
     //           << g << " "
     //           << b << " "

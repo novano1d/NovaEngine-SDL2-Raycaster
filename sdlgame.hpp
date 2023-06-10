@@ -7,7 +7,6 @@
 #include <unordered_set>
 #include <string>
 
-
 //Convenience
 struct rgba { int r,g,b,a; } ;
 
@@ -29,13 +28,16 @@ struct Point
 class TextureHandler
 {
 private:
+    unsigned char** texturesLoaded;
+    std::pair<int, int>* textureSizes;
+    int numTextures;
     std::vector<std::vector<unsigned char>> loadedTextures;
     std::vector<std::pair<int, int>> loadedTextureSizes; //width height pairs
 public:
     TextureHandler(std::vector<std::string>);
     int numOfTextures() { return loadedTextures.size(); };
-    std::vector<unsigned char> textureAt(int i) { return loadedTextures.at(i); };
-    std::pair<int, int> widthHeightAt(int i) { return loadedTextureSizes.at(i); };
+    std::vector<unsigned char> textureAt(int i) { return loadedTextures[i]; };
+    std::pair<int, int> widthHeightAt(int i) { return loadedTextureSizes[i]; };
     rgba colorAt(int textureIndex, int x, int y);
 };
 
@@ -150,7 +152,5 @@ public:
     void keyUp(SDL_Keycode key) { keysDown.erase(key); };
     bool isKeyDown(SDL_Keycode key) { return keysDown.count(key) > 0; };
 };
-
-//TODO: templated class of 1d vector as 2d vector
 
 #endif
