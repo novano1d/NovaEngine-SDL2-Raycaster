@@ -225,9 +225,10 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender-1).first);
         if (textureToRender)
         {
+            Uint32 black = SDL_MapRGBA(format, 0, 0, 0, 255);
             for (int y = 0; y < drawStart; y++)
             {
-                pixels[y * SCREEN_WIDTH + i] = SDL_MapRGBA(format, 0, 0, 0, 255);
+                pixels[y * SCREEN_WIDTH + i] = black;
             }
             
             for (int y = drawStart; y < drawEnd; y++)
@@ -240,7 +241,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 
             for (int y = drawEnd; y < SCREEN_HEIGHT; y++)
             {
-                pixels[y * SCREEN_WIDTH + i] = SDL_MapRGBA(format, 0, 0, 0, 255);
+                pixels[y * SCREEN_WIDTH + i] = black;
             }
         }
     }
