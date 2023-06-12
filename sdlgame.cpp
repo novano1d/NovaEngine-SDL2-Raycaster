@@ -202,6 +202,7 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
 void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 {
     if (!textureBuffer) textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT); //create texture buffer if it's not there
+    //textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT); //create texture buffer if it's not there
     Uint32* pixels;
     int pitch;
     SDL_LockTexture(textureBuffer, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
@@ -216,19 +217,30 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
         if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
         double texCoord;
+        SDL_PixelFormat* format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
         //get texture coord
-        if (collision.sideHit) texCoord = collision.intersect.x - floor(collision.intersect.x);
-        else texCoord = collision.intersect.y - floor(collision.intersect.y);
+        if (collision.sideHit) texCoord = collision.intersect.x - (int)collision.intersect.x;
+        else texCoord = collision.intersect.y - (int)collision.intersect.y;
         int textureToRender = collision.tileData;
         int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender-1).first);
         if (textureToRender)
         {
+            for (int y = 0; y < drawStart; y++)
+            {
+                pixels[y * SCREEN_WIDTH + i] = SDL_MapRGBA(format, 0, 0, 0, 255);
+            }
+            
             for (int y = drawStart; y < drawEnd; y++)
             {
                 int texY = (((y * 2 - SCREEN_HEIGHT + lineHeight) * currentTextureSet->widthHeightAt(textureToRender-1).second) / lineHeight) / 2;
                 rgba textureColor;
                 textureColor = currentTextureSet->colorAt(textureToRender-1, texX, texY);
-                pixels[y * SCREEN_WIDTH + i] = (collision.sideHit) ? SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), textureColor.r, textureColor.g, textureColor.b, textureColor.a) : SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), textureColor.r/2, textureColor.g/2, textureColor.b/2, textureColor.a);
+                pixels[y * SCREEN_WIDTH + i] = (collision.sideHit) ? SDL_MapRGBA(format, textureColor.r, textureColor.g, textureColor.b, textureColor.a) : SDL_MapRGBA(format, textureColor.r/2, textureColor.g/2, textureColor.b/2, textureColor.a);
+            }
+
+            for (int y = drawEnd; y < SCREEN_HEIGHT; y++)
+            {
+                pixels[y * SCREEN_WIDTH + i] = SDL_MapRGBA(format, 0, 0, 0, 255);
             }
         }
     }
