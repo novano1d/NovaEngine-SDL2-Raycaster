@@ -98,7 +98,7 @@ void GridGame::mapGrid(rgba c)
 }
 
 //Simple DDA
-CollisionEvent GridGame::ddaRaycast(Point start, double angle)
+inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
 {
     double angleRadians = angle * M_PI / 180.0;
     //using point as 2d vector to keep clean

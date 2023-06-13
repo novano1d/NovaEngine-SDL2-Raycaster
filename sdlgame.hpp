@@ -37,7 +37,7 @@ public:
     TextureHandler(std::vector<std::string>);
     int numOfTextures() { return loadedTextures.size(); };
     std::vector<unsigned char> textureAt(int i) { return loadedTextures[i]; };
-    std::pair<int, int> widthHeightAt(int i) { return loadedTextureSizes[i]; };
+    inline std::pair<int, int> widthHeightAt(int i) { return loadedTextureSizes[i]; };
     rgba colorAt(int textureIndex, int x, int y);
 };
 
@@ -124,7 +124,7 @@ public:
     void drawRect(SDL_Rect, rgba);
     //Performs a raycast from start point at angle on current map
     //Returns CollisionEvent
-    CollisionEvent ddaRaycast(Point start, double angle);
+    inline CollisionEvent ddaRaycast(Point start, double angle);
     //Renders false 3d untextured
     void pseudo3dRender(int FOV, double wallheight=1);
     //Renders false 3d textured
