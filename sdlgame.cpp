@@ -209,14 +209,14 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     for (int i = 0; i < SCREEN_WIDTH; i++)
     {
         double scanDir = 2*i/(double)SCREEN_WIDTH - 1; // -1 ---- 0 ---- 1 for the scan across the screen
-        CollisionEvent collision = ddaRaycast(getPlayerPos(), getAngle() + FOV * scanDir);
+        CollisionEvent collision = ddaRaycast(getPlayerPos(), angle + FOV * scanDir);
         int lineHeight = (int)(wallheight*(SCREEN_HEIGHT / collision.perpWallDist));
         int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
         if (drawStart < 0) drawStart = 0;
         int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
         if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
         double texCoord;
-        SDL_PixelFormat* format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+        const Uint32 black = SDL_MapRGBA(format, 0, 0, 0, 255);
         //get texture coord
         if (collision.sideHit) texCoord = collision.intersect.x - (int)collision.intersect.x;
         else texCoord = collision.intersect.y - (int)collision.intersect.y;
@@ -224,7 +224,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender-1).first);
         if (textureToRender)
         {
-            Uint32 black = SDL_MapRGBA(format, 0, 0, 0, 255);
             for (int y = 0; y < drawStart; y++)
             {
                 pixels[y * SCREEN_WIDTH + i] = black;
@@ -235,9 +234,18 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 int texY = (((y * 2 - SCREEN_HEIGHT + lineHeight) * currentTextureSet->widthHeightAt(textureToRender-1).second) / lineHeight) / 2;
                 rgba textureColor;
                 textureColor = currentTextureSet->colorAt(textureToRender-1, texX, texY);
-                pixels[y * SCREEN_WIDTH + i] = (collision.sideHit) ? SDL_MapRGBA(format, textureColor.r, textureColor.g, textureColor.b, textureColor.a) : SDL_MapRGBA(format, textureColor.r/2, textureColor.g/2, textureColor.b/2, textureColor.a);
+                //pixels[y * SCREEN_WIDTH + i] = (collision.sideHit) ? SDL_MapRGBA(format, textureColor.r, textureColor.g, textureColor.b, textureColor.a) : SDL_MapRGBA(format, textureColor.r/2, textureColor.g/2, textureColor.b/2, textureColor.a);
+                if (collision.sideHit) //Avoid function calls for performance
+                    pixels[y * SCREEN_WIDTH + i] = (textureColor.r << format->Rshift) |
+                                                  (textureColor.g << format->Gshift) |
+                                                  (textureColor.b << format->Bshift) |
+                                                  (textureColor.a << format->Ashift);
+                else
+                    pixels[y * SCREEN_WIDTH + i] = ((textureColor.r/2) << format->Rshift) |
+                                                  ((textureColor.g/2) << format->Gshift) |
+                                                  ((textureColor.b/2) << format->Bshift) |
+                                                  (textureColor.a << format->Ashift);
             }
-
             for (int y = drawEnd; y < SCREEN_HEIGHT; y++)
             {
                 pixels[y * SCREEN_WIDTH + i] = black;
@@ -257,9 +265,9 @@ GridGame::~GridGame()
 //Texture handler constructor takes in vector of filenames and loads them in
 TextureHandler::TextureHandler(std::vector<std::string> in)
 {
+    int width, height;
     for (std::string filename : in)
     {
-        int width, height;
         std::vector<unsigned char> image;
         bool success = Game::loadImage(image, filename, width, height);
         if (!success)
@@ -285,6 +293,9 @@ rgba TextureHandler::colorAt(int textureIndex, int x, int y)
     // std::cout << r << " "
     //           << g << " "
     //           << b << " "
-    //           << a << '\n';
+    //           << a << " "
+    //           << *(Uint32*)&(loadedTextures[textureIndex][index]) << " "
+    //           << SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), r, g , b , a) << " "
+    //           << '\n';
     return { r, g, b, a };
 }

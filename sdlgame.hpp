@@ -28,7 +28,7 @@ struct Point
 class TextureHandler
 {
 private:
-    Uint32 *textureRGB; //we need to load the texture RGB into memory since calculating the RGB value every fkn time kills frame rate (reduce regular function calls)
+    Uint32** colors; //we need to load the texture RGB into memory since calculating the RGB value every fkn time kills frame rate (reduce regular function calls)
     std::pair<int, int>* textureSizes;
     int numTextures;
     std::vector<std::vector<unsigned char>> loadedTextures;
@@ -45,6 +45,7 @@ public:
 class Game
 {
 protected:
+    SDL_PixelFormat* format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
     SDL_Renderer* renderer = nullptr;
     SDL_Window* window = nullptr;
     const int SCREEN_WIDTH;
