@@ -35,9 +35,9 @@ void handleInput()
         game->setAngle(game->getAngle() + ticktime * game->getRotSpeed());
     if (keyhandler->isKeyDown(SDLK_a))
         game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
-    if (keyhandler->isKeyDown(SDLK_LSHIFT))
-        game->setMoveSpeed(2);
-    else
+    if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 2)
+        game->setMoveSpeed(3);
+    else if (game->getMoveSpeed() != 1)
         game->setMoveSpeed(1);
 }       
 
@@ -65,6 +65,7 @@ int main(int argc, char** argv)
     game->setMap(myMap);
     game->setPlayerPos({1.5,1.5});
     game->setEventHandler(eventHandler);
+    //std::cout << SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), 150, 0, 0, 255) << std::endl;
     game->gameplayLoop(playLoop);
     return 0;
 }

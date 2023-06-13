@@ -28,7 +28,7 @@ struct Point
 class TextureHandler
 {
 private:
-    unsigned char** texturesLoaded;
+    Uint32 *textureRGB; //we need to load the texture RGB into memory since calculating the RGB value every fkn time kills frame rate (reduce regular function calls)
     std::pair<int, int>* textureSizes;
     int numTextures;
     std::vector<std::vector<unsigned char>> loadedTextures;
