@@ -1,25 +1,25 @@
 #include <SDL2/SDL.h>
 #include "sdlgame.hpp"
 #include <iostream>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
 
 //This file is for testing the functionality of the library
 
 //Global def
 #define SCREEN_WIDTH 1280 
 #define SCREEN_HEIGHT 720
+// #define SCREEN_WIDTH 1920 
+// #define SCREEN_HEIGHT 1080
 KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1}, 
                       {1, 0, 0, 0, 0, 1},
-                      {1, 0, 0, 1, 0, 1},
-                      {1, 0, 0, 1, 0, 1},
-                      {1, 0, 0, 1, 0, 1},
+                      {1, 0, 0, 1, 1, 1},
+                      {1, 0, 0, 0, 0, 1},
+                      {1, 0, 0, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1}});
-
 const int FOV = 66; 
 
 double ticktime;
@@ -35,14 +35,17 @@ void handleInput()
         game->setAngle(game->getAngle() + ticktime * game->getRotSpeed());
     if (keyhandler->isKeyDown(SDLK_a))
         game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
+    if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 2)
+        game->setMoveSpeed(3);
+    else if (game->getMoveSpeed() != 1)
+        game->setMoveSpeed(1);
 }       
 
 void playLoop()
 {
     handleInput();
     ticktime = game->frameTime();
-    game->pseudo3dRender(FOV, 0.5);
-    SDL_RenderPresent(renderer);
+    game->pseudo3dRenderTextured(FOV, 0.8);
 }
 
 void eventHandler(SDL_Event event)
@@ -53,13 +56,16 @@ void eventHandler(SDL_Event event)
 
 int main(int argc, char** argv)
 {
+    TextureHandler *myTexture = new TextureHandler({"wall.jpg"});
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
+    game->setTextureSet(myTexture);
     game->setAngle(45);
     game->setMap(myMap);
     game->setPlayerPos({1.5,1.5});
     game->setEventHandler(eventHandler);
+    //std::cout << SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), 150, 0, 0, 255) << std::endl;
     game->gameplayLoop(playLoop);
     return 0;
 }

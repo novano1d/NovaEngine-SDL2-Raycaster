@@ -1,11 +1,14 @@
+#ifndef SDLGAME_HPP
+#define SDLGAME_HPP
 #include <SDL2/SDL.h>
 #include <math.h>
 #include <vector>
 #include <iostream>
 #include <unordered_set>
+#include <string>
 
 //Convenience
-struct rgba { Uint8 r,g,b,a; } ;
+struct rgba { int r,g,b,a; } ;
 
 //Point structure that acts as a point and doubles as a 2d vector structure
 struct Point
@@ -21,10 +24,28 @@ struct Point
     }
 };
 
-//Game Class to clean things up a bit
+//This class will handle loading all necessary texture images
+class TextureHandler
+{
+private:
+    std::vector<std::vector<Uint32>> memPixels; //we need to load the texture RGB into memory since calculating the RGB value every fkn time kills frame rate (reduce regular function calls)
+    std::pair<int, int>* textureSizes;
+    int numTextures;
+    std::vector<std::vector<unsigned char>> loadedTextures;
+    std::vector<std::pair<int, int>> loadedTextureSizes; //width height pairs
+public:
+    TextureHandler(std::vector<std::string>);
+    int numOfTextures() { return loadedTextures.size(); };
+    std::vector<unsigned char> textureAt(int i) { return loadedTextures[i]; };
+    inline std::pair<int, int> widthHeightAt(int i) { return loadedTextureSizes[i]; };
+    rgba colorAt(int textureIndex, int x, int y);
+};
+
+//Game Class to clean things up a bit and provide a template
 class Game
 {
 protected:
+    SDL_PixelFormat* format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
     SDL_Renderer* renderer = nullptr;
     SDL_Window* window = nullptr;
     const int SCREEN_WIDTH;
@@ -42,7 +63,8 @@ public:
     void setEventHandler(void(*ptr)(SDL_Event));
     //returns frameTime
     double frameTime();
-    ~Game();
+    //loads image from file bc we need to load textures and stuff
+    static bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
 };
 
 /*
@@ -62,7 +84,6 @@ public:
     int getTileAt(int x, int y) { return map[y][x]; };
     int ySize() { return map[0].size(); };
     int xSize() { return map.size(); };
-    ~Map();
 private:
     //Could eventually swap int for a Tile class
     std::vector<std::vector<int>> map;
@@ -73,8 +94,9 @@ struct CollisionEvent
 {
     bool hit = false; //Hit or not
     Point intersect = {-1,-1}; //point of intersection
-    int sideHit = -1; //side hit
+    int sideHit = 0; //side hit
     double perpWallDist = -1; //perpendicular wall distance (from viewing plane)
+    int tileData = -1; //Contains tile data for texture
 };
 
 //Specific type of game that contains a 2d map and various functions to build a game from such a 2d map
@@ -86,6 +108,8 @@ private:
     double angle = 0;
     double moveSpeed = 1; //map units per second
     double rotSpeed = 100; //degrees per second
+    TextureHandler* currentTextureSet = nullptr;
+    SDL_Texture* textureBuffer;
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
     //sets the current map pointer
@@ -100,9 +124,11 @@ public:
     void drawRect(SDL_Rect, rgba);
     //Performs a raycast from start point at angle on current map
     //Returns CollisionEvent
-    CollisionEvent ddaRaycast(Point start, double angle);
-    //Renders false 3d
+    inline CollisionEvent ddaRaycast(Point start, double angle);
+    //Renders false 3d untextured
     void pseudo3dRender(int FOV, double wallheight=1);
+    //Renders false 3d textured
+    void pseudo3dRenderTextured(int FOV, double wallheight);
     void setPlayerPos(Point p);
     Point getPlayerPos() { return playerPos; };
     int getCellWidth() { return SCREEN_WIDTH / map->xSize(); };
@@ -113,6 +139,7 @@ public:
     double getRotSpeed() { return rotSpeed; };
     double getAngle() { return angle; };
     void setAngle(double a) { angle = fmod(a, 360); }; //clamps angle to 0,360 degrees
+    void setTextureSet(TextureHandler* t){ currentTextureSet = t; };
     ~GridGame();
 };
 
@@ -126,3 +153,5 @@ public:
     void keyUp(SDL_Keycode key) { keysDown.erase(key); };
     bool isKeyDown(SDL_Keycode key) { return keysDown.count(key) > 0; };
 };
+
+#endif
