@@ -221,6 +221,10 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         if (collision.sideHit) texCoord = collision.intersect.x - (int)collision.intersect.x;
         else texCoord = collision.intersect.y - (int)collision.intersect.y;
         int textureToRender = collision.tileData;
+        Uint8 rshift = format->Rshift;
+        Uint8 gshift = format->Gshift;
+        Uint8 bshift = format->Bshift;
+        Uint8 ashift = format->Ashift;
         int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender-1).first);
         if (textureToRender)
         {
@@ -236,15 +240,15 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 textureColor = currentTextureSet->colorAt(textureToRender-1, texX, texY);
                 //pixels[y * SCREEN_WIDTH + i] = (collision.sideHit) ? SDL_MapRGBA(format, textureColor.r, textureColor.g, textureColor.b, textureColor.a) : SDL_MapRGBA(format, textureColor.r/2, textureColor.g/2, textureColor.b/2, textureColor.a);
                 if (collision.sideHit) //Avoid function calls for performance
-                    pixels[y * SCREEN_WIDTH + i] = (textureColor.r << format->Rshift) |
-                                                  (textureColor.g << format->Gshift) |
-                                                  (textureColor.b << format->Bshift) |
-                                                  (textureColor.a << format->Ashift);
+                    pixels[y * SCREEN_WIDTH + i] = (textureColor.r << rshift) |
+                                                  (textureColor.g << gshift) |
+                                                  (textureColor.b << bshift) |
+                                                  (textureColor.a << ashift);
                 else
-                    pixels[y * SCREEN_WIDTH + i] = ((textureColor.r/2) << format->Rshift) |
-                                                  ((textureColor.g/2) << format->Gshift) |
-                                                  ((textureColor.b/2) << format->Bshift) |
-                                                  (textureColor.a << format->Ashift);
+                    pixels[y * SCREEN_WIDTH + i] = ((textureColor.r/2) << rshift) |
+                                                  ((textureColor.g/2) << gshift) |
+                                                  ((textureColor.b/2) << bshift) |
+                                                  (textureColor.a << ashift);
             }
             for (int y = drawEnd; y < SCREEN_HEIGHT; y++)
             {

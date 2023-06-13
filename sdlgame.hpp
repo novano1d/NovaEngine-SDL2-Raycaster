@@ -28,7 +28,7 @@ struct Point
 class TextureHandler
 {
 private:
-    Uint32** colors; //we need to load the texture RGB into memory since calculating the RGB value every fkn time kills frame rate (reduce regular function calls)
+    std::vector<std::vector<Uint32>> memPixels; //we need to load the texture RGB into memory since calculating the RGB value every fkn time kills frame rate (reduce regular function calls)
     std::pair<int, int>* textureSizes;
     int numTextures;
     std::vector<std::vector<unsigned char>> loadedTextures;
@@ -64,7 +64,7 @@ public:
     //returns frameTime
     double frameTime();
     //loads image from file bc we need to load textures and stuff
-    bool static loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
+    static bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
 };
 
 /*
@@ -128,7 +128,7 @@ public:
     //Renders false 3d untextured
     void pseudo3dRender(int FOV, double wallheight=1);
     //Renders false 3d textured
-    void pseudo3dRenderTextured(int FOV, double wallheight=1);
+    void pseudo3dRenderTextured(int FOV, double wallheight);
     void setPlayerPos(Point p);
     Point getPlayerPos() { return playerPos; };
     int getCellWidth() { return SCREEN_WIDTH / map->xSize(); };
