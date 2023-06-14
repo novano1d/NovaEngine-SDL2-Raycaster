@@ -6,8 +6,10 @@
 //This file is for testing the functionality of the library
 
 //Global def
-#define SCREEN_WIDTH 1280 
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH 640 
+#define SCREEN_HEIGHT 480
+// #define SCREEN_WIDTH 1280 
+// #define SCREEN_HEIGHT 720
 // #define SCREEN_WIDTH 1920 
 // #define SCREEN_HEIGHT 1080
 KeyHandler *keyhandler = new KeyHandler();
@@ -20,7 +22,7 @@ Map* myMap = new Map({{1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 0, 1},
                       {1, 0, 0, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1}});
-const int FOV = 66; 
+const int FOV = 60; 
 
 double ticktime;
 

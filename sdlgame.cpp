@@ -216,7 +216,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
         if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
         double texCoord;
-        const Uint32 black = SDL_MapRGBA(format, 0, 0, 0, 255);
+        const Uint32 black = SDL_MapRGBA(format, 0, 0, 0, 255); //remove once floor textures added
         //get texture coord
         if (collision.sideHit) texCoord = collision.intersect.x - (int)collision.intersect.x;
         else texCoord = collision.intersect.y - (int)collision.intersect.y;
@@ -239,11 +239,11 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 rgba textureColor;
                 textureColor = currentTextureSet->colorAt(textureToRender-1, texX, texY);
                 //pixels[y * SCREEN_WIDTH + i] = (collision.sideHit) ? SDL_MapRGBA(format, textureColor.r, textureColor.g, textureColor.b, textureColor.a) : SDL_MapRGBA(format, textureColor.r/2, textureColor.g/2, textureColor.b/2, textureColor.a);
-                if (collision.sideHit) //Avoid function calls for performance
-                    pixels[y * SCREEN_WIDTH + i] = (textureColor.r << rshift) |
-                                                  (textureColor.g << gshift) |
-                                                  (textureColor.b << bshift) |
-                                                  (textureColor.a << ashift);
+                if (collision.sideHit) //Avoid function calls for performance ... calculates the correct RGB format on the fly... (if we need more performance later we can probably change this function)
+                    pixels[y * SCREEN_WIDTH + i] = (textureColor.r << rshift) | //we may also want to load a texture atlas
+                                                  (textureColor.g << gshift) | //and it may be better to simply do these calculations beforehand instead of on a per frame basis
+                                                  (textureColor.b << bshift) | //but for now I am lazy and think we will simply render at 480p and upscale
+                                                  (textureColor.a << ashift); //since we're going retro anyway and want low res textures
                 else
                     pixels[y * SCREEN_WIDTH + i] = ((textureColor.r/2) << rshift) |
                                                   ((textureColor.g/2) << gshift) |
