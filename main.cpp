@@ -6,10 +6,10 @@
 //This file is for testing the functionality of the library
 
 //Global def
-#define SCREEN_WIDTH 640 
-#define SCREEN_HEIGHT 480
-// #define SCREEN_WIDTH 1280 
-// #define SCREEN_HEIGHT 720
+// #define SCREEN_WIDTH 640 
+// #define SCREEN_HEIGHT 480
+#define SCREEN_WIDTH 1280 
+#define SCREEN_HEIGHT 720
 // #define SCREEN_WIDTH 1920 
 // #define SCREEN_HEIGHT 1080
 KeyHandler *keyhandler = new KeyHandler();
@@ -60,7 +60,11 @@ int main(int argc, char** argv)
 {
     TextureHandler *myTexture = new TextureHandler({"wall.jpg"});
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
+    //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
+    window = SDL_CreateWindow("Window Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    // Create SDL renderer with target texture flag
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); // for resolution scaling
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
     game->setTextureSet(myTexture);
     game->setAngle(45);
