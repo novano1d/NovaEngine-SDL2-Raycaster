@@ -205,8 +205,8 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
     // Calculate the render dimensions
-    const int renderWidth = 640;
-    const int renderHeight = 360;
+    const int renderWidth = INTERNAL_RENDER_RES_HORIZ;
+    const int renderHeight = INTERNAL_RENDER_RES_VERT;
 
     if (!textureBuffer)
         textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, renderWidth, renderHeight);
