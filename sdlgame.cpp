@@ -198,68 +198,118 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
     SDL_RenderPresent(renderer); // fast enough we don't need a buffer
 }
 
-//Wolf3d esk renderer
+//so many frames
 void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 {
-    if (!textureBuffer) textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH, SCREEN_HEIGHT); //create texture buffer if it's not there
+    // Set the render scale quality hint to nearest
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+
+    // Calculate the render dimensions
+    const int renderWidth = INTERNAL_RENDER_RES_HORIZ;
+    const int renderHeight = INTERNAL_RENDER_RES_VERT;
+
+    if (!textureBuffer)
+        textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, renderWidth, renderHeight);
+
     Uint32* pixels;
     int pitch;
     SDL_LockTexture(textureBuffer, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
+
     FOV /= 2;
-    for (int i = 0; i < SCREEN_WIDTH; i++)
+    for (int i = 0; i < renderWidth; i++)
     {
-        double scanDir = 2*i/(double)SCREEN_WIDTH - 1; // -1 ---- 0 ---- 1 for the scan across the screen
+        double scanDir = 2 * i / static_cast<double>(renderWidth) - 1; // -1 ---- 0 ---- 1 for the scan across the screen
         CollisionEvent collision = ddaRaycast(getPlayerPos(), angle + FOV * scanDir);
-        int lineHeight = (int)(wallheight*(SCREEN_HEIGHT / collision.perpWallDist));
-        int drawStart = -lineHeight / 2 + SCREEN_HEIGHT / 2;
+        int lineHeight = static_cast<int>(wallheight * (renderHeight / collision.perpWallDist));
+        int drawStart = -lineHeight / 2 + renderHeight / 2;
         if (drawStart < 0) drawStart = 0;
-        int drawEnd = lineHeight / 2 + SCREEN_HEIGHT / 2;
-        if (drawEnd > SCREEN_HEIGHT) drawEnd = SCREEN_HEIGHT; 
+        int drawEnd = lineHeight / 2 + renderHeight / 2;
+        if (drawEnd > renderHeight) drawEnd = renderHeight;
         double texCoord;
-        const Uint32 black = SDL_MapRGBA(format, 0, 0, 0, 255); //remove once floor textures added
-        //get texture coord
-        if (collision.sideHit) texCoord = collision.intersect.x - (int)collision.intersect.x;
-        else texCoord = collision.intersect.y - (int)collision.intersect.y;
+        const Uint32 black = SDL_MapRGBA(format, 0, 0, 0, 255); //remove once floor texturing added
+
+        if (collision.sideHit)
+            texCoord = collision.intersect.x - static_cast<int>(collision.intersect.x);
+        else
+            texCoord = collision.intersect.y - static_cast<int>(collision.intersect.y);
+
         int textureToRender = collision.tileData;
         Uint8 rshift = format->Rshift;
         Uint8 gshift = format->Gshift;
         Uint8 bshift = format->Bshift;
         Uint8 ashift = format->Ashift;
-        int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender-1).first);
+        int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender - 1).first);
+
         if (textureToRender)
         {
             for (int y = 0; y < drawStart; y++)
             {
-                pixels[y * SCREEN_WIDTH + i] = black;
+                pixels[y * renderWidth + i] = black;
             }
-            
+
             for (int y = drawStart; y < drawEnd; y++)
             {
-                int texY = (((y * 2 - SCREEN_HEIGHT + lineHeight) * currentTextureSet->widthHeightAt(textureToRender-1).second) / lineHeight) / 2;
+                int texY = (((y * 2 - renderHeight + lineHeight) * currentTextureSet->widthHeightAt(textureToRender - 1).second) / lineHeight) / 2;
                 rgba textureColor;
-                textureColor = currentTextureSet->colorAt(textureToRender-1, texX, texY);
-                //pixels[y * SCREEN_WIDTH + i] = (collision.sideHit) ? SDL_MapRGBA(format, textureColor.r, textureColor.g, textureColor.b, textureColor.a) : SDL_MapRGBA(format, textureColor.r/2, textureColor.g/2, textureColor.b/2, textureColor.a);
-                if (collision.sideHit) //Avoid function calls for performance ... calculates the correct RGB format on the fly... (if we need more performance later we can probably change this function)
-                    pixels[y * SCREEN_WIDTH + i] = (textureColor.r << rshift) | //we may also want to load a texture atlas
-                                                  (textureColor.g << gshift) | //and it may be better to simply do these calculations beforehand instead of on a per frame basis
-                                                  (textureColor.b << bshift) | //but for now I am lazy and think we will simply render at 480p and upscale
-                                                  (textureColor.a << ashift); //since we're going retro anyway and want low res textures
+                textureColor = currentTextureSet->colorAt(textureToRender - 1, texX, texY);
+                if (collision.sideHit)
+                    pixels[y * renderWidth + i] = (textureColor.r << rshift) |
+                                                    (textureColor.g << gshift) |
+                                                    (textureColor.b << bshift) |
+                                                    (textureColor.a << ashift);
                 else
-                    pixels[y * SCREEN_WIDTH + i] = ((textureColor.r/2) << rshift) |
-                                                  ((textureColor.g/2) << gshift) |
-                                                  ((textureColor.b/2) << bshift) |
-                                                  (textureColor.a << ashift);
+                    pixels[y * renderWidth + i] = ((textureColor.r / 2) << rshift) |
+                                                    ((textureColor.g / 2) << gshift) |
+                                                    ((textureColor.b / 2) << bshift) |
+                                                    (textureColor.a << ashift);
             }
-            for (int y = drawEnd; y < SCREEN_HEIGHT; y++)
+
+            for (int y = drawEnd; y < renderHeight; y++)
             {
-                pixels[y * SCREEN_WIDTH + i] = black;
+                pixels[y * renderWidth + i] = black;
             }
         }
     }
+
     SDL_UnlockTexture(textureBuffer);
-    SDL_RenderCopy(renderer, textureBuffer, nullptr, nullptr);
+
+    // Calculate the target area to maintain aspect ratio
+    int windowWidth, windowHeight;
+    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+    float windowAspectRatio = static_cast<float>(windowWidth) / windowHeight;
+    float bufferAspectRatio = static_cast<float>(renderWidth) / renderHeight;
+
+    SDL_Rect targetRect;
+    if (windowAspectRatio > bufferAspectRatio)
+    {
+        // Window is wider, keep the height and center horizontally
+        int targetWidth = windowHeight * bufferAspectRatio;
+        targetRect.x = (windowWidth - targetWidth) / 2;
+        targetRect.y = 0;
+        targetRect.w = targetWidth;
+        targetRect.h = windowHeight;
+    }
+    else
+    {
+        // Window is taller or same aspect ratio, keep the width and center vertically
+        int targetHeight = windowWidth / bufferAspectRatio;
+        targetRect.x = 0;
+        targetRect.y = (windowHeight - targetHeight) / 2;
+        targetRect.w = windowWidth;
+        targetRect.h = targetHeight;
+    }
+
+    // Clear the window with black color
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+
+    // Render the back buffer texture in the window
+    SDL_RenderCopy(renderer, textureBuffer, nullptr, &targetRect);
+
+    // Present the rendered frame
     SDL_RenderPresent(renderer);
 }
+
 
 GridGame::~GridGame()
 {

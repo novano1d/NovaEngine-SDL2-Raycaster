@@ -7,6 +7,9 @@
 #include <unordered_set>
 #include <string>
 
+#define INTERNAL_RENDER_RES_HORIZ 640
+#define INTERNAL_RENDER_RES_VERT 320
+
 //Convenience
 struct rgba { int r,g,b,a; } ;
 
