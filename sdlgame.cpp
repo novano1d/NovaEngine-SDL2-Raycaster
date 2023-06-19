@@ -214,7 +214,10 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     Uint32* pixels;
     int pitch;
     SDL_LockTexture(textureBuffer, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
-
+    Uint8 rshift = format->Rshift;
+    Uint8 gshift = format->Gshift;
+    Uint8 bshift = format->Bshift;
+    Uint8 ashift = format->Ashift;
     FOV /= 2;
     for (int i = 0; i < renderWidth; i++)
     {
@@ -234,10 +237,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             texCoord = collision.intersect.y - static_cast<int>(collision.intersect.y);
 
         int textureToRender = collision.tileData;
-        Uint8 rshift = format->Rshift;
-        Uint8 gshift = format->Gshift;
-        Uint8 bshift = format->Bshift;
-        Uint8 ashift = format->Ashift;
         int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender - 1).first);
 
         if (textureToRender)
@@ -265,6 +264,13 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             }
 
             for (int y = drawEnd; y < renderHeight; y++)
+            {
+                pixels[y * renderWidth + i] = black;
+            }
+        }
+        else
+        {
+            for (int y = 0; y < renderHeight; y++)
             {
                 pixels[y * renderWidth + i] = black;
             }
