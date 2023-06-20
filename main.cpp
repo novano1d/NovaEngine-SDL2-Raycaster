@@ -38,9 +38,16 @@ void handleInput()
     if (keyhandler->isKeyDown(SDLK_a))
         game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
     if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 2)
+    {
         game->setMoveSpeed(3);
+        game->setRotSpeed(140);
+    }
     else if (game->getMoveSpeed() != 1)
+    {
         game->setMoveSpeed(1);
+        game->setRotSpeed(100);
+    }
+        
 }       
 
 void playLoop()
@@ -55,6 +62,8 @@ void eventHandler(SDL_Event event)
     if (event.type == SDL_KEYDOWN) keyhandler->keyDown(event.key.keysym.sym);
     else if (event.type == SDL_KEYUP) keyhandler->keyUp(event.key.keysym.sym);
 }
+
+
 
 int main(int argc, char** argv)
 {

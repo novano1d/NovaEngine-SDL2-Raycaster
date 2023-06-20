@@ -201,9 +201,6 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
 //so many frames
 void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 {
-    // Set the render scale quality hint to nearest
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-
     // Calculate the render dimensions
     const int renderWidth = INTERNAL_RENDER_RES_HORIZ;
     const int renderHeight = INTERNAL_RENDER_RES_VERT;

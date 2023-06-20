@@ -10,6 +10,9 @@
 #define INTERNAL_RENDER_RES_HORIZ 640
 #define INTERNAL_RENDER_RES_VERT 360
 
+// #define INTERNAL_RENDER_RES_HORIZ 240
+// #define INTERNAL_RENDER_RES_VERT 240
+
 //Convenience
 struct rgba { int r,g,b,a; } ;
 
