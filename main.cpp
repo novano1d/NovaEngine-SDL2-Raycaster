@@ -8,10 +8,10 @@
 //Global def
 // #define SCREEN_WIDTH 640 
 // #define SCREEN_HEIGHT 480
-// #define SCREEN_WIDTH 1280 
-// #define SCREEN_HEIGHT 720
-#define SCREEN_WIDTH 1920 
-#define SCREEN_HEIGHT 1080
+#define SCREEN_WIDTH 1280 
+#define SCREEN_HEIGHT 720
+// #define SCREEN_WIDTH 1920 
+// #define SCREEN_HEIGHT 1080
 KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
@@ -67,7 +67,7 @@ void eventHandler(SDL_Event event)
 
 int main(int argc, char** argv)
 {
-    TextureHandler *myTexture = new TextureHandler({"wall.jpg"});
+    TextureHandler *myTexture = new TextureHandler({"saif.jpg"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("Window Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
