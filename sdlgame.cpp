@@ -216,6 +216,49 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     Uint8 bshift = format->Bshift;
     Uint8 ashift = format->Ashift;
     FOV /= 2;
+    double dirX = cos(angle * (M_PI / 180.0));
+    double dirY = sin(angle * (M_PI / 180.0));
+    double planeX = dirY * -tan(FOV * (M_PI / 180.0));
+    double planeY = dirX * tan(FOV * (M_PI / 180.0));
+    //floor ceiling casting
+    int fTxWidth = currentTextureSet->widthHeightAt(0).first;
+    int fTxHeight = currentTextureSet->widthHeightAt(0).second;
+    for (int y = 0; y < renderHeight; y++)
+    {
+        double rayDirX0 = dirX - planeX;
+        double rayDirY0 = dirY - planeY;
+        double rayDirX1 = dirX + planeX;
+        double rayDirY1 = dirY + planeY;
+        int p = y - renderHeight / 2;
+        double posZ = 0.5  * renderHeight;
+        double rowDist = posZ / p;
+        double floorStepX = rowDist * (rayDirX1 - rayDirX0) / renderWidth;
+        double floorStepY = rowDist * (rayDirY1 - rayDirY0) / renderWidth;
+        double floorX = playerPos.x + rowDist * rayDirX0;
+        double floorY = playerPos.y + rowDist * rayDirY0;
+        for (int x = 0; x < renderWidth; x++)
+        {
+            int cellX = (int)(floorX);
+            int cellY = (int)(floorY);
+            int tx = (int)(fTxWidth * (floorX-cellX)) & (fTxWidth -1);
+            int ty = (int)(fTxWidth * (floorY-cellY)) & (fTxHeight -1);
+            floorX += floorStepX;
+            floorY += floorStepY;
+            rgba textureColor;
+            textureColor = currentTextureSet->colorAt(0, tx, ty);
+            pixels[y * renderWidth + x] = (textureColor.r << rshift) |
+                                                    (textureColor.g << gshift) |
+                                                    (textureColor.b << bshift) |
+                                                    (textureColor.a << ashift);
+            pixels[(renderHeight - y) * renderWidth + x] = (textureColor.r << rshift) |
+                                                    (textureColor.g << gshift) |
+                                                    (textureColor.b << bshift) |
+                                                    (textureColor.a << ashift);
+        }
+    }
+
+    
+    //wall casting
     for (int i = 0; i < renderWidth; i++)
     {
         double scanDir = 2 * i / static_cast<double>(renderWidth) - 1; // -1 ---- 0 ---- 1 for the scan across the screen
@@ -238,11 +281,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 
         if (textureToRender)
         {
-            for (int y = 0; y < drawStart; y++)
-            {
-                pixels[y * renderWidth + i] = black;
-            }
-
             for (int y = drawStart; y < drawEnd; y++)
             {
                 int texY = (((y * 2 - renderHeight + lineHeight) * currentTextureSet->widthHeightAt(textureToRender - 1).second) / lineHeight) / 2;
@@ -258,11 +296,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                                                     ((textureColor.g / 2) << gshift) |
                                                     ((textureColor.b / 2) << bshift) |
                                                     (textureColor.a << ashift);
-            }
-
-            for (int y = drawEnd; y < renderHeight; y++)
-            {
-                pixels[y * renderWidth + i] = black;
             }
         }
         else

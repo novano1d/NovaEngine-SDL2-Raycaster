@@ -19,7 +19,7 @@ SDL_Window* window = nullptr;
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1}, 
                       {1, 0, 0, 0, 0, 1},
                       {1, 0, 0, 1, 1, 1},
-                      {1, 0, 0, 0, 0, 1},
+                      {1, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1}});
 const int FOV = 60; 
@@ -54,7 +54,7 @@ void playLoop()
 {
     handleInput();
     ticktime = game->frameTime();
-    game->pseudo3dRenderTextured(FOV, 0.8);
+    game->pseudo3dRenderTextured(FOV);
 }
 
 void eventHandler(SDL_Event event)
