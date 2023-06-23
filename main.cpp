@@ -22,7 +22,7 @@ Map* myMap = new Map({{1, 1, 1, 1, 1, 1},
                       {1, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1}});
-const int FOV = 60; 
+const int FOV = 66; 
 
 double ticktime;
 
@@ -67,7 +67,7 @@ void eventHandler(SDL_Event event)
 
 int main(int argc, char** argv)
 {
-    TextureHandler *myTexture = new TextureHandler({"saif.jpg"});
+    TextureHandler *myTexture = new TextureHandler({"wood.jpg"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("Window Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);

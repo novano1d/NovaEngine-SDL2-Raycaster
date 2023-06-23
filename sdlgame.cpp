@@ -226,14 +226,14 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     double rayDirY1 = dirY + planeY;
     double posZ = 0.5  * renderHeight;
     //floor ceiling casting
-    int fTxWidth = currentTextureSet->widthHeightAt(0).second;
-    int fTxHeight = currentTextureSet->widthHeightAt(0).first;
+    int fTxWidth = currentTextureSet->widthHeightAt(0).first;
+    int fTxHeight = currentTextureSet->widthHeightAt(0).second;
     for (int y = 0; y < renderHeight; y++)
     {
         int p = y - renderHeight / 2;
-        double rowDist = posZ / p;
-        double floorStepX = rowDist * (rayDirX1 - rayDirX0) / renderWidth;
-        double floorStepY = rowDist * (rayDirY1 - rayDirY0) / renderWidth;
+        double rowDist = posZ / (p);
+        double floorStepX = rowDist * (rayDirX1 - rayDirX0) / (renderWidth);
+        double floorStepY = rowDist * (rayDirY1 - rayDirY0) / (renderWidth);
         double floorX = playerPos.x + rowDist * rayDirX0;
         double floorY = playerPos.y + rowDist * rayDirY0;
         for (int x = 0; x < renderWidth; x++)
@@ -246,14 +246,14 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             floorY += floorStepY;
             rgba textureColor;
             textureColor = currentTextureSet->colorAt(0, tx, ty);
-            pixels[y * renderWidth + x] = (textureColor.r << rshift) |
+            pixels[y * renderWidth + x] = (textureColor.r/2 << rshift) |
+                                                    (textureColor.g/2 << gshift) |
+                                                    (textureColor.b/2 << bshift) |
+                                                    (textureColor.a << ashift);
+            pixels[(renderHeight - y) * renderWidth + x] = (textureColor.r << rshift) | //ceiling
                                                     (textureColor.g << gshift) |
                                                     (textureColor.b << bshift) |
                                                     (textureColor.a << ashift);
-            pixels[(renderHeight - y) * renderWidth + x] = (textureColor.r/2 << rshift) |
-                                                    (textureColor.g/2 << gshift) |
-                                                    (textureColor.b/2 << bshift) |
-                                                    (textureColor.a/2 << ashift);
         }
     }
 
