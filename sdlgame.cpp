@@ -151,7 +151,7 @@ inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
         {
             if (map->getTileAt(mapCheck.x, mapCheck.y))
             {
-                return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getTileAt(mapCheck.x, mapCheck.y), rayDir, distance}; //code fixes fish eye effect
+                return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getTileAt(mapCheck.x, mapCheck.y)}; //code fixes fish eye effect
             }
         }
         else return CollisionEvent(); //invalid
