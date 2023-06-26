@@ -151,7 +151,7 @@ inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
         {
             if (map->getTileAt(mapCheck.x, mapCheck.y))
             {
-                return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getTileAt(mapCheck.x, mapCheck.y)}; //code fixes fish eye effect
+                return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getTileAt(mapCheck.x, mapCheck.y), rayDir, distance}; //code fixes fish eye effect
             }
         }
         else return CollisionEvent(); //invalid
@@ -216,48 +216,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     Uint8 bshift = format->Bshift;
     Uint8 ashift = format->Ashift;
     FOV /= 2;
-    double dirX = cos(angle * (M_PI / 180.0));
-    double dirY = sin(angle * (M_PI / 180.0));
-    double planeX = dirY * -tan(FOV * (M_PI / 180.0));
-    double planeY = dirX * tan(FOV * (M_PI / 180.0));
-    double rayDirX0 = dirX - planeX;
-    double rayDirY0 = dirY - planeY;
-    double rayDirX1 = dirX + planeX;
-    double rayDirY1 = dirY + planeY;
-    double posZ = 0.5  * renderHeight;
-    //floor ceiling casting
-    int fTxWidth = currentTextureSet->widthHeightAt(0).first;
-    int fTxHeight = currentTextureSet->widthHeightAt(0).second;
-    for (int y = 0; y < renderHeight; y++)
-    {
-        int p = y - renderHeight / 2;
-        double rowDist = posZ / (p);
-        double floorStepX = rowDist * (rayDirX1 - rayDirX0) / (renderWidth);
-        double floorStepY = rowDist * (rayDirY1 - rayDirY0) / (renderWidth);
-        double floorX = playerPos.x + rowDist * rayDirX0;
-        double floorY = playerPos.y + rowDist * rayDirY0;
-        for (int x = 0; x < renderWidth; x++)
-        {
-            int cellX = (int)(floorX);
-            int cellY = (int)(floorY);
-            int tx = (int)(fTxWidth * (floorX-cellX)) & (fTxWidth - 1);
-            int ty = (int)(fTxHeight * (floorY-cellY)) & (fTxHeight - 1);
-            floorX += floorStepX;
-            floorY += floorStepY;
-            rgba textureColor;
-            textureColor = currentTextureSet->colorAt(0, tx, ty);
-            pixels[y * renderWidth + x] = (textureColor.r/2 << rshift) |
-                                                    (textureColor.g/2 << gshift) |
-                                                    (textureColor.b/2 << bshift) |
-                                                    (textureColor.a << ashift);
-            pixels[(renderHeight - y) * renderWidth + x] = (textureColor.r << rshift) | //ceiling
-                                                    (textureColor.g << gshift) |
-                                                    (textureColor.b << bshift) |
-                                                    (textureColor.a << ashift);
-        }
-    }
-
-    
     //wall casting
     for (int i = 0; i < renderWidth; i++)
     {
@@ -290,7 +248,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                     pixels[y * renderWidth + i] = (textureColor.r << rshift) |
                                                     (textureColor.g << gshift) |
                                                     (textureColor.b << bshift) |
-                                                    (textureColor.a/2 << ashift);
+                                                    (textureColor.a << ashift);
                 else
                     pixels[y * renderWidth + i] = ((textureColor.r / 2) << rshift) |
                                                     ((textureColor.g / 2) << gshift) |
@@ -304,6 +262,27 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             {
                 pixels[y * renderWidth + i] = black;
             }
+        }
+        //floor casting
+        int floorStart = drawEnd;
+        for (int y = renderHeight / 2; y < renderHeight; y++)
+        {
+            // Calculate the current distance from the player to the floor/ceiling
+            double currentDist = renderHeight / (2.0 * y - renderHeight);
+            double weight = currentDist / collision.perpWallDist;
+            double floorX = weight * collision.intersect.x + (1 - weight) * playerPos.x;
+            double floorY = weight * collision.intersect.y + (1 - weight) * playerPos.y;
+            int floorTexX = static_cast<int>(floorX * currentTextureSet->widthHeightAt(0).first) % currentTextureSet->widthHeightAt(0).first;
+            int floorTexY = static_cast<int>(floorY * currentTextureSet->widthHeightAt(0).second) % currentTextureSet->widthHeightAt(0).second;
+            rgba textureColor = currentTextureSet->colorAt(0, floorTexX, floorTexY);
+            pixels[y * renderWidth + i] = (textureColor.r << rshift) | //floor
+                                                    (textureColor.g << gshift) |
+                                                    (textureColor.b << bshift) |
+                                                    (textureColor.a << ashift);
+            pixels[(renderHeight - y) * renderWidth + i] = (textureColor.r << rshift) | //ceiling
+                                                    (textureColor.g << gshift) |
+                                                    (textureColor.b << bshift) |
+                                                    (textureColor.a << ashift);
         }
     }
 

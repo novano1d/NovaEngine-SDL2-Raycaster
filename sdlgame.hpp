@@ -103,6 +103,8 @@ struct CollisionEvent
     int sideHit = 0; //side hit
     double perpWallDist = -1; //perpendicular wall distance (from viewing plane)
     int tileData = -1; //Contains tile data for texture
+    Point rayDir = {-1, -1};
+    double dist = -1; //non corrected distance
 };
 
 //Specific type of game that contains a 2d map and various functions to build a game from such a 2d map
