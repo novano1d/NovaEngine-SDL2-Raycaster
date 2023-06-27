@@ -252,6 +252,27 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                                                     ((textureColor.b / 2) << bshift) |
                                                     (textureColor.a << ashift);
             }
+            //floor casting
+            for (int y = drawEnd + 1; y <= renderHeight; y++)
+            {
+                // Calculate the current distance from the player to the floor/ceiling
+                double currentDist = renderHeight / (2.0 * y - renderHeight);
+                double weight = currentDist / collision.perpWallDist;
+                double floorX = weight * collision.intersect.x + (1 - weight) * playerPos.x;
+                double floorY = weight * collision.intersect.y + (1 - weight) * playerPos.y;
+                int floorTexX = static_cast<int>(floorX * currentTextureSet->widthHeightAt(0).first) % currentTextureSet->widthHeightAt(0).first;
+                int floorTexY = static_cast<int>(floorY * currentTextureSet->widthHeightAt(0).second) % currentTextureSet->widthHeightAt(0).second;
+                rgba ftex = currentTextureSet->colorAt(0, floorTexX, floorTexY);
+                rgba ctex = currentTextureSet->colorAt(0, floorTexX, floorTexY);
+                pixels[(y-1) * renderWidth + i] = (ftex.r << rshift) | //floor
+                                                        (ftex.g << gshift) |
+                                                        (ftex.b << bshift) |
+                                                        (ftex.a << ashift);
+                pixels[(renderHeight - y) * renderWidth + i] = (ctex.r << rshift) | //ceiling
+                                                        (ctex.g << gshift) |
+                                                        (ctex.b << bshift) |
+                                                        (ctex.a << ashift);
+            }
         }
         else
         {
@@ -260,27 +281,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 pixels[y * renderWidth + i] = black;
             }
         }
-        //floor casting
-        for (int y = drawEnd + 1; y < renderHeight; y++)
-        {
-            // Calculate the current distance from the player to the floor/ceiling
-            double currentDist = renderHeight / (2.0 * y - renderHeight);
-            double weight = currentDist / collision.perpWallDist;
-            double floorX = weight * collision.intersect.x + (1 - weight) * playerPos.x;
-            double floorY = weight * collision.intersect.y + (1 - weight) * playerPos.y;
-            int floorTexX = static_cast<int>(floorX * currentTextureSet->widthHeightAt(0).first) % currentTextureSet->widthHeightAt(0).first;
-            int floorTexY = static_cast<int>(floorY * currentTextureSet->widthHeightAt(0).second) % currentTextureSet->widthHeightAt(0).second;
-            rgba ftex = currentTextureSet->colorAt(0, floorTexX, floorTexY);
-            rgba ctex = currentTextureSet->colorAt(0, floorTexX, floorTexY);
-            pixels[(y-1) * renderWidth + i] = (ftex.r << rshift) | //floor
-                                                    (ftex.g << gshift) |
-                                                    (ftex.b << bshift) |
-                                                    (ftex.a << ashift);
-            pixels[(renderHeight - y) * renderWidth + i] = (ctex.r << rshift) | //ceiling
-                                                    (ctex.g << gshift) |
-                                                    (ctex.b << bshift) |
-                                                    (ctex.a << ashift);
-        }
+        
     }
 
     SDL_UnlockTexture(textureBuffer);
