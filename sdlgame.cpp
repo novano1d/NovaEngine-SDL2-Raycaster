@@ -227,16 +227,13 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         int drawEnd = lineHeight / 2 + renderHeight / 2;
         if (drawEnd > renderHeight) drawEnd = renderHeight;
         double texCoord;
-        const Uint32 black = SDL_MapRGBA(format, 0, 0, 0, 255); //remove once floor texturing added
-
+        const Uint32 black = SDL_MapRGBA(format, 0, 0, 0, 255);
         if (collision.sideHit)
             texCoord = collision.intersect.x - static_cast<int>(collision.intersect.x);
         else
             texCoord = collision.intersect.y - static_cast<int>(collision.intersect.y);
-
         int textureToRender = collision.tileData;
         int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender - 1).first);
-
         if (textureToRender)
         {
             for (int y = drawStart; y < drawEnd; y++)
@@ -264,8 +261,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             }
         }
         //floor casting
-        int floorStart = drawEnd;
-        for (int y = renderHeight / 2; y < renderHeight; y++)
+        for (int y = drawEnd + 1; y < renderHeight; y++)
         {
             // Calculate the current distance from the player to the floor/ceiling
             double currentDist = renderHeight / (2.0 * y - renderHeight);
@@ -274,15 +270,16 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             double floorY = weight * collision.intersect.y + (1 - weight) * playerPos.y;
             int floorTexX = static_cast<int>(floorX * currentTextureSet->widthHeightAt(0).first) % currentTextureSet->widthHeightAt(0).first;
             int floorTexY = static_cast<int>(floorY * currentTextureSet->widthHeightAt(0).second) % currentTextureSet->widthHeightAt(0).second;
-            rgba textureColor = currentTextureSet->colorAt(0, floorTexX, floorTexY);
-            pixels[y * renderWidth + i] = (textureColor.r << rshift) | //floor
-                                                    (textureColor.g << gshift) |
-                                                    (textureColor.b << bshift) |
-                                                    (textureColor.a << ashift);
-            pixels[(renderHeight - y) * renderWidth + i] = (textureColor.r << rshift) | //ceiling
-                                                    (textureColor.g << gshift) |
-                                                    (textureColor.b << bshift) |
-                                                    (textureColor.a << ashift);
+            rgba ftex = currentTextureSet->colorAt(0, floorTexX, floorTexY);
+            rgba ctex = currentTextureSet->colorAt(0, floorTexX, floorTexY);
+            pixels[(y-1) * renderWidth + i] = (ftex.r << rshift) | //floor
+                                                    (ftex.g << gshift) |
+                                                    (ftex.b << bshift) |
+                                                    (ftex.a << ashift);
+            pixels[(renderHeight - y) * renderWidth + i] = (ctex.r << rshift) | //ceiling
+                                                    (ctex.g << gshift) |
+                                                    (ctex.b << bshift) |
+                                                    (ctex.a << ashift);
         }
     }
 
