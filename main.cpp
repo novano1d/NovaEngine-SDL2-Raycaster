@@ -2,6 +2,12 @@
 #include "sdlgame.hpp"
 #include <iostream>
 
+//TODO
+// Fix wall mirroring
+// texture floor map
+// implement sprites
+
+
 
 //This file is for testing the functionality of the library
 
@@ -16,7 +22,7 @@ KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
-Map* myMap = new Map({{1, 0, 1, 1, 1, 1}, 
+Map* myMap = new Map({{1, 1, 1, 1, 1, 1}, 
                       {1, 0, 0, 0, 0, 1},
                       {1, 0, 0, 1, 1, 1},
                       {1, 0, 1, 0, 0, 1},
