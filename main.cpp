@@ -2,16 +2,22 @@
 #include "sdlgame.hpp"
 #include <iostream>
 
+//TODO
+// Fix wall mirroring
+// texture floor map
+// implement sprites
+
+
 
 //This file is for testing the functionality of the library
 
 //Global def
 // #define SCREEN_WIDTH 640 
 // #define SCREEN_HEIGHT 480
-// #define SCREEN_WIDTH 1280 
-// #define SCREEN_HEIGHT 720
-#define SCREEN_WIDTH 1920 
-#define SCREEN_HEIGHT 1080
+#define SCREEN_WIDTH 1280 
+#define SCREEN_HEIGHT 720
+// #define SCREEN_WIDTH 1920 
+// #define SCREEN_HEIGHT 1080
 KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
@@ -19,10 +25,10 @@ SDL_Window* window = nullptr;
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1}, 
                       {1, 0, 0, 0, 0, 1},
                       {1, 0, 0, 1, 1, 1},
-                      {1, 0, 0, 0, 0, 1},
+                      {1, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1}});
-const int FOV = 60; 
+const int FOV = 66; 
 
 double ticktime;
 
@@ -54,7 +60,7 @@ void playLoop()
 {
     handleInput();
     ticktime = game->frameTime();
-    game->pseudo3dRenderTextured(FOV, 0.8);
+    game->pseudo3dRenderTextured(FOV);
 }
 
 void eventHandler(SDL_Event event)
@@ -67,10 +73,10 @@ void eventHandler(SDL_Event event)
 
 int main(int argc, char** argv)
 {
-    TextureHandler *myTexture = new TextureHandler({"wall.jpg"});
+    TextureHandler *myTexture = new TextureHandler({"wood.jpg"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
-    window = SDL_CreateWindow("Window Title", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     // Create SDL renderer with target texture flag
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); // for resolution scaling

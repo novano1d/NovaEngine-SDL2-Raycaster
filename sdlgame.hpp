@@ -134,7 +134,7 @@ public:
     //Renders false 3d untextured
     void pseudo3dRender(int FOV, double wallheight=1);
     //Renders false 3d textured
-    void pseudo3dRenderTextured(int FOV, double wallheight);
+    void pseudo3dRenderTextured(int FOV, double wallheight=1);
     void setPlayerPos(Point p);
     Point getPlayerPos() { return playerPos; };
     int getCellWidth() { return SCREEN_WIDTH / map->xSize(); };
