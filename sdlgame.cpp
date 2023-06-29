@@ -161,15 +161,19 @@ inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
 
 void GridGame::setPlayerPos(Point p)
 {
-    const float WALL_CLOSENESS = 0.1; //closeness factor prevents diag traversal and getting too close to walls
-    if(map) //so you don't crash :)
-        if (!map->getTileAt(p.x - WALL_CLOSENESS, p.y) && !map->getTileAt(p.x + WALL_CLOSENESS, p.y) && !map->getTileAt(p.x, p.y - WALL_CLOSENESS) && !map->getTileAt(p.x, p.y + WALL_CLOSENESS))
-            playerPos = p;
-        else if (!map->getTileAt(p.x + WALL_CLOSENESS, playerPos.y) && !map->getTileAt(p.x - WALL_CLOSENESS, playerPos.y)) //If the player is pushing against the wall these two lines let them slide against the wall instead of just sticking
+    const float WALL_CLOSENESS = 0.1; // how close the player can get (in game grid units) to the wall  
+    if(map)
+    {
+        bool stuckOnVerticalWall = map->getTileAt(playerPos.x - WALL_CLOSENESS, playerPos.y) || map->getTileAt(playerPos.x + WALL_CLOSENESS, playerPos.y);
+        bool stuckOnHorizontalWall = map->getTileAt(playerPos.x, playerPos.y - WALL_CLOSENESS) || map->getTileAt(playerPos.x, playerPos.y + WALL_CLOSENESS);
+
+        if (!stuckOnVerticalWall || (stuckOnVerticalWall && ((p.x < playerPos.x && !map->getTileAt(p.x - WALL_CLOSENESS, p.y)) || (p.x > playerPos.x && !map->getTileAt(p.x + WALL_CLOSENESS, p.y)))))
             playerPos.x = p.x;
-        else if (!map->getTileAt(playerPos.x, p.y + WALL_CLOSENESS) && !map->getTileAt(playerPos.x, p.y - WALL_CLOSENESS))
+        if (!stuckOnHorizontalWall || (stuckOnHorizontalWall && ((p.y < playerPos.y && !map->getTileAt(p.x, p.y - WALL_CLOSENESS)) || (p.y > playerPos.y && !map->getTileAt(p.x, p.y + WALL_CLOSENESS)))))
             playerPos.y = p.y;
+    }
 }
+
 
 // DEPRECIATED or bug testing only
 void GridGame::pseudo3dRender(int FOV, double wallheight)
