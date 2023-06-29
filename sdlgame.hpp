@@ -7,11 +7,12 @@
 #include <unordered_set>
 #include <string>
 
+//Personal best resolution bc my engine performance is BAD
 #define INTERNAL_RENDER_RES_HORIZ 512
 #define INTERNAL_RENDER_RES_VERT 288
 
-// #define INTERNAL_RENDER_RES_HORIZ 240
-// #define INTERNAL_RENDER_RES_VERT 240
+// #define INTERNAL_RENDER_RES_HORIZ 640
+// #define INTERNAL_RENDER_RES_VERT 360
 
 //Convenience
 struct rgba { int r,g,b,a; } ;

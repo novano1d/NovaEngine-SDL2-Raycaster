@@ -27,7 +27,7 @@ Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 0, 1, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
                       {1, 0, 0, 0, 0, 1, 0, 1},
-                      {1, 0, 0, 0, 0, 0, 0, 1},
+                      {1, 0, 0, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1, 1, 1}});
 const int FOV = 60; 
@@ -48,12 +48,12 @@ void handleInput()
     if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 3)
     {
         game->setMoveSpeed(3);
-        game->setRotSpeed(140);
+        game->setRotSpeed(170);
     }
     else if (game->getMoveSpeed() != 1.5)
     {
         game->setMoveSpeed(1.5);
-        game->setRotSpeed(100);
+        game->setRotSpeed(110);
     }
         
 }       
