@@ -171,7 +171,7 @@ void GridGame::setPlayerPos(Point p)
             playerPos.y = p.y;
 }
 
-//super duper simple raycasting with drawing line segments
+// DEPRECIATED or bug testing only
 void GridGame::pseudo3dRender(int FOV, double wallheight)
 {
     FOV /= 2;

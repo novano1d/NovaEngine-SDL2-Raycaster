@@ -45,14 +45,14 @@ void handleInput()
         game->setAngle(game->getAngle() + ticktime * game->getRotSpeed());
     if (keyhandler->isKeyDown(SDLK_a))
         game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
-    if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 2)
+    if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 3)
     {
         game->setMoveSpeed(3);
         game->setRotSpeed(140);
     }
-    else if (game->getMoveSpeed() != 1)
+    else if (game->getMoveSpeed() != 1.5)
     {
-        game->setMoveSpeed(1);
+        game->setMoveSpeed(1.5);
         game->setRotSpeed(100);
     }
         
