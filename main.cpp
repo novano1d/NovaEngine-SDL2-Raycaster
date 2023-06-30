@@ -6,7 +6,7 @@
 // Fix wall mirroring
 // texture floor map
 // implement sprites
-
+// lighting
 
 
 //Global def
@@ -46,7 +46,7 @@ void handleInput()
     if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 3)
     {
         game->setMoveSpeed(3);
-        game->setRotSpeed(200);
+        game->setRotSpeed(180);
     }
     else if (game->getMoveSpeed() != 1.5)
     {
@@ -68,8 +68,6 @@ void eventHandler(SDL_Event event)
     if (event.type == SDL_KEYDOWN) keyhandler->keyDown(event.key.keysym.sym);
     else if (event.type == SDL_KEYUP) keyhandler->keyUp(event.key.keysym.sym);
 }
-
-
 
 int main(int argc, char** argv)
 {

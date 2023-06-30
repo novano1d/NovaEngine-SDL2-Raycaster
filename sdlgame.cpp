@@ -203,7 +203,7 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
     SDL_RenderPresent(renderer); // fast enough we don't need a buffer
 }
 
-//so many frames
+//speed could almost certainly be improved with multithreading
 void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 {
     // Calculate the render dimensions
