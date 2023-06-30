@@ -265,10 +265,10 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 double weight = currentDist / collision.perpWallDist;
                 double floorX = weight * collision.intersect.x + (1 - weight) * playerPos.x;
                 double floorY = weight * collision.intersect.y + (1 - weight) * playerPos.y;
-                int floorTexX = static_cast<int>(floorX * currentTextureSet->widthHeightAt(0).first) % currentTextureSet->widthHeightAt(0).first;
-                int floorTexY = static_cast<int>(floorY * currentTextureSet->widthHeightAt(0).second) % currentTextureSet->widthHeightAt(0).second;
-                rgba ftex = currentTextureSet->colorAt(0, floorTexX, floorTexY);
-                rgba ctex = currentTextureSet->colorAt(0, floorTexX, floorTexY);
+                int floorTexX = static_cast<int>(floorX * currentTextureSet->widthHeightAt(1).first) % currentTextureSet->widthHeightAt(1).first;
+                int floorTexY = static_cast<int>(floorY * currentTextureSet->widthHeightAt(1).second) % currentTextureSet->widthHeightAt(1).second;
+                rgba ftex = currentTextureSet->colorAt(1, floorTexX, floorTexY);
+                rgba ctex = currentTextureSet->colorAt(1, floorTexX, floorTexY);
                 pixels[(y-1) * renderWidth + i] = (ftex.r << rshift) | //floor
                                                         (ftex.g << gshift) |
                                                         (ftex.b << bshift) |

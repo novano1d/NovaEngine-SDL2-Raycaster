@@ -48,7 +48,7 @@ void handleInput()
     if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 3)
     {
         game->setMoveSpeed(3);
-        game->setRotSpeed(170);
+        game->setRotSpeed(200);
     }
     else if (game->getMoveSpeed() != 1.5)
     {
@@ -75,7 +75,7 @@ void eventHandler(SDL_Event event)
 
 int main(int argc, char** argv)
 {
-    TextureHandler *myTexture = new TextureHandler({"wood.jpg"});
+    TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
