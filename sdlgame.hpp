@@ -31,6 +31,12 @@ struct Point
     }
 };
 
+struct Sprite
+{
+    double x, y;
+    int texIndex;
+};
+
 //This class will handle loading all necessary texture images
 class TextureHandler
 {
@@ -87,13 +93,15 @@ y+
 class Map
 {
 public:
-    Map(std::vector<std::vector<int>> m) : map(m) {}
+    Map(std::vector<std::vector<int>> m, std::vector<Sprite> s = {}) : map(m) {}
+    void addSprite(Sprite s) { sprites.emplace_back(s); };
     int getTileAt(int x, int y) { return map[y][x]; };
     int ySize() { return map[0].size(); };
     int xSize() { return map.size(); };
 private:
     //Could eventually swap int for a Tile class
     std::vector<std::vector<int>> map;
+    std::vector<Sprite> sprites;
 };
 
 //Little object to tidy up raycast return

@@ -203,7 +203,7 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
     SDL_RenderPresent(renderer); // fast enough we don't need a buffer
 }
 
-//speed could almost certainly be improved with multithreading
+//speed could almost certainly be improved with multithreading or decreasing # of raycasts
 void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 {
     // Calculate the render dimensions
@@ -346,8 +346,8 @@ TextureHandler::TextureHandler(std::vector<std::string> in)
         {
             std::cout << "Error loading image " + filename + "\n";
         }
-        loadedTextures.push_back(image);
-        loadedTextureSizes.push_back(std::make_pair(width, height));
+        loadedTextures.emplace_back(image);
+        loadedTextureSizes.emplace_back(std::make_pair(width, height));
     }
 }
 
