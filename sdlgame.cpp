@@ -209,7 +209,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     // Calculate the render dimensions
     const int renderWidth = INTERNAL_RENDER_RES_HORIZ;
     const int renderHeight = INTERNAL_RENDER_RES_VERT;
-
+    double ZBuffer[renderWidth]; // store Z distances for sprite rendering (necessary for occlusion)
     if (!textureBuffer)
         textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, renderWidth, renderHeight);
 
@@ -226,6 +226,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     {
         double scanDir = 2 * i / static_cast<double>(renderWidth) - 1; // -1 ---- 0 ---- 1 for the scan across the screen
         CollisionEvent collision = ddaRaycast(getPlayerPos(), angle + FOV * scanDir);
+        ZBuffer[i] = collision.perpWallDist; //set zbuffer value
         int lineHeight = static_cast<int>(wallheight * (renderHeight / collision.perpWallDist));
         int drawStart = -lineHeight / 2 + renderHeight / 2;
         if (drawStart < 0) drawStart = 0;
@@ -278,6 +279,11 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                                                         (ctex.b << bshift) |
                                                         (ctex.a << ashift);
             }
+            //Sprite drawing
+            std::vector<Sprite> temp = map->getSprites();
+            std::vector<double> distance; //parallel distance vector
+            std::transform(temp.begin(), temp.end(), distance.begin(), [this](Sprite s){ return hypot(s.x - getPlayerPos().x, s.y - getPlayerPos().y); });
+            std::sort(distance.begin(), distance.end(), [](double &a, double &b){ return a > b; }); //sort distances to sprites in descending order
         }
         else
         {
