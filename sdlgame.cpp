@@ -280,55 +280,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                                                         (ctex.a << ashift);
             }
             //Sprite drawing
-            std::vector<Sprite> *temp = &(map->getSprites());
-            //sort sprites by distance from player
-            //std::vector<double> distance; //parallel distance vector
-            // std::transform(temp.begin(), temp.end(), distance.begin(), [this](Sprite s){ return hypot(s.x - getPlayerPos().x, s.y - getPlayerPos().y); });
-            // std::sort(distance.begin(), distance.end(), [](double &a, double &b){ return a > b; }); //sort distances to sprites in descending order
-            std::sort(temp->begin(), temp->end(), [this](Sprite &a, Sprite &b){ 
-                return hypot(a.x - getPlayerPos().x, a.y - getPlayerPos().y) > hypot(b.x - getPlayerPos().x, b.y - getPlayerPos().y); }); //could eliminate hypot and just use pow
-            //rendering
-            double planeLength = tan(FOV * M_PI / 180); 
-            double planeX = -sin(angle * M_PI / 180) * planeLength; 
-            double planeY = cos(angle * M_PI / 180) * planeLength;
-            for (auto it = temp->begin(); it != temp->end(); it++)
-            {
-                double spriteX = it->x - getPlayerPos().x;
-                double spriteY = it->y - getPlayerPos().y;
-                double invDet = 1.0 / (planeX * sin(angle * M_PI / 180) - cos(angle * M_PI / 180) * planeY);
-                double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
-                double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-                int spriteScreenX = int((renderWidth / 2) * (1 + transformX / transformY));
-                int spriteHeight = abs(int(renderHeight / transformY));
-                int drawStartY = -spriteHeight / 2 + renderHeight / 2;
-                if(drawStartY < 0) drawStartY = 0;
-                int drawEndY = spriteHeight / 2 + renderHeight / 2;
-                if(drawEndY >= renderHeight) drawEndY = renderHeight - 1;
-                int spriteWidth = abs(int(renderHeight / transformY));
-                int drawStartX = -spriteWidth / 2 + spriteScreenX;
-                if(drawStartX < 0) drawStartX = 0;
-                int drawEndX = spriteWidth / 2 + spriteScreenX;
-                if(drawEndX >= renderWidth) drawEndX = renderWidth - 1;
-                for(int stripe = drawStartX; stripe < drawEndX; stripe++)
-                {
-                    int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * currentTextureSet->widthHeightAt(it->texIndex).first / spriteWidth) / 256;
-                    if(transformY > 0 && stripe > 0 && stripe < renderWidth && transformY < ZBuffer[stripe])
-                    {
-                        for(int y = drawStartY; y < drawEndY; y++)
-                        {
-                            int d = (y - renderHeight / 2) * 256 + spriteHeight * 128;
-                            int texY = ((d * currentTextureSet->widthHeightAt(it->texIndex).second) / spriteHeight) / 256;
-                            rgba textureColor;
-                            textureColor = currentTextureSet->colorAt(it->texIndex, texX, texY);
-                            if(!(textureColor.r == 0 && textureColor.g == 0 && textureColor.b == 0)) // If the pixel is not black
-                                pixels[y * renderWidth + stripe] = (textureColor.r << rshift) |
-                                                                    (textureColor.g << gshift) |
-                                                                    (textureColor.b << bshift) |
-                                                                    (textureColor.a << ashift);
-                        }
-                    }
-                }
-            }
 
         }
         else
@@ -338,7 +289,55 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 pixels[y * renderWidth + i] = black;
             }
         }
-        
+    }
+    std::vector<Sprite> *temp = &(map->getSprites());
+    //sort sprites by distance from player
+    //std::vector<double> distance; //parallel distance vector
+    // std::transform(temp.begin(), temp.end(), distance.begin(), [this](Sprite s){ return hypot(s.x - getPlayerPos().x, s.y - getPlayerPos().y); });
+    // std::sort(distance.begin(), distance.end(), [](double &a, double &b){ return a > b; }); //sort distances to sprites in descending order
+    std::sort(temp->begin(), temp->end(), [this](Sprite &a, Sprite &b){ 
+        return hypot(a.x - getPlayerPos().x, a.y - getPlayerPos().y) > hypot(b.x - getPlayerPos().x, b.y - getPlayerPos().y); }); //could eliminate hypot and just use pow
+    //rendering
+    double planeLength = tan(FOV * M_PI / 180); 
+    double planeX = -sin(angle * M_PI / 180) * planeLength; 
+    double planeY = cos(angle * M_PI / 180) * planeLength;
+    for (auto it = temp->begin(); it != temp->end(); it++)
+    {
+        double spriteX = it->x - getPlayerPos().x;
+        double spriteY = it->y - getPlayerPos().y;
+        double invDet = 1.0 / (planeX * sin(angle * M_PI / 180) - cos(angle * M_PI / 180) * planeY);
+        double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
+        double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
+        int spriteScreenX = int((renderWidth / 2) * (1 + transformX / transformY));
+        int spriteHeight = abs(int(renderHeight / transformY));
+        int drawStartY = -spriteHeight / 2 + renderHeight / 2;
+        if(drawStartY < 0) drawStartY = 0;
+        int drawEndY = spriteHeight / 2 + renderHeight / 2;
+        if(drawEndY >= renderHeight) drawEndY = renderHeight - 1;
+        int spriteWidth = abs(int(renderHeight / transformY));
+        int drawStartX = -spriteWidth / 2 + spriteScreenX;
+        if(drawStartX < 0) drawStartX = 0;
+        int drawEndX = spriteWidth / 2 + spriteScreenX;
+        if(drawEndX >= renderWidth) drawEndX = renderWidth - 1;
+        for(int stripe = drawStartX; stripe < drawEndX; stripe++)
+        {
+            int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * currentTextureSet->widthHeightAt(it->texIndex).first / spriteWidth) / 256;
+            if(transformY > 0 && stripe > 0 && stripe < renderWidth && transformY < ZBuffer[stripe])
+            {
+                for(int y = drawStartY; y < drawEndY; y++)
+                {
+                    int d = (y - renderHeight / 2) * 256 + spriteHeight * 128;
+                    int texY = ((d * currentTextureSet->widthHeightAt(it->texIndex).second) / spriteHeight) / 256;
+                    rgba textureColor;
+                    textureColor = currentTextureSet->colorAt(it->texIndex, texX, texY);
+                    if(!(textureColor.r == 0 && textureColor.g == 0 && textureColor.b == 0)) // If the pixel is not black
+                        pixels[y * renderWidth + stripe] = (textureColor.r << rshift) |
+                                                            (textureColor.g << gshift) |
+                                                            (textureColor.b << bshift) |
+                                                            (textureColor.a << ashift);
+                }
+            }
+        }
     }
 
     SDL_UnlockTexture(textureBuffer);
