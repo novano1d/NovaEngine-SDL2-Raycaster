@@ -99,7 +99,7 @@ public:
     int getTileAt(int x, int y) { return map[y][x]; };
     int ySize() { return map[0].size(); };
     int xSize() { return map.size(); };
-    std::vector<Sprite> getSprites() { return sprites; };
+    std::vector<Sprite>& getSprites() { return sprites; };
 private:
     //Could eventually swap int for a Tile class
     std::vector<std::vector<int>> map;

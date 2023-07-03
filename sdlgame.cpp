@@ -280,18 +280,18 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                                                         (ctex.a << ashift);
             }
             //Sprite drawing
-            std::vector<Sprite> temp = map->getSprites();
+            std::vector<Sprite> *temp = &(map->getSprites());
             //sort sprites by distance from player
             //std::vector<double> distance; //parallel distance vector
             // std::transform(temp.begin(), temp.end(), distance.begin(), [this](Sprite s){ return hypot(s.x - getPlayerPos().x, s.y - getPlayerPos().y); });
             // std::sort(distance.begin(), distance.end(), [](double &a, double &b){ return a > b; }); //sort distances to sprites in descending order
-            std::sort(temp.begin(), temp.end(), [this](Sprite &a, Sprite &b){ 
-                return hypot(a.x - getPlayerPos().x, a.y - getPlayerPos().y) < hypot(b.x - getPlayerPos().x, b.y - getPlayerPos().y); }); //could eliminate hypot and just use pow
+            std::sort(temp->begin(), temp->end(), [this](Sprite &a, Sprite &b){ 
+                return hypot(a.x - getPlayerPos().x, a.y - getPlayerPos().y) > hypot(b.x - getPlayerPos().x, b.y - getPlayerPos().y); }); //could eliminate hypot and just use pow
             //rendering
             double planeLength = tan(FOV / 2 * M_PI / 180); 
             double planeX = -sin(angle * M_PI / 180) * planeLength; 
             double planeY = cos(angle * M_PI / 180) * planeLength;
-            for (auto it = temp.begin(); it != temp.end(); it++)
+            for (auto it = temp->begin(); it != temp->end(); it++)
             {
                 double invDet = 1.0 / (planeX * sin(angle * M_PI / 180) - cos(angle * M_PI / 180) * planeY);
                 double transformX = invDet * (sin(angle * M_PI / 180) * it->x - cos(angle * M_PI / 180) * it->y);
