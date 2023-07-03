@@ -15,6 +15,14 @@
 // #define INTERNAL_RENDER_RES_HORIZ 360
 // #define INTERNAL_RENDER_RES_VERT 360
 
+namespace nva
+{
+    template <typename T>
+    T clamp(const T& n, const T& lower, const T& upper) {
+        return std::max(lower, std::min(n, upper));
+    }
+}
+
 //Convenience
 struct rgba { int r,g,b,a; } ;
 

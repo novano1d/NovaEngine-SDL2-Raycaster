@@ -320,12 +320,14 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         for(int stripe = drawStartX; stripe < drawEndX; stripe++)
         {
             int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * currentTextureSet->widthHeightAt(it->texIndex).first / spriteWidth) / 256;
+            texX = nva::clamp<int>(texX, 0, currentTextureSet->widthHeightAt(it->texIndex).first);
             if(transformY > 0 && stripe > 0 && stripe < renderWidth && transformY < ZBuffer[stripe])
             {
                 for(int y = drawStartY; y < drawEndY; y++)
                 {
                     int d = (y - renderHeight / 2) * 256 + spriteHeight * 128;
                     int texY = ((d * currentTextureSet->widthHeightAt(it->texIndex).second) / spriteHeight) / 256;
+                    texY = nva::clamp<int>(texY, 0, currentTextureSet->widthHeightAt(it->texIndex).second);
                     rgba textureColor;
                     textureColor = currentTextureSet->colorAt(it->texIndex, texX, texY);
                     if(textureColor.a != 0) // If the pixel is not transparent
