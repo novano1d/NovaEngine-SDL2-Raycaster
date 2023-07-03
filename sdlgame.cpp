@@ -279,8 +279,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                                                         (ctex.b << bshift) |
                                                         (ctex.a << ashift);
             }
-            //Sprite drawing
-
         }
         else
         {
@@ -290,7 +288,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             }
         }
     }
-    std::vector<Sprite> *temp = &(map->getSprites());
+    std::vector<Sprite> *temp = &(map->getSprites()); //pointer so we don't sort each time :)
     //sort sprites by distance from player
     //std::vector<double> distance; //parallel distance vector
     // std::transform(temp.begin(), temp.end(), distance.begin(), [this](Sprite s){ return hypot(s.x - getPlayerPos().x, s.y - getPlayerPos().y); });
@@ -330,7 +328,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                     int texY = ((d * currentTextureSet->widthHeightAt(it->texIndex).second) / spriteHeight) / 256;
                     rgba textureColor;
                     textureColor = currentTextureSet->colorAt(it->texIndex, texX, texY);
-                    if(!(textureColor.r == 0 && textureColor.g == 0 && textureColor.b == 0)) // If the pixel is not black
+                    if(textureColor.a != 0) // If the pixel is not transparent
                         pixels[y * renderWidth + stripe] = (textureColor.r << rshift) |
                                                             (textureColor.g << gshift) |
                                                             (textureColor.b << bshift) |
