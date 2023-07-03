@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <math.h>
 #include <vector>
+#include <algorithm>
 #include <iostream>
 #include <unordered_set>
 #include <string>
@@ -11,7 +12,7 @@
 #define INTERNAL_RENDER_RES_HORIZ 512
 #define INTERNAL_RENDER_RES_VERT 288
 
-// #define INTERNAL_RENDER_RES_HORIZ 640
+// #define INTERNAL_RENDER_RES_HORIZ 360
 // #define INTERNAL_RENDER_RES_VERT 360
 
 //Convenience
@@ -29,6 +30,12 @@ struct Point
     {
         return {a.x+x, a.y+y};
     }
+};
+
+struct Sprite
+{
+    double x, y;
+    int texIndex;
 };
 
 //This class will handle loading all necessary texture images
@@ -87,13 +94,16 @@ y+
 class Map
 {
 public:
-    Map(std::vector<std::vector<int>> m) : map(m) {}
+    Map(std::vector<std::vector<int>> m, std::vector<Sprite> s = {}) : map(m) {}
+    void addSprite(Sprite s) { sprites.emplace_back(s); };
     int getTileAt(int x, int y) { return map[y][x]; };
     int ySize() { return map[0].size(); };
     int xSize() { return map.size(); };
+    std::vector<Sprite>& getSprites() { return sprites; };
 private:
     //Could eventually swap int for a Tile class
     std::vector<std::vector<int>> map;
+    std::vector<Sprite> sprites;
 };
 
 //Little object to tidy up raycast return
