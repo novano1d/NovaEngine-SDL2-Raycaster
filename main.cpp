@@ -71,7 +71,7 @@ void eventHandler(SDL_Event event)
 
 int main(int argc, char** argv)
 {
-    myMap->addSprite({2, 2, 3});
+    myMap->addSprite({2, 2, 2});
     TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
