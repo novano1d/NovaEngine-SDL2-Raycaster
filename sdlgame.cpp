@@ -293,9 +293,12 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             double planeY = cos(angle * M_PI / 180) * planeLength;
             for (auto it = temp->begin(); it != temp->end(); it++)
             {
+                double spriteX = it->x - getPlayerPos().x;
+                double spriteY = it->y - getPlayerPos().y;
+                
                 double invDet = 1.0 / (planeX * sin(angle * M_PI / 180) - cos(angle * M_PI / 180) * planeY);
-                double transformX = invDet * (sin(angle * M_PI / 180) * it->x - cos(angle * M_PI / 180) * it->y);
-                double transformY = invDet * (-planeY * it->x + planeX * it->y);
+                double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
+                double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
                 int spriteScreenX = int((renderWidth / 2) * (1 + transformX / transformY));
                 int spriteHeight = abs(int(renderHeight / transformY));
                 int drawStartY = -spriteHeight / 2 + renderHeight / 2;
@@ -318,7 +321,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                             int texY = ((d * currentTextureSet->widthHeightAt(it->texIndex).second) / spriteHeight) / 256;
                             rgba textureColor;
                             textureColor = currentTextureSet->colorAt(it->texIndex, texX, texY);
-                            if(textureColor.a > 0) // If the pixel is not transparent
+                            if(!(textureColor.r == 0 && textureColor.g == 0 && textureColor.b == 0)) // If the pixel is not black
                                 pixels[y * renderWidth + stripe] = (textureColor.r << rshift) |
                                                                     (textureColor.g << gshift) |
                                                                     (textureColor.b << bshift) |
