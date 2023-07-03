@@ -288,14 +288,13 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             std::sort(temp->begin(), temp->end(), [this](Sprite &a, Sprite &b){ 
                 return hypot(a.x - getPlayerPos().x, a.y - getPlayerPos().y) > hypot(b.x - getPlayerPos().x, b.y - getPlayerPos().y); }); //could eliminate hypot and just use pow
             //rendering
-            double planeLength = tan(FOV / 2 * M_PI / 180); 
+            double planeLength = tan(FOV * M_PI / 180); 
             double planeX = -sin(angle * M_PI / 180) * planeLength; 
             double planeY = cos(angle * M_PI / 180) * planeLength;
             for (auto it = temp->begin(); it != temp->end(); it++)
             {
                 double spriteX = it->x - getPlayerPos().x;
                 double spriteY = it->y - getPlayerPos().y;
-                
                 double invDet = 1.0 / (planeX * sin(angle * M_PI / 180) - cos(angle * M_PI / 180) * planeY);
                 double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
                 double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
