@@ -240,11 +240,13 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             texCoord = collision.intersect.y - static_cast<int>(collision.intersect.y);
         int textureToRender = collision.tileData;
         int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender - 1).first);
+        texX = nva::clamp<int>(texX, 0, currentTextureSet->widthHeightAt(textureToRender - 1).first);
         if (textureToRender)
         {
             for (int y = drawStart; y < drawEnd; y++)
             {
                 int texY = (((y * 2 - renderHeight + lineHeight) * currentTextureSet->widthHeightAt(textureToRender - 1).second) / lineHeight) / 2;
+                texY = nva::clamp<int>(texY, 0, currentTextureSet->widthHeightAt(textureToRender - 1).second);
                 rgba textureColor;
                 textureColor = currentTextureSet->colorAt(textureToRender - 1, texX, texY);
                 if (collision.sideHit)
@@ -268,6 +270,8 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 double floorY = weight * collision.intersect.y + (1 - weight) * playerPos.y;
                 int floorTexX = static_cast<int>(floorX * currentTextureSet->widthHeightAt(1).first) % currentTextureSet->widthHeightAt(1).first;
                 int floorTexY = static_cast<int>(floorY * currentTextureSet->widthHeightAt(1).second) % currentTextureSet->widthHeightAt(1).second;
+                floorTexX = nva::clamp<int>(floorTexX, 0, currentTextureSet->widthHeightAt(1).first);
+                floorTexY = nva::clamp<int>(floorTexY, 0, currentTextureSet->widthHeightAt(1).second);
                 rgba ftex = currentTextureSet->colorAt(1, floorTexX, floorTexY);
                 rgba ctex = currentTextureSet->colorAt(1, floorTexX, floorTexY);
                 pixels[(y-1) * renderWidth + i] = (ftex.r << rshift) | //floor
@@ -369,7 +373,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     }
 
     // Clear the window with black color
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
     // Render the back buffer texture in the window

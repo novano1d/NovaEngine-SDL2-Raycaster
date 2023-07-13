@@ -7,7 +7,7 @@
 // texture floor map
 // implement sprites
 // lighting
-
+// add clamping to textures
 
 //Global def
 // #define SCREEN_WIDTH 640 

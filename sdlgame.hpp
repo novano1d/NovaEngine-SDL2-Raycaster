@@ -15,6 +15,7 @@
 // #define INTERNAL_RENDER_RES_HORIZ 360
 // #define INTERNAL_RENDER_RES_VERT 360
 
+//probably should move load image into here
 namespace nva
 {
     template <typename T>
