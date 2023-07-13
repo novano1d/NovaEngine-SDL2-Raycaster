@@ -22,6 +22,7 @@ namespace nva
     T clamp(const T& n, const T& lower, const T& upper) {
         return std::max(lower, std::min(n, upper));
     }
+    bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
 }
 
 //Convenience
@@ -87,7 +88,6 @@ public:
     //returns frameTime
     double frameTime();
     //loads image from file bc we need to load textures and stuff
-    static bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
 };
 
 /*

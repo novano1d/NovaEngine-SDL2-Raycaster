@@ -18,7 +18,7 @@ void Game::clrScreen(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
     SDL_RenderClear(renderer);
 }
 
-bool Game::loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y)
+bool nva::loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y)
 {
     int n;
     unsigned char* data = stbi_load(filename.c_str(), &x, &y, &n, 4);
@@ -396,7 +396,7 @@ TextureHandler::TextureHandler(std::vector<std::string> in)
     for (std::string filename : in)
     {
         std::vector<unsigned char> image;
-        bool success = Game::loadImage(image, filename, width, height);
+        bool success = nva::loadImage(image, filename, width, height);
         if (!success)
         {
             std::cout << "Error loading image " + filename + "\n";
