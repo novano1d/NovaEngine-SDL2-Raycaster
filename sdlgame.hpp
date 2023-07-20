@@ -7,6 +7,8 @@
 #include <iostream>
 #include <unordered_set>
 #include <string>
+#include <functional>
+#include <windows.h>
 
 //Personal best resolution bc my engine performance is BAD
 #define INTERNAL_RENDER_RES_HORIZ 512
@@ -23,6 +25,11 @@ namespace nva
         return std::max(lower, std::min(n, upper));
     }
     bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
+    auto execute_lambda = [](void* dataPtr) -> int {
+        // Cast pointer to std::function and execute it
+        auto& func = *static_cast<std::function<int()>*>(dataPtr);
+        return func();
+    };
 }
 
 //Convenience
