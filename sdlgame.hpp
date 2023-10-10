@@ -23,7 +23,7 @@ namespace nva
         return std::max(lower, std::min(n, upper));
     }
     bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
-    const int MAX_THREADS = SDL_GetCPUCount();
+    const int MAX_THREADS = 1;
 }
 
 //Convenience

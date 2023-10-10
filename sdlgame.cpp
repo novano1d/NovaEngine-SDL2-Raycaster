@@ -229,8 +229,8 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     {
         int endX = (i == nva::MAX_THREADS - 1) ? renderWidth : startX + sectionWidth;
         threads.push_back(std::thread([&]{
-            std::mutex mtx;
-            mtx.lock();
+            //std::mutex mtx;
+            //mtx.lock();
             for (int i = startX; i < endX; i++)
     {
         double scanDir = 2 * i / static_cast<double>(renderWidth) - 1; // -1 ---- 0 ---- 1 for the scan across the screen
@@ -302,7 +302,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         }
         
     }
-        mtx.unlock();
+        //mtx.unlock();
         startX += sectionWidth;
         }));
     }
