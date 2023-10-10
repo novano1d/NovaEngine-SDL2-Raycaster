@@ -1,7 +1,8 @@
 #include "sdlgame.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
+#include <thread>
+#include <mutex>
 // Game class implementation
 
 double Game::frameTime()
@@ -212,7 +213,9 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     double ZBuffer[renderWidth]; // store Z distances for sprite rendering (necessary for occlusion)
     if (!textureBuffer)
         textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, renderWidth, renderHeight);
-
+    std::vector<std::thread> threads;
+    const int sectionWidth = renderWidth / MAX_THREADS;
+    int startX = 0;
     Uint32* pixels;
     int pitch;
     SDL_LockTexture(textureBuffer, nullptr, reinterpret_cast<void**>(&pixels), &pitch);
@@ -222,7 +225,13 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     Uint8 ashift = format->Ashift;
     FOV /= 2;
     //wall casting
-    for (int i = 0; i < renderWidth; i++)
+    for (int i = 0; i < MAX_THREADS; i++)
+    {
+        int endX = (i == MAX_THREADS - 1) ? renderWidth : startX + sectionWidth;
+        threads.push_back(std::thread([&]{
+            std::mutex mtx;
+            mtx.lock();
+            for (int i = startX; i < endX; i++)
     {
         double scanDir = 2 * i / static_cast<double>(renderWidth) - 1; // -1 ---- 0 ---- 1 for the scan across the screen
         CollisionEvent collision = ddaRaycast(getPlayerPos(), angle + FOV * scanDir);
@@ -291,6 +300,16 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 pixels[y * renderWidth + i] = black;
             }
         }
+        
+    }
+        mtx.unlock();
+        startX += sectionWidth;
+        }));
+    }
+    
+    for (auto& thread : threads)
+    {
+        thread.join();
     }
     std::vector<Sprite> *temp = &(map->getSprites()); //pointer so we don't sort each time :)
     //sort sprites by distance from player
