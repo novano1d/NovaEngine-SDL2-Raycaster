@@ -11,7 +11,6 @@
 //Personal best resolution bc my engine performance is BAD
 #define INTERNAL_RENDER_RES_HORIZ 512
 #define INTERNAL_RENDER_RES_VERT 288
-#define MAX_THREADS 3
 
 // #define INTERNAL_RENDER_RES_HORIZ 360
 // #define INTERNAL_RENDER_RES_VERT 360
@@ -24,6 +23,7 @@ namespace nva
         return std::max(lower, std::min(n, upper));
     }
     bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
+    const int MAX_THREADS = SDL_GetCPUCount();
 }
 
 //Convenience

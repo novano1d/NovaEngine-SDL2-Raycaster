@@ -214,7 +214,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     if (!textureBuffer)
         textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, renderWidth, renderHeight);
     std::vector<std::thread> threads;
-    const int sectionWidth = renderWidth / MAX_THREADS;
+    const int sectionWidth = renderWidth / nva::MAX_THREADS;
     int startX = 0;
     Uint32* pixels;
     int pitch;
@@ -225,9 +225,9 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     Uint8 ashift = format->Ashift;
     FOV /= 2;
     //wall casting
-    for (int i = 0; i < MAX_THREADS; i++)
+    for (int i = 0; i < nva::MAX_THREADS; i++)
     {
-        int endX = (i == MAX_THREADS - 1) ? renderWidth : startX + sectionWidth;
+        int endX = (i == nva::MAX_THREADS - 1) ? renderWidth : startX + sectionWidth;
         threads.push_back(std::thread([&]{
             std::mutex mtx;
             mtx.lock();
