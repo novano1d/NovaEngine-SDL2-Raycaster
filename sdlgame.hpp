@@ -9,8 +9,12 @@
 #include <string>
 
 //Personal best resolution bc my engine performance is BAD
-#define INTERNAL_RENDER_RES_HORIZ 512
-#define INTERNAL_RENDER_RES_VERT 288
+// #define INTERNAL_RENDER_RES_HORIZ 512
+// #define INTERNAL_RENDER_RES_VERT 288
+
+//360p
+#define INTERNAL_RENDER_RES_HORIZ 640
+#define INTERNAL_RENDER_RES_VERT 360
 
 // #define INTERNAL_RENDER_RES_HORIZ 360
 // #define INTERNAL_RENDER_RES_VERT 360
@@ -23,7 +27,7 @@ namespace nva
     return (n < lower) ? lower : (n > upper) ? upper : n;
     }
     bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
-    const int MAX_THREADS = 2;
+    const int MAX_THREADS = 1; //Attempt at multithreading not working lol
 }
 
 //Convenience
