@@ -19,7 +19,7 @@ KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
-Map* myMap = new Map({{1, 1, 3, 1, 1, 1, 1, 1},
+Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 0, 1, 0, 1},
                       {1, 0, 0, 0, 0, 1, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
@@ -30,7 +30,7 @@ Map* myMap = new Map({{1, 1, 3, 1, 1, 1, 1, 1},
 
 
 std::vector<std::vector<int>> floormap = {{1, 1, 1, 1, 1, 1, 1, 1},
-                                          {1, 2, 1, 1, 1, 1, 1, 1},
+                                          {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
@@ -39,7 +39,7 @@ std::vector<std::vector<int>> floormap = {{1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1}};
 std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
-                                          {1, 3, 1, 1, 1, 1, 1, 1},
+                                          {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},

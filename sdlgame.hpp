@@ -20,10 +20,10 @@ namespace nva
 {
     template <typename T>
     T clamp(const T& n, const T& lower, const T& upper) {
-        return std::max(lower, std::min(n, upper));
+    return (n < lower) ? lower : (n > upper) ? upper : n;
     }
     bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
-    const int MAX_THREADS = 1;
+    const int MAX_THREADS = 2;
 }
 
 //Convenience
