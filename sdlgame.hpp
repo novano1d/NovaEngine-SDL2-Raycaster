@@ -110,9 +110,15 @@ public:
     int ySize() { return map[0].size(); };
     int xSize() { return map.size(); };
     std::vector<Sprite>& getSprites() { return sprites; };
+    void setFloorMap(std::vector<std::vector<int>> m) { floorMap = m; };
+    int getFloorTileAt(int x, int y) { return floorMap[y][x]; };
+    void setCeilingMap(std::vector<std::vector<int>> m) { ceilingMap = m; };
+    int getCeilingTileAt(int x, int y) { return ceilingMap[y][x]; };
 private:
     //Could eventually swap int for a Tile class
     std::vector<std::vector<int>> map;
+    std::vector<std::vector<int>> floorMap;
+    std::vector<std::vector<int>> ceilingMap;
     std::vector<Sprite> sprites;
 };
 

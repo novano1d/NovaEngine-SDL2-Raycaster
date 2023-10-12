@@ -277,12 +277,18 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 double weight = currentDist / collision.perpWallDist;
                 double floorX = weight * collision.intersect.x + (1 - weight) * playerPos.x;
                 double floorY = weight * collision.intersect.y + (1 - weight) * playerPos.y;
-                int floorTexX = static_cast<int>(floorX * currentTextureSet->widthHeightAt(1).first) % currentTextureSet->widthHeightAt(1).first;
-                int floorTexY = static_cast<int>(floorY * currentTextureSet->widthHeightAt(1).second) % currentTextureSet->widthHeightAt(1).second;
-                floorTexX = nva::clamp<int>(floorTexX, 0, currentTextureSet->widthHeightAt(1).first);
-                floorTexY = nva::clamp<int>(floorTexY, 0, currentTextureSet->widthHeightAt(1).second);
-                rgba ftex = currentTextureSet->colorAt(1, floorTexX, floorTexY);
-                rgba ctex = currentTextureSet->colorAt(1, floorTexX, floorTexY);
+                int ceilTex = map->getCeilingTileAt((int)floorX, (int)floorY);
+                int floorTex = map->getFloorTileAt((int)floorX, (int)floorY);
+                int floorTexX = static_cast<int>(floorX * currentTextureSet->widthHeightAt(floorTex).first) % currentTextureSet->widthHeightAt(floorTex).first;
+                int floorTexY = static_cast<int>(floorY * currentTextureSet->widthHeightAt(floorTex).second) % currentTextureSet->widthHeightAt(floorTex).second;
+                floorTexX = nva::clamp<int>(floorTexX, 0, currentTextureSet->widthHeightAt(floorTex).first);
+                floorTexY = nva::clamp<int>(floorTexY, 0, currentTextureSet->widthHeightAt(floorTex).second);
+                int ceilTexX = static_cast<int>(floorX * currentTextureSet->widthHeightAt(ceilTex).first) % currentTextureSet->widthHeightAt(ceilTex).first;
+                int ceilTexY = static_cast<int>(floorY * currentTextureSet->widthHeightAt(ceilTex).second) % currentTextureSet->widthHeightAt(ceilTex).second;
+                ceilTexX = nva::clamp<int>(ceilTexX, 0, currentTextureSet->widthHeightAt(ceilTex).first);
+                ceilTexY = nva::clamp<int>(ceilTexY, 0, currentTextureSet->widthHeightAt(ceilTex).second);
+                rgba ftex = currentTextureSet->colorAt(floorTex, floorTexX, floorTexY);
+                rgba ctex = currentTextureSet->colorAt(ceilTex, ceilTexX, ceilTexY);
                 pixels[(y-1) * renderWidth + i] = (ftex.r << rshift) | //floor
                                                         (ftex.g << gshift) |
                                                         (ftex.b << bshift) |
