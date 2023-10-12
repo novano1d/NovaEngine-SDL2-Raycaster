@@ -3,11 +3,10 @@
 #include <iostream>
 
 //TODO
-// Fix wall mirroring
 // texture floor map
-// implement sprites
+// implement animated sprites
+// directional sprites
 // lighting
-// add clamping to textures
 
 //Global def
 // #define SCREEN_WIDTH 640 
