@@ -51,6 +51,9 @@ struct Sprite
 {
     double x, y;
     int texIndex;
+    int angle = 0;
+    bool multiAngle = false;
+    std::vector<int> texIndexes;
 };
 
 //This class will handle loading all necessary texture images

@@ -350,19 +350,40 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         if(drawStartX < 0) drawStartX = 0;
         int drawEndX = spriteWidth / 2 + spriteScreenX;
         if(drawEndX >= renderWidth) drawEndX = renderWidth - 1;
+        double spriteAngle = atan2(it->y - getPlayerPos().y, it->x - getPlayerPos().x) - angle;
+        const int numOrientations = 2; // Two orientations: "left" and "right"
+
+        // Calculate the angle between player and sprite
+        int diff = angle - it->angle/* calculate the angle between player and sprite */;
+        int orientationIndex = 0; // Default orientation index
+
+        // Calculate the angle per orientation (in radians)
+        double orientationAngle = 2 * 180 / numOrientations;
+
+        // Determine the orientation index based on the angle
+        if (diff >= -orientationAngle / 2 && diff < orientationAngle / 2) {
+            orientationIndex = 1; // Facing right
+        } else {
+            orientationIndex = 0; // Facing left (default)
+        }
+
+        // Use the selected orientation index to get the texture for rendering
+        int texSelect = orientationIndex; // You can modify this as needed
+
+        
         for(int stripe = drawStartX; stripe < drawEndX; stripe++)
         {
-            int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * currentTextureSet->widthHeightAt(it->texIndex).first / spriteWidth) / 256;
-            texX = nva::clamp<int>(texX, 0, currentTextureSet->widthHeightAt(it->texIndex).first);
+            int texX = int(256 * (stripe - (-spriteWidth / 2 + spriteScreenX)) * currentTextureSet->widthHeightAt(texSelect).first / spriteWidth) / 256;
+            texX = nva::clamp<int>(texX, 0, currentTextureSet->widthHeightAt(texSelect).first);
             if(transformY > 0 && stripe > 0 && stripe < renderWidth && transformY < ZBuffer[stripe])
             {
                 for(int y = drawStartY; y < drawEndY; y++)
                 {
                     int d = (y - renderHeight / 2) * 256 + spriteHeight * 128;
-                    int texY = ((d * currentTextureSet->widthHeightAt(it->texIndex).second) / spriteHeight) / 256;
-                    texY = nva::clamp<int>(texY, 0, currentTextureSet->widthHeightAt(it->texIndex).second);
+                    int texY = ((d * currentTextureSet->widthHeightAt(texSelect).second) / spriteHeight) / 256;
+                    texY = nva::clamp<int>(texY, 0, currentTextureSet->widthHeightAt(texSelect).second);
                     rgba textureColor;
-                    textureColor = currentTextureSet->colorAt(it->texIndex, texX, texY);
+                    textureColor = currentTextureSet->colorAt(texSelect, texX, texY);
                     if(textureColor.a != 0) // If the pixel is not transparent
                         pixels[y * renderWidth + stripe] = (textureColor.r << rshift) |
                                                             (textureColor.g << gshift) |
