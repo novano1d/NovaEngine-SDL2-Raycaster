@@ -46,7 +46,7 @@ std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1}};
-const int FOV = 52; 
+const int FOV = 60; 
 
 double ticktime;
 
@@ -90,10 +90,10 @@ void eventHandler(SDL_Event event)
 int main(int argc, char** argv)
 {
     myMap->addSprite({4.5, 4.5, 3});
-    myMap->addSprite({3.5, 3.5, 4});
+    //myMap->addSprite({3.5, 3.5, 4});
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
-    TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg"});
+    TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "dog1.png", "dog2.png"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);

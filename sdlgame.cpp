@@ -350,7 +350,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         if(drawStartX < 0) drawStartX = 0;
         int drawEndX = spriteWidth / 2 + spriteScreenX;
         if(drawEndX >= renderWidth) drawEndX = renderWidth - 1;
-        double spriteAngle = atan2(it->y - getPlayerPos().y, it->x - getPlayerPos().x) - angle;
         const int numOrientations = 2; // Two orientations: "left" and "right"
 
         // Calculate the angle between player and sprite
@@ -362,12 +361,12 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 
         // Determine the orientation index based on the angle
         if (diff >= -orientationAngle / 2 && diff < orientationAngle / 2) {
-            orientationIndex = 1; // Facing right
+            orientationIndex = 5; // Facing right
         } else {
-            orientationIndex = 0; // Facing left (default)
+            orientationIndex = 6; // Facing left (default)
         }
 
-        // Use the selected orientation index to get the texture for rendering
+        //Use the selected orientation index to get the texture for rendering
         int texSelect = orientationIndex; // You can modify this as needed
 
         
@@ -458,7 +457,7 @@ TextureHandler::TextureHandler(std::vector<std::string> in)
 
 //might prove to be a bottleneck in performance since this function is called for every pixel being rendered on the wall.... therefore we may need to reduce
 //the call time as much as possible and change the loaded textures class to store in an array instead of a vector
-rgba TextureHandler::colorAt(int textureIndex, int x, int y)
+inline rgba TextureHandler::colorAt(int textureIndex, int x, int y)
 {
     const int RGBA = 4; //This might change if you change the loadimage function
     int r, g, b, a;

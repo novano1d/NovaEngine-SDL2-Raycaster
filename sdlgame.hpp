@@ -23,7 +23,7 @@
 namespace nva
 {
     template <typename T>
-    T clamp(const T& n, const T& lower, const T& upper) {
+    inline T clamp(const T& n, const T& lower, const T& upper) {
     return (n < lower) ? lower : (n > upper) ? upper : n;
     }
     bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
@@ -68,9 +68,9 @@ private:
 public:
     TextureHandler(std::vector<std::string>);
     int numOfTextures() { return loadedTextures.size(); };
-    std::vector<unsigned char> textureAt(int i) { return loadedTextures[i]; };
+    inline std::vector<unsigned char> textureAt(int i) { return loadedTextures[i]; };
     inline std::pair<int, int> widthHeightAt(int i) { return loadedTextureSizes[i]; };
-    rgba colorAt(int textureIndex, int x, int y);
+    inline rgba colorAt(int textureIndex, int x, int y);
 };
 
 //Game Class to clean things up a bit and provide a template
