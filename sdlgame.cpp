@@ -9,7 +9,9 @@ double Game::frameTime()
 {
     oldTime = time;
     time = SDL_GetTicks();
-    return (time - oldTime) / 1000.0;
+    double ticktime = (time - oldTime) / 1000.0;
+    ticks += TICKS * ticktime;
+    return ticktime;
 }
 
 // Sets screen color
@@ -391,6 +393,10 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 
             //Use the selected orientation index to get the texture for rendering
             texSelect = orientationIndex;
+        }
+        else if (it->animated)
+        {
+            
         }
         else texSelect = it->texIndex;
         

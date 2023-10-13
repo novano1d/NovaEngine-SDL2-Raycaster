@@ -15,7 +15,7 @@
 //360p
 // #define INTERNAL_RENDER_RES_HORIZ 640
 // #define INTERNAL_RENDER_RES_VERT 360
-
+#define TICKS 64
 #define INTERNAL_RENDER_RES_HORIZ 500
 #define INTERNAL_RENDER_RES_VERT 360
 // #define INTERNAL_RENDER_RES_HORIZ 360
@@ -88,6 +88,7 @@ protected:
     const int SCREEN_HEIGHT;
     double oldTime = 0;
     double time = 0;
+    int ticks = 0;
     void(*eventMethod)(SDL_Event) = nullptr;
 public:
     Game(int w, int h, SDL_Window* win, SDL_Renderer* r) : renderer(r), SCREEN_WIDTH(w), SCREEN_HEIGHT(h), window(win) {} 
@@ -99,7 +100,8 @@ public:
     void setEventHandler(void(*ptr)(SDL_Event));
     //returns frameTime
     double frameTime();
-    //loads image from file bc we need to load textures and stuff
+    void setTicks(int t) { ticks = t; };
+    int getTicks() { return ticks; };
 };
 
 /*

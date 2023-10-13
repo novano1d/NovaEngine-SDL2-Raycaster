@@ -78,6 +78,7 @@ void playLoop()
 {
     handleInput();
     ticktime = game->frameTime();
+    //game->setTicks( game->getTicks() + TICKS * ticktime); //Increase ticks in game appropriately
     game->pseudo3dRenderTextured(FOV);
 }
 
