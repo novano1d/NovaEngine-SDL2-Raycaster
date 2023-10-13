@@ -353,13 +353,17 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         const int numOrientations = 8; // Eight orientations
 
         // Calculate the angle between player and sprite
-        int diff = (angle + FOV/2) - it->angle /* calculate the angle between player and sprite */;
+        //int diff = (angle) - it->angle /* calculate the angle between player and sprite */;
+        double diffr = std::atan2(spriteY, spriteX);
+        // Convert the angle to degrees
+        double diff = diffr * 180 / M_PI;
         int orientationIndex = 0; // Default orientation index
 
         // Calculate the angle per orientation (in degrees)
         double orientationAngle = 360.0 / numOrientations;
 
         // Normalize the angle difference to be within [0, 360) degrees
+        diff += it->angle; //add angle of sprite
         diff = fmod(diff + 360, 360);
 
         // Determine the orientation index based on the angle
