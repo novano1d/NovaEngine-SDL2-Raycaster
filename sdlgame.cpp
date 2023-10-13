@@ -350,46 +350,48 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         if(drawStartX < 0) drawStartX = 0;
         int drawEndX = spriteWidth / 2 + spriteScreenX;
         if(drawEndX >= renderWidth) drawEndX = renderWidth - 1;
-        const int numOrientations = 8; // Eight orientations
+        int texSelect = 0; //default
+        if (it->multiAngle)
+        {
+            const int numOrientations = 8; // Eight orientations
 
-        // Calculate the angle between player and sprite
-        //int diff = (angle) - it->angle /* calculate the angle between player and sprite */;
-        double diffr = std::atan2(spriteY, spriteX);
-        // Convert the angle to degrees
-        double diff = diffr * 180 / M_PI;
-        int orientationIndex = 0; // Default orientation index
+            // Calculate the angle between player and sprite
+            //int diff = (angle) - it->angle /* calculate the angle between player and sprite */;
+            double diffr = std::atan2(spriteY, spriteX);
+            // Convert the angle to degrees
+            double diff = diffr * 180 / M_PI;
+            int orientationIndex = 0; // Default orientation index
 
-        // Calculate the angle per orientation (in degrees)
-        double orientationAngle = 360.0 / numOrientations;
+            // Calculate the angle per orientation (in degrees)
+            double orientationAngle = 360.0 / numOrientations;
 
-        // Normalize the angle difference to be within [0, 360) degrees
-        diff += it->angle; //add angle of sprite
-        diff = fmod(diff + 360, 360);
+            // Normalize the angle difference to be within [0, 360) degrees
+            diff += it->angle; //add angle of sprite
+            diff = fmod(diff + 360, 360);
 
-        // Determine the orientation index based on the angle
-        if (diff >= 0 * orientationAngle && diff < 1 * orientationAngle) {
-            orientationIndex = it->angleIndexes[0]; // Facing front
-        } else if (diff >= 1 * orientationAngle && diff < 2 * orientationAngle) {
-            orientationIndex = it->angleIndexes[1]; // Facing front-left
-        } else if (diff >= 2 * orientationAngle && diff < 3 * orientationAngle) {
-            orientationIndex = it->angleIndexes[2]; // Facing left
-        } else if (diff >= 3 * orientationAngle && diff < 4 * orientationAngle) {
-            orientationIndex = it->angleIndexes[3]; // Facing right (wrap around)
-        } else if (diff >= 4 * orientationAngle && diff < 5 * orientationAngle) {
-            orientationIndex = it->angleIndexes[4]; // Facing front-right
-        } else if (diff >= 5 * orientationAngle && diff < 6 * orientationAngle) {
-            orientationIndex = it->angleIndexes[5]; // Facing front
-        } else if (diff >= 6 * orientationAngle && diff < 7 * orientationAngle) {
-            orientationIndex = it->angleIndexes[6]; // Facing front-left
-        } else if (diff >= 7 * orientationAngle && diff < 8 * orientationAngle) {
-            orientationIndex = it->angleIndexes[7]; // Facing left
+            // Determine the orientation index based on the angle
+            if (diff >= 0 * orientationAngle && diff < 1 * orientationAngle) {
+                orientationIndex = it->angleIndexes[0]; // Facing front
+            } else if (diff >= 1 * orientationAngle && diff < 2 * orientationAngle) {
+                orientationIndex = it->angleIndexes[1]; // Facing front-left
+            } else if (diff >= 2 * orientationAngle && diff < 3 * orientationAngle) {
+                orientationIndex = it->angleIndexes[2]; // Facing left
+            } else if (diff >= 3 * orientationAngle && diff < 4 * orientationAngle) {
+                orientationIndex = it->angleIndexes[3]; // Facing right (wrap around)
+            } else if (diff >= 4 * orientationAngle && diff < 5 * orientationAngle) {
+                orientationIndex = it->angleIndexes[4]; // Facing front-right
+            } else if (diff >= 5 * orientationAngle && diff < 6 * orientationAngle) {
+                orientationIndex = it->angleIndexes[5]; // Facing front
+            } else if (diff >= 6 * orientationAngle && diff < 7 * orientationAngle) {
+                orientationIndex = it->angleIndexes[6]; // Facing front-left
+            } else if (diff >= 7 * orientationAngle && diff < 8 * orientationAngle) {
+                orientationIndex = it->angleIndexes[7]; // Facing left
+            }
+
+            //Use the selected orientation index to get the texture for rendering
+            texSelect = orientationIndex;
         }
-
-
-
-        //Use the selected orientation index to get the texture for rendering
-        int texSelect = orientationIndex; // You can modify this as needed
-
+        else texSelect = it->texIndex;
         
         for(int stripe = drawStartX; stripe < drawEndX; stripe++)
         {
