@@ -235,6 +235,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     {
         double scanDir = 2 * i / static_cast<double>(renderWidth) - 1; // -1 ---- 0 ---- 1 for the scan across the screen
         CollisionEvent collision = ddaRaycast(getPlayerPos(), angle + FOV * scanDir);
+        //could probably change perpwalldist in order to get infinitely thin walls
         ZBuffer[i] = collision.perpWallDist; //set zbuffer value
         int lineHeight = static_cast<int>(wallheight * (renderHeight / collision.perpWallDist));
         int drawStart = -lineHeight / 2 + renderHeight / 2;
