@@ -93,7 +93,7 @@ int main(int argc, char** argv)
     //myMap->addSprite({3.5, 3.5, 4});
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
-    TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "dog1.png", "dog2.png"});
+    TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);

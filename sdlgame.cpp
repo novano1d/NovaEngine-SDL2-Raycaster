@@ -350,21 +350,38 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         if(drawStartX < 0) drawStartX = 0;
         int drawEndX = spriteWidth / 2 + spriteScreenX;
         if(drawEndX >= renderWidth) drawEndX = renderWidth - 1;
-        const int numOrientations = 2; // Two orientations: "left" and "right"
+        const int numOrientations = 8; // Eight orientations
 
         // Calculate the angle between player and sprite
-        int diff = angle - it->angle/* calculate the angle between player and sprite */;
+        int diff = (angle + FOV/2) - it->angle /* calculate the angle between player and sprite */;
         int orientationIndex = 0; // Default orientation index
 
-        // Calculate the angle per orientation (in radians)
-        double orientationAngle = 2 * 180 / numOrientations;
+        // Calculate the angle per orientation (in degrees)
+        double orientationAngle = 360.0 / numOrientations;
+
+        // Normalize the angle difference to be within [0, 360) degrees
+        diff = fmod(diff + 360, 360);
 
         // Determine the orientation index based on the angle
-        if (diff >= -orientationAngle / 2 && diff < orientationAngle / 2) {
-            orientationIndex = 5; // Facing right
-        } else {
-            orientationIndex = 6; // Facing left (default)
+        if (diff >= 0 * orientationAngle && diff < 1 * orientationAngle) {
+            orientationIndex = 5; // Facing front
+        } else if (diff >= 1 * orientationAngle && diff < 2 * orientationAngle) {
+            orientationIndex = 12; // Facing front-left
+        } else if (diff >= 2 * orientationAngle && diff < 3 * orientationAngle) {
+            orientationIndex = 11; // Facing left
+        } else if (diff >= 3 * orientationAngle && diff < 4 * orientationAngle) {
+            orientationIndex = 10; // Facing right (wrap around)
+        } else if (diff >= 4 * orientationAngle && diff < 5 * orientationAngle) {
+            orientationIndex = 9; // Facing front-right
+        } else if (diff >= 5 * orientationAngle && diff < 6 * orientationAngle) {
+            orientationIndex = 8; // Facing front
+        } else if (diff >= 6 * orientationAngle && diff < 7 * orientationAngle) {
+            orientationIndex = 7; // Facing front-left
+        } else if (diff >= 7 * orientationAngle && diff < 8 * orientationAngle) {
+            orientationIndex = 6; // Facing left
         }
+
+
 
         //Use the selected orientation index to get the texture for rendering
         int texSelect = orientationIndex; // You can modify this as needed
