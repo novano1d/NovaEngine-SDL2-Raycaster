@@ -11,6 +11,7 @@ double Game::frameTime()
     time = SDL_GetTicks();
     double ticktime = (time - oldTime) / 1000.0;
     ticks += TICKS * ticktime;
+    if (ticks == UINT64_MAX) ticks = 0; //reset ticks if too big
     return ticktime;
 }
 
@@ -396,8 +397,16 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         }
         else if (it->animated)
         {
-            
+            auto reel = it->animIndexes;
+            if (ticks - it->lastSpriteTick >= reel[2*it->curAnimIndex])
+            {
+                it->curAnimIndex += 1;
+                it->lastSpriteTick = ticks;
+                if (it->curAnimIndex >= reel.size()/2) it->curAnimIndex = 0;
+            }
+            texSelect = reel[2*it->curAnimIndex + 1];
         }
+
         else texSelect = it->texIndex;
         
         for(int stripe = drawStartX; stripe < drawEndX; stripe++)

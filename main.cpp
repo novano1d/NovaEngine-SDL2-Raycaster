@@ -78,7 +78,6 @@ void playLoop()
 {
     handleInput();
     ticktime = game->frameTime();
-    //game->setTicks( game->getTicks() + TICKS * ticktime); //Increase ticks in game appropriately
     game->pseudo3dRenderTextured(FOV);
 }
 
@@ -92,7 +91,7 @@ int main(int argc, char** argv)
 {
     myMap->addSprite({4.5, 4.5, 4, 0, false, {0}, true, {5, 12, 11, 10, 9, 9 , 7, 6}});
     myMap->addSprite({3.5, 3.5, 4, 90, false, {0}, true, {5, 12, 11, 10, 9, 9 , 7, 6}});
-    //myMap->addSprite({2, 2, 3});
+    myMap->addSprite({2, 2, 3, 0, true, {64, 0, 64, 1, 64, 2}});
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
     TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif"});

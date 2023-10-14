@@ -55,9 +55,11 @@ struct Sprite
     int texIndex;
     int angle = 0;
     bool animated = false;
-    std::vector<int> animIndexes;
+    std::vector<int> animIndexes; // [frametime (ticks), index, frametime(ticks), index]
     bool multiAngle = false;
     std::vector<int> angleIndexes;
+    int curAnimIndex = 0; // internal tracker of current frame if animated
+    int lastSpriteTick = 0; //internal tick for determining current frame if animated
 };
 
 //This class will handle loading all necessary texture images
