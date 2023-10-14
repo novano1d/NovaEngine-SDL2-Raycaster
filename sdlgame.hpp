@@ -58,6 +58,7 @@ struct Sprite
     std::vector<int> animIndexes; // [frametime (ticks), index, frametime(ticks), index]
     bool multiAngle = false;
     std::vector<int> angleIndexes;
+    std::vector<std::vector<int>> animIndexesAngled; //each vector of reels [frametime (ticks), index, frametime(ticks), index] for each different angle
     int curAnimIndex = 0; // internal tracker of current frame if animated
     int lastSpriteTick = 0; //internal tick for determining current frame if animated
 };

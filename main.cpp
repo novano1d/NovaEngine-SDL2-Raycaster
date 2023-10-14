@@ -88,13 +88,24 @@ void eventHandler(SDL_Event event)
 }
 
 int main(int argc, char** argv)
-{
-    myMap->addSprite({4.5, 4.5, 4, 0, false, {0}, true, {5, 12, 11, 10, 9, 9 , 7, 6}});
-    myMap->addSprite({3.5, 3.5, 4, 90, false, {0}, true, {5, 12, 11, 10, 9, 9 , 7, 6}});
-    myMap->addSprite({2, 2, 3, 0, true, {64, 0, 64, 1, 64, 2}});
+{ 
+    // Sprite animSides = {2, 2, 0, 0, true, {}, true, {}, {
+    //     {64, 0, 64, 1},
+    //     {64, 3, 64, 2},
+    //     {64, 0, 64, 1},
+    //     {64, 3, 64, 2},
+    //     {64, 0, 64, 1},
+    //     {64, 3, 64, 2},
+    //     {64, 0, 64, 1},
+    //     {64, 3, 64, 2}
+    //     }};
+    //myMap->addSprite(animSides);
+    myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 9 , 7, 6}});
+    myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 9 , 7, 6}});
+    myMap->addSprite({2, 2, 3, 0, true, {16, 13, 16, 14, 16, 15}});
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
-    TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif"});
+    TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("3D!! Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
