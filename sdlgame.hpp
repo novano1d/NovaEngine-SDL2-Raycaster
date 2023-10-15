@@ -141,11 +141,11 @@ public:
     int xSize() { return map.size(); };
     std::vector<Sprite>& getSprites() { return sprites; };
     void setFloorMap(std::vector<std::vector<int>> m) { floorMap = m; };
-    int getFloorTileAt(int x, int y) { return floorMap[x][y]; };
+    int getFloorTileAt(int x, int y) { return floorMap[y][x]; };
     void setCeilingMap(std::vector<std::vector<int>> m) { ceilingMap = m; };
-    int getCeilingTileAt(int x, int y) { return ceilingMap[x][y]; };
+    int getCeilingTileAt(int x, int y) { return ceilingMap[y][x]; };
     void setDoorMap(std::vector<std::vector<Door>> m) { doorMap = m; };
-    Door getDoorTileAt(int x, int y) { return doorMap[x][y]; };
+    Door getDoorTileAt(int x, int y) { return doorMap[y][x]; };
 private:
     //Could eventually swap int for a Tile class
     std::vector<std::vector<int>> map;
