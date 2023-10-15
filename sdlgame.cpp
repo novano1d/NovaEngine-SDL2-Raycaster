@@ -156,6 +156,26 @@ inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
             {
                 return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getTileAt(mapCheck.x, mapCheck.y)}; //code fixes fish eye effect
             }
+            else if (map->getDoorTileAt(mapCheck.x, mapCheck.y).exists)
+            {
+                //if it's a door we need to register a hit at a different point to render a thin wall and provide animation
+                double doorProgress = map->getDoorTileAt(mapCheck.x, mapCheck.y).doorProgress;
+                Point intersection = start + rayDir * distance;
+                if (map->getDoorTileAt(mapCheck.x, mapCheck.y).orientation) //horiz
+                {
+                    if (intersection.x >= mapCheck.x + 0.000001 && intersection.x <= mapCheck.x + doorProgress)
+                    {
+                        return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex}; 
+                    }
+                }
+                else //vert
+                {
+                    if (intersection.y >= mapCheck.y + 0.000001 && intersection.y <= mapCheck.y + doorProgress)
+                    {
+                        return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex}; 
+                    }
+                }
+            }
         }
         else return CollisionEvent(); //invalid
     }
@@ -267,9 +287,9 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                                                     (textureColor.b << bshift) |
                                                     (textureColor.a << ashift);
                 else
-                    pixels[y * renderWidth + i] = ((textureColor.r / 2) << rshift) |
-                                                    ((textureColor.g / 2) << gshift) |
-                                                    ((textureColor.b / 2) << bshift) |
+                    pixels[y * renderWidth + i] = ((int)(textureColor.r / 1.5) << rshift) |
+                                                    ((int)(textureColor.g / 1.5) << gshift) |
+                                                    ((int)(textureColor.b / 1.5) << bshift) |
                                                     (textureColor.a << ashift);
             }
             //floor casting

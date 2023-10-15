@@ -44,6 +44,15 @@ std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 4, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1}};
+
+std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
+                                           {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
+                                           {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
+                                           {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
+                                           {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
+                                           {{0}, {0}, {1, 1, 0, 0.5, 0}, {0}, {1, 1, 0, 0.5}, {0}, {0}, {0}},
+                                           {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
+                                           {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}}};
 const int FOV = 60; 
 
 double ticktime;
@@ -105,6 +114,7 @@ int main(int argc, char** argv)
     myMap->addSprite({2, 2, 3, 0, true, {16, 13, 16, 14, 16, 15, 64, 5}});
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
+    myMap->setDoorMap(doorMap);
     TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
@@ -114,7 +124,7 @@ int main(int argc, char** argv)
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); // for resolution scaling
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
     game->setTextureSet(myTexture);
-    game->setAngle(45);
+    game->setAngle(0);
     game->setMap(myMap);
     game->setPlayerPos({1.5,1.5});
     game->setEventHandler(eventHandler);
