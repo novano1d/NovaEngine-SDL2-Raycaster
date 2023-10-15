@@ -2,7 +2,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <thread>
-#include <mutex>
 // Game class implementation
 
 double Game::frameTime()
@@ -11,9 +10,9 @@ double Game::frameTime()
     time = SDL_GetTicks();
     double ticktime = (time - oldTime) / 1000.0;
     ticks += TICKS * ticktime;
-    if (ticks == UINT64_MAX) ticks = 0; //reset ticks if too big
+    if (ticks >= UINT64_MAX) ticks = 0; //reset ticks if too big
     return ticktime;
-}
+} 
 
 // Sets screen color
 void Game::clrScreen(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
@@ -356,7 +355,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         if(drawEndX >= renderWidth) drawEndX = renderWidth - 1;
         int texSelect = 0; //default
 
-        //Haven't tested, animated multiangle should work in theory though
         if (it->multiAngle && it->animated)
         {
             const int numOrientations = 8; // Eight orientations

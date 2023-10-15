@@ -121,7 +121,8 @@ class Map
 {
 public:
     Map(std::vector<std::vector<int>> m, std::vector<Sprite> s = {}) : map(m) {}
-    void addSprite(Sprite s) { sprites.emplace_back(s); };
+    void addSprite(Sprite s) { sprites.push_back(s); };
+    void removeSpriteAtEnd() { sprites.pop_back(); };
     int getTileAt(int x, int y) { return map[y][x]; };
     int ySize() { return map[0].size(); };
     int xSize() { return map.size(); };

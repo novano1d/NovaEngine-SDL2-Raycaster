@@ -3,10 +3,8 @@
 #include <iostream>
 
 //TODO
-// texture floor map
-// implement animated sprites
-// directional sprites
-// lighting
+// lighting?
+// doors!
 
 //Global def
 // #define SCREEN_WIDTH 640 
@@ -18,7 +16,7 @@
 KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
-SDL_Window* window = nullptr;
+SDL_Window* window = nullptr;   
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 0, 1, 0, 1},
                       {1, 0, 0, 0, 1, 1, 0, 1},
@@ -26,7 +24,7 @@ Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
-                      {1, 1, 1, 1, 1, 1, 1, 1}});
+                      {1, 1, 1, 1, 3, 1, 1, 1}});
 
 
 std::vector<std::vector<int>> floormap = {{1, 1, 1, 1, 1, 1, 1, 1},
@@ -35,7 +33,7 @@ std::vector<std::vector<int>> floormap = {{1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
-                                          {1, 1, 1, 1, 1, 1, 1, 1},
+                                          {1, 1, 1, 1, 3, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1}};
 
 std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
@@ -43,7 +41,7 @@ std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
-                                          {1, 1, 1, 1, 1, 1, 1, 1},
+                                          {1, 1, 4, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1}};
 const int FOV = 60; 
@@ -74,10 +72,12 @@ void handleInput()
         
 }       
 
+double totalTime = 0; //debug var
 void playLoop()
 {
     handleInput();
     ticktime = game->frameTime();
+    totalTime += ticktime;
     game->pseudo3dRenderTextured(FOV);
 }
 
@@ -100,9 +100,9 @@ int main(int argc, char** argv)
     //     {64, 3, 64, 2}
     //     }};
     //myMap->addSprite(animSides);
-    myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 9 , 7, 6}});
-    myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 9 , 7, 6}});
-    myMap->addSprite({2, 2, 3, 0, true, {16, 13, 16, 14, 16, 15}});
+    myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
+    myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
+    myMap->addSprite({2, 2, 3, 0, true, {16, 13, 16, 14, 16, 15, 64, 5}});
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
     TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png"});
