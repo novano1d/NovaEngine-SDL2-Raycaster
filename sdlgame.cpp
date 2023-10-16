@@ -163,14 +163,14 @@ inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
                 Point intersection = start + rayDir * distance;
                 if (map->getDoorTileAt(mapCheck.x, mapCheck.y).orientation) //horiz
                 {
-                    if (intersection.x >= mapCheck.x + 0.000001 && intersection.x <= mapCheck.x + doorProgress)
+                    if (intersection.x >= mapCheck.x + 0.0001 && intersection.x <= mapCheck.x - 0.0001 + doorProgress) //rounding error sigh
                     {
                         return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex}; 
                     }
                 }
                 else //vert
                 {
-                    if (intersection.y >= mapCheck.y + 0.000001 && intersection.y <= mapCheck.y + doorProgress)
+                    if (intersection.y >= mapCheck.y + 0.0001 && intersection.y <= mapCheck.y - 0.0001 + doorProgress)
                     {
                         return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex}; 
                     }
@@ -189,11 +189,15 @@ void GridGame::setPlayerPos(Point p)
     {
         bool stuckOnVerticalWall = map->getTileAt(playerPos.x - WALL_CLOSENESS, playerPos.y) || map->getTileAt(playerPos.x + WALL_CLOSENESS, playerPos.y);
         bool stuckOnHorizontalWall = map->getTileAt(playerPos.x, playerPos.y - WALL_CLOSENESS) || map->getTileAt(playerPos.x, playerPos.y + WALL_CLOSENESS);
-
-        if (!stuckOnVerticalWall || (stuckOnVerticalWall && ((p.x < playerPos.x && !map->getTileAt(p.x - WALL_CLOSENESS, p.y)) || (p.x > playerPos.x && !map->getTileAt(p.x + WALL_CLOSENESS, p.y)))))
+        
+        bool stuckOnVerticalDoor = (map->getDoorTileAt(playerPos.x - WALL_CLOSENESS, playerPos.y).doorState == true) || (map->getDoorTileAt(playerPos.x + WALL_CLOSENESS, playerPos.y).doorState == true);
+        bool stuckOnHorizontalDoor = (map->getDoorTileAt(playerPos.x, playerPos.y - WALL_CLOSENESS).doorState == true) || (map->getDoorTileAt(playerPos.x, playerPos.y + WALL_CLOSENESS).doorState == true);
+        if ((!stuckOnVerticalWall && !stuckOnVerticalDoor) || (stuckOnVerticalWall && ((p.x < playerPos.x && !map->getTileAt(p.x - WALL_CLOSENESS, p.y)) || (p.x > playerPos.x && !map->getTileAt(p.x + WALL_CLOSENESS, p.y)))) || (stuckOnVerticalDoor && ((p.x < playerPos.x && !(map->getDoorTileAt(p.x - WALL_CLOSENESS, p.y).doorState == true)) || (p.x > playerPos.x && !(map->getDoorTileAt(p.x + WALL_CLOSENESS, p.y).doorState == true)))))
             playerPos.x = p.x;
-        if (!stuckOnHorizontalWall || (stuckOnHorizontalWall && ((p.y < playerPos.y && !map->getTileAt(p.x, p.y - WALL_CLOSENESS)) || (p.y > playerPos.y && !map->getTileAt(p.x, p.y + WALL_CLOSENESS)))))
+        if ((!stuckOnHorizontalWall && !stuckOnHorizontalDoor) || (stuckOnHorizontalWall && ((p.y < playerPos.y && !map->getTileAt(p.x, p.y - WALL_CLOSENESS)) || (p.y > playerPos.y && !map->getTileAt(p.x, p.y + WALL_CLOSENESS)))) || (stuckOnHorizontalDoor && ((p.y < playerPos.y && !(map->getDoorTileAt(p.x, p.y - WALL_CLOSENESS).doorState == true)) || (p.y > playerPos.y && !(map->getDoorTileAt(p.x, p.y + WALL_CLOSENESS).doorState == true)))))
             playerPos.y = p.y;
+        std::cout << "at: " << playerPos.x << " " << playerPos.y << std::endl;
+        
     }
 }
 

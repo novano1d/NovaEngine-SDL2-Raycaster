@@ -4,7 +4,7 @@
 
 //TODO
 // lighting?
-// doors!
+// render outside area
 
 //Global def
 // #define SCREEN_WIDTH 640 
@@ -48,13 +48,13 @@ std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
 std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
-                                           {{0}, {1}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
+                                           {{0}, {0}, {1, 17, true, 1}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}}};
 const int FOV = 60; 
-
+ 
 double ticktime;
 
 //Deals with actions to be performed on certain keypresses
@@ -115,7 +115,7 @@ int main(int argc, char** argv)
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
     myMap->setDoorMap(doorMap);
-    TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png"});
+    TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("3D!! Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);

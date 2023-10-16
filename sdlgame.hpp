@@ -36,7 +36,7 @@ struct Door
 {
     bool exists = false;
     int texIndex = 0;
-    bool doorState = false; //true is open false is closed
+    bool doorState = false; //transversible or not
     double doorProgress = 1; //scale for animation of how far the door is opened/closed
     bool orientation = 1; // 1 for on x 0 for on y
 };
@@ -136,7 +136,7 @@ public:
     Map(std::vector<std::vector<int>> m, std::vector<Sprite> s = {}) : map(m) {}
     void addSprite(Sprite s) { sprites.push_back(s); };
     void removeSpriteAtEnd() { sprites.pop_back(); };
-    int getTileAt(int x, int y) { return map[x][y]; };
+    int getTileAt(int x, int y) { return map[y][x]; };
     int ySize() { return map[0].size(); };
     int xSize() { return map.size(); };
     std::vector<Sprite>& getSprites() { return sprites; };
@@ -146,6 +146,7 @@ public:
     int getCeilingTileAt(int x, int y) { return ceilingMap[y][x]; };
     void setDoorMap(std::vector<std::vector<Door>> m) { doorMap = m; };
     Door getDoorTileAt(int x, int y) { return doorMap[y][x]; };
+    void setDoorStateAt(int x, int y, Door d) { doorMap[y][x] = d; };
 private:
     //Could eventually swap int for a Tile class
     std::vector<std::vector<int>> map;
