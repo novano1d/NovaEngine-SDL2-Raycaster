@@ -18,6 +18,7 @@
 #define TICKS 64
 #define INTERNAL_RENDER_RES_HORIZ 500
 #define INTERNAL_RENDER_RES_VERT 360
+#define SKY 0xFFFFF
 // #define INTERNAL_RENDER_RES_HORIZ 360
 // #define INTERNAL_RENDER_RES_VERT 360
 
@@ -147,8 +148,11 @@ public:
     void setDoorMap(std::vector<std::vector<Door>> m) { doorMap = m; };
     Door getDoorTileAt(int x, int y) { return doorMap[y][x]; };
     void setDoorStateAt(int x, int y, Door d) { doorMap[y][x] = d; };
+    void setSkyTexture(int i) { skyTexture = i; };
+    int getSkyTexture() {return skyTexture; };
 private:
     //Could eventually swap int for a Tile class
+    int skyTexture;
     std::vector<std::vector<int>> map;
     std::vector<std::vector<int>> floorMap;
     std::vector<std::vector<int>> ceilingMap;
@@ -177,6 +181,7 @@ private:
     double rotSpeed = 100; //degrees per second
     TextureHandler* currentTextureSet = nullptr;
     SDL_Texture* textureBuffer;
+    const double SKYSCALEFACTOR = 2;
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
     //sets the current map pointer

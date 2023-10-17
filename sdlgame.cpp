@@ -196,7 +196,7 @@ void GridGame::setPlayerPos(Point p)
             playerPos.x = p.x;
         if ((!stuckOnHorizontalWall && !stuckOnHorizontalDoor) || (stuckOnHorizontalWall && ((p.y < playerPos.y && !map->getTileAt(p.x, p.y - WALL_CLOSENESS)) || (p.y > playerPos.y && !map->getTileAt(p.x, p.y + WALL_CLOSENESS)))) || (stuckOnHorizontalDoor && ((p.y < playerPos.y && !(map->getDoorTileAt(p.x, p.y - WALL_CLOSENESS).doorState == true)) || (p.y > playerPos.y && !(map->getDoorTileAt(p.x, p.y + WALL_CLOSENESS).doorState == true)))))
             playerPos.y = p.y;
-        std::cout << "at: " << playerPos.x << " " << playerPos.y << std::endl;
+        std::cout << "at: " << playerPos.x << " " << playerPos.y << " " << getAngle() << std::endl;
         
     }
 }
@@ -306,20 +306,38 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 double floorY = weight * collision.intersect.y + (1 - weight) * playerPos.y;
                 int ceilTex = map->getCeilingTileAt(floorX, floorY);
                 int floorTex = map->getFloorTileAt(floorX, floorY);
+                rgba ctex;
+                if (ceilTex == SKY)
+                {
+                    
+                    int cw = currentTextureSet->widthHeightAt(map->getSkyTexture()).first;
+                    int ch = currentTextureSet->widthHeightAt(map->getSkyTexture()).second;
+                    double angle = getAngle();
+                    if (angle < 0) angle += 360;
+                    int skyOffset = static_cast<int>(angle * SKYSCALEFACTOR) % cw;
+                    int ceilTexX = (i + skyOffset) * (cw / renderWidth) % cw;
+                    int ceilTexY = y * (ch / renderHeight) % ch;
+                    ceilTexX = nva::clamp<int>(ceilTexX, 0, cw);
+                    ceilTexY = nva::clamp<int>(ceilTexY, 0, ch);
+                    ctex = currentTextureSet->colorAt(map->getSkyTexture(), ceilTexX, ceilTexY);
+                }
+                else
+                {
+                    int cw = currentTextureSet->widthHeightAt(ceilTex).first;
+                    int ch = currentTextureSet->widthHeightAt(ceilTex).second;
+                    int ceilTexX = static_cast<int>(floorX * cw) % cw;
+                    int ceilTexY = static_cast<int>(floorY * ch) % ch;
+                    ceilTexX = nva::clamp<int>(ceilTexX, 0, cw);
+                    ceilTexY = nva::clamp<int>(ceilTexY, 0, ch);
+                    ctex = currentTextureSet->colorAt(ceilTex, ceilTexX, ceilTexY);
+                }
                 int fw = currentTextureSet->widthHeightAt(floorTex).first;
                 int floorTexX = static_cast<int>(floorX * fw) % fw;
                 int fh = currentTextureSet->widthHeightAt(floorTex).second;
                 int floorTexY = static_cast<int>(floorY * fh) % fh;
                 floorTexX = nva::clamp<int>(floorTexX, 0, fw);
                 floorTexY = nva::clamp<int>(floorTexY, 0, fh);
-                int cw = currentTextureSet->widthHeightAt(ceilTex).first;
-                int ch = currentTextureSet->widthHeightAt(ceilTex).second;
-                int ceilTexX = static_cast<int>(floorX * cw) % cw;
-                int ceilTexY = static_cast<int>(floorY * ch) % ch;
-                ceilTexX = nva::clamp<int>(ceilTexX, 0, cw);
-                ceilTexY = nva::clamp<int>(ceilTexY, 0, ch);
                 rgba ftex = currentTextureSet->colorAt(floorTex, floorTexX, floorTexY);
-                rgba ctex = currentTextureSet->colorAt(ceilTex, ceilTexX, ceilTexY);
                 pixels[(y-1) * renderWidth + i] = (ftex.r << rshift) | //floor
                                                         (ftex.g << gshift) |
                                                         (ftex.b << bshift) |
@@ -423,7 +441,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             if (ticks - it->lastSpriteTick >= reel[2*it->curAnimIndex])
             {
                 it->curAnimIndex += 1;
-                it->lastSpriteTick = ticks;
+                it->lastSpriteTick = ticks; 
                 if (it->curAnimIndex >= reel.size()/2) it->curAnimIndex = 0;
             }
             texSelect = reel[2*it->curAnimIndex + 1];

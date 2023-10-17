@@ -38,10 +38,10 @@ std::vector<std::vector<int>> floormap = {{1, 1, 1, 1, 1, 1, 1, 1},
 
 std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
-                                          {1, 1, 1, 1, 1, 1, 1, 1},
-                                          {1, 1, 1, 1, 1, 1, 1, 1},
-                                          {1, 1, 1, 1, 1, 1, 1, 1},
-                                          {1, 1, 4, 1, 1, 1, 1, 1},
+                                          {1, SKY, SKY, SKY, 1, 1, 1, 1},
+                                          {1, SKY, SKY, SKY, 1, 1, 1, 1},
+                                          {1, SKY, SKY, SKY, 1, 1, 1, 1},
+                                          {1, SKY, SKY, SKY, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1}};
 
@@ -49,7 +49,7 @@ std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
-                                           {{0}, {0}, {1, 17, true, 1}, {0}, {0}, {0}, {0}, {0}},
+                                           {{0}, {0}, {1, 17, true, 0.5}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}}};
@@ -115,6 +115,7 @@ int main(int argc, char** argv)
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
     myMap->setDoorMap(doorMap);
+    myMap->setSkyTexture(4);
     TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
