@@ -312,7 +312,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                     
                     int cw = currentTextureSet->widthHeightAt(map->getSkyTexture()).first;
                     int ch = currentTextureSet->widthHeightAt(map->getSkyTexture()).second;
-                    double angle = getAngle();
                     if (angle < 0) angle += 360;
                     int skyOffset = static_cast<int>(angle * SKYSCALEFACTOR) % cw;
                     int ceilTexX = (i + skyOffset) * (cw / renderWidth) % cw;

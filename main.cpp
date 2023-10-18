@@ -11,6 +11,7 @@
 // #define SCREEN_HEIGHT 480
 #define SCREEN_WIDTH 1280 
 #define SCREEN_HEIGHT 720
+const double MOUSE_SENS = 0.2;
 // #define SCREEN_WIDTH 1920 
 // #define SCREEN_HEIGHT 1080
 KeyHandler *keyhandler = new KeyHandler();
@@ -49,7 +50,7 @@ std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
-                                           {{0}, {0}, {1, 17, true, 0.5}, {0}, {0}, {0}, {0}, {0}},
+                                           {{0}, {0}, {1, 17, true, 1}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}}};
@@ -64,10 +65,12 @@ void handleInput()
         game->setPlayerPos({game->getPlayerPos().x + ticktime * game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y + ticktime * game->getMoveSpeed() * sin(game->getAngle()*M_PI/180)});
     if (keyhandler->isKeyDown(SDLK_s))
         game->setPlayerPos({game->getPlayerPos().x - ticktime * game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y - ticktime * game->getMoveSpeed()  * sin(game->getAngle()*M_PI/180)});
-    if (keyhandler->isKeyDown(SDLK_d))
+    if (keyhandler->isKeyDown(SDLK_RIGHT))
         game->setAngle(game->getAngle() + ticktime * game->getRotSpeed());
-    if (keyhandler->isKeyDown(SDLK_a))
+    if (keyhandler->isKeyDown(SDLK_LEFT))
         game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
+    if (keyhandler->isKeyDown(SDLK_ESCAPE) && game->getTicks() % 17 == 1) //mod by random prime to prevent spamming the key lol
+        SDL_SetRelativeMouseMode(static_cast<SDL_bool>((!SDL_GetRelativeMouseMode())));
     if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 3)
     {
         game->setMoveSpeed(3);
@@ -93,7 +96,11 @@ void playLoop()
 void eventHandler(SDL_Event event)
 {
     if (event.type == SDL_KEYDOWN) keyhandler->keyDown(event.key.keysym.sym);
-    else if (event.type == SDL_KEYUP) keyhandler->keyUp(event.key.keysym.sym);
+    if (event.type == SDL_KEYUP) keyhandler->keyUp(event.key.keysym.sym);
+    if (event.type == SDL_MOUSEMOTION)
+    {
+        game->setAngle(game->getAngle() + event.motion.xrel * MOUSE_SENS);
+    }
 }
 
 int main(int argc, char** argv)
@@ -115,7 +122,7 @@ int main(int argc, char** argv)
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
     myMap->setDoorMap(doorMap);
-    myMap->setSkyTexture(4);
+    myMap->setSkyTexture(3);
     TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
@@ -129,6 +136,7 @@ int main(int argc, char** argv)
     game->setMap(myMap);
     game->setPlayerPos({1.5,1.5});
     game->setEventHandler(eventHandler);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
     //std::cout << SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), 150, 0, 0, 255) << std::endl;
     game->gameplayLoop(playLoop);
     return 0;
