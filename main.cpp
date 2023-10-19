@@ -20,8 +20,8 @@ SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;   
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 0, 1, 0, 1},
-                      {1, 0, 0, 0, 1, 1, 0, 1},
-                      {1, 0, 0, 0, 0, 0, 0, 1},
+                      {1, 0, 0, 0, 0, 1, 0, 1},
+                      {1, 0, 0, 0, 0, 1, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
@@ -39,18 +39,18 @@ std::vector<std::vector<int>> floormap = {{1, 1, 1, 1, 1, 1, 1, 1},
 
 std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
-                                          {1, SKY, SKY, SKY, 1, 1, 1, 1},
-                                          {1, SKY, SKY, SKY, 1, 1, 1, 1},
-                                          {1, SKY, SKY, SKY, 1, 1, 1, 1},
-                                          {1, SKY, SKY, SKY, 1, 1, 1, 1},
+                                          {1, 1, 1, 1, 1, 1, 1, 1},
+                                          {1, 1, 1, 1, 1, 1, 1, 1},
+                                          {1, 1, 1, 1, 1, 1, 1, 1},
+                                          {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1}};
 
 std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
+                                           {{0}, {0}, {0}, {0}, {0}, {0}, {1, 17, true, 0.5}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
-                                           {{0}, {0}, {1, 17, true, 1}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}}};
@@ -61,6 +61,10 @@ double ticktime;
 //Deals with actions to be performed on certain keypresses
 void handleInput()
 {
+    if (keyhandler->isKeyDown(SDLK_d))
+        game->setPlayerPos({game->getPlayerPos().x - ticktime * game->getMoveSpeed() * sin(game->getAngle()*M_PI/180), game->getPlayerPos().y + ticktime * game->getMoveSpeed() * cos(game->getAngle()*M_PI/180)});
+    if (keyhandler->isKeyDown(SDLK_a))
+        game->setPlayerPos({game->getPlayerPos().x + ticktime * game->getMoveSpeed() * sin(game->getAngle()*M_PI/180), game->getPlayerPos().y - ticktime * game->getMoveSpeed() * cos(game->getAngle()*M_PI/180)});
     if (keyhandler->isKeyDown(SDLK_w))
         game->setPlayerPos({game->getPlayerPos().x + ticktime * game->getMoveSpeed() * cos(game->getAngle()*M_PI/180), game->getPlayerPos().y + ticktime * game->getMoveSpeed() * sin(game->getAngle()*M_PI/180)});
     if (keyhandler->isKeyDown(SDLK_s))

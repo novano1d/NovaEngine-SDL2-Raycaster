@@ -22,7 +22,7 @@ void Game::clrScreen(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 }
 
 bool nva::loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y)
-{
+{ 
     int n;
     unsigned char* data = stbi_load(filename.c_str(), &x, &y, &n, 4);
     if (data != nullptr)
@@ -309,7 +309,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 rgba ctex;
                 if (ceilTex == SKY)
                 {
-                    
                     int cw = currentTextureSet->widthHeightAt(map->getSkyTexture()).first;
                     int ch = currentTextureSet->widthHeightAt(map->getSkyTexture()).second;
                     if (angle < 0) angle += 360;
