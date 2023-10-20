@@ -1,7 +1,7 @@
 #include "sdlgame.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-#include <thread>
+
 // Game class implementation
 
 double Game::frameTime()

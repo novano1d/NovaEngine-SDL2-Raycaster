@@ -7,7 +7,7 @@
 #include <iostream>
 #include <unordered_set>
 #include <string>
-
+#include <thread>
 //Personal best resolution bc my engine performance is BAD
 // #define INTERNAL_RENDER_RES_HORIZ 512
 // #define INTERNAL_RENDER_RES_VERT 288
@@ -31,7 +31,7 @@ namespace nva
     }
     bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
     const int MAX_THREADS = 1; //Attempt at multithreading not working lol
-    const double BRIGHTNESS = 4; //resolution of the brightness scale
+    const double BRIGHTNESS = 5; //resolution of the brightness scale
 }
 
 struct Door
@@ -161,6 +161,7 @@ private:
     std::vector<std::vector<int>> floorMap;
     std::vector<std::vector<int>> ceilingMap;
     std::vector<std::vector<Door>> doorMap;
+    //lightmap values may need to be prebaked to improve performance (division x amount of times per frame adds up)
     std::vector<std::vector<double>> lightMap;
     std::vector<Sprite> sprites;
 };
