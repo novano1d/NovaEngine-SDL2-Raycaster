@@ -11,7 +11,6 @@
 // #define SCREEN_HEIGHT 480
 #define SCREEN_WIDTH 1280 
 #define SCREEN_HEIGHT 720
-const double MOUSE_SENS = 0.2;
 // #define SCREEN_WIDTH 1920 
 // #define SCREEN_HEIGHT 1080
 KeyHandler *keyhandler = new KeyHandler();
@@ -54,6 +53,15 @@ std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}}};
+
+std::vector<std::vector<double>> lightMap = {{1, 1, 1, 1, 1, 1, 1, 1},
+                                             {1, 1, 1, 1, 1, 1, 1, 1},
+                                             {1, 1, 1, 1, 1, 1, 1, 1},
+                                             {1, 1, 1, 0.5, 1, 1, 1, 1},
+                                             {1, 1, 1, 1, 1, 1, 1, 1},
+                                             {1, 0.7, 0.7, 0.7, 1, 1, 1, 1},
+                                             {1, 0.5, 0.7, 1, 1, 1, 1, 1},
+                                             {1, 0.5, 0.7, 1, 1, 1, 1, 1}};
 const int FOV = 60; 
  
 double ticktime;
@@ -103,7 +111,7 @@ void eventHandler(SDL_Event event)
     if (event.type == SDL_KEYUP) keyhandler->keyUp(event.key.keysym.sym);
     if (event.type == SDL_MOUSEMOTION)
     {
-        game->setAngle(game->getAngle() + event.motion.xrel * MOUSE_SENS);
+        game->setAngle(game->getAngle() + event.motion.xrel * game->getMouseSens());
     }
 }
 
@@ -126,6 +134,7 @@ int main(int argc, char** argv)
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
     myMap->setDoorMap(doorMap);
+    myMap->setLightMap(lightMap);
     myMap->setSkyTexture(3);
     TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif"});
     SDL_Init(SDL_INIT_VIDEO);

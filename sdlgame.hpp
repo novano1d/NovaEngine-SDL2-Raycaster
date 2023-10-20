@@ -31,6 +31,7 @@ namespace nva
     }
     bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
     const int MAX_THREADS = 1; //Attempt at multithreading not working lol
+    const double BRIGHTNESS = 4; //resolution of the brightness scale
 }
 
 struct Door
@@ -148,6 +149,9 @@ public:
     void setDoorMap(std::vector<std::vector<Door>> m) { doorMap = m; };
     Door getDoorTileAt(int x, int y) { return doorMap[y][x]; };
     void setDoorStateAt(int x, int y, Door d) { doorMap[y][x] = d; };
+    void setLightMap(std::vector<std::vector<double>> d) { lightMap = d; };
+    double getLightTileAt(int x, int y) { return lightMap[y][x]; };
+    void setLightStateAt(int x, int y, double d) { lightMap[y][x] = d; };
     void setSkyTexture(int i) { skyTexture = i; };
     int getSkyTexture() {return skyTexture; };
 private:
@@ -157,6 +161,7 @@ private:
     std::vector<std::vector<int>> floorMap;
     std::vector<std::vector<int>> ceilingMap;
     std::vector<std::vector<Door>> doorMap;
+    std::vector<std::vector<double>> lightMap;
     std::vector<Sprite> sprites;
 };
 
@@ -179,6 +184,7 @@ private:
     double angle = 0;
     double moveSpeed = 1; //map units per second
     double rotSpeed = 100; //degrees per second
+    double mouseSens = 0.1;
     TextureHandler* currentTextureSet = nullptr;
     SDL_Texture* textureBuffer;
     const double SKYSCALEFACTOR = 2;
@@ -212,6 +218,8 @@ public:
     double getAngle() { return angle; };
     void setAngle(double a) { angle = fmod(a, 360); }; //clamps angle to 0,360 degrees
     void setTextureSet(TextureHandler* t){ currentTextureSet = t; };
+    double getMouseSens() { return mouseSens; };
+    void setMouseSens(double d) { mouseSens = d; };
     ~GridGame();
 };
 

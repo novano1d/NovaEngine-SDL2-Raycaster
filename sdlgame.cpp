@@ -277,6 +277,8 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         int textureToRender = collision.tileData;
         int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender - 1).first);
         texX = nva::clamp<int>(texX, 0, currentTextureSet->widthHeightAt(textureToRender - 1).first);
+        double lightVal = nva::BRIGHTNESS - map->getLightTileAt(collision.intersect.x + 0.001, collision.intersect.y + 0.001) * nva::BRIGHTNESS;
+        if (lightVal == 0) lightVal = 1;
         if (textureToRender)
         {
             for (int y = drawStart; y < drawEnd; y++)
@@ -285,16 +287,10 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 texY = nva::clamp<int>(texY, 0, currentTextureSet->widthHeightAt(textureToRender - 1).second);
                 rgba textureColor;
                 textureColor = currentTextureSet->colorAt(textureToRender - 1, texX, texY);
-                if (collision.sideHit)
-                    pixels[y * renderWidth + i] = (textureColor.r << rshift) |
-                                                    (textureColor.g << gshift) |
-                                                    (textureColor.b << bshift) |
-                                                    (textureColor.a << ashift);
-                else
-                    pixels[y * renderWidth + i] = ((int)(textureColor.r / 1.5) << rshift) |
-                                                    ((int)(textureColor.g / 1.5) << gshift) |
-                                                    ((int)(textureColor.b / 1.5) << bshift) |
-                                                    (textureColor.a << ashift);
+                pixels[y * renderWidth + i] = ((int)(textureColor.r / lightVal) << rshift) |
+                                                ((int)(textureColor.g / lightVal) << gshift) |
+                                                ((int)(textureColor.b / lightVal) << bshift) |
+                                                (textureColor.a << ashift);
             }
             //floor casting
             for (int y = drawEnd + 1; y <= renderHeight; y++)
@@ -306,6 +302,8 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 double floorY = weight * collision.intersect.y + (1 - weight) * playerPos.y;
                 int ceilTex = map->getCeilingTileAt(floorX, floorY);
                 int floorTex = map->getFloorTileAt(floorX, floorY);
+                double lightVal = nva::BRIGHTNESS - map->getLightTileAt(floorX, floorY) * nva::BRIGHTNESS;
+                if (lightVal == 0) lightVal = 1;
                 rgba ctex;
                 if (ceilTex == SKY)
                 {
@@ -336,14 +334,14 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                 floorTexX = nva::clamp<int>(floorTexX, 0, fw);
                 floorTexY = nva::clamp<int>(floorTexY, 0, fh);
                 rgba ftex = currentTextureSet->colorAt(floorTex, floorTexX, floorTexY);
-                pixels[(y-1) * renderWidth + i] = (ftex.r << rshift) | //floor
-                                                        (ftex.g << gshift) |
-                                                        (ftex.b << bshift) |
+                pixels[(y-1) * renderWidth + i] = ((int)(ftex.r /lightVal) << rshift) | //floor
+                                                        ((int)(ftex.g / lightVal) << gshift) |
+                                                        ((int)(ftex.b / lightVal) << bshift) |
                                                         (ftex.a << ashift);
-                pixels[(renderHeight - y) * renderWidth + i] = (ctex.r << rshift) | //ceiling
-                                                        (ctex.g << gshift) |
-                                                        (ctex.b << bshift) |
-                                                        (ctex.a << ashift);
+                pixels[(renderHeight - y) * renderWidth + i] = ((int)(ctex.r / lightVal) << rshift) | //ceiling
+                                                               ((int)(ctex.g / lightVal) << gshift) |
+                                                               ((int)(ctex.b / lightVal) << bshift) |
+                                                               (ctex.a << ashift);
             }
         }
         else
@@ -394,7 +392,8 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         int drawEndX = spriteWidth / 2 + spriteScreenX;
         if(drawEndX >= renderWidth) drawEndX = renderWidth - 1;
         int texSelect = 0; //default
-
+        double lightVal = nva::BRIGHTNESS - map->getLightTileAt(it->x, it->y) * nva::BRIGHTNESS;
+        if (lightVal == 0) lightVal = 1;
         if (it->multiAngle && it->animated)
         {
             const int numOrientations = 8; // Eight orientations
@@ -512,9 +511,9 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
                     rgba textureColor;
                     textureColor = currentTextureSet->colorAt(texSelect, texX, texY);
                     if(textureColor.a != 0) // If the pixel is not transparent
-                        pixels[y * renderWidth + stripe] = (textureColor.r << rshift) |
-                                                            (textureColor.g << gshift) |
-                                                            (textureColor.b << bshift) |
+                        pixels[y * renderWidth + stripe] =  ((int)(textureColor.r / lightVal) << rshift) |
+                                                            ((int)(textureColor.g / lightVal) << gshift) |
+                                                            ((int)(textureColor.b / lightVal) << bshift) |
                                                             (textureColor.a << ashift);
                 }
             }
