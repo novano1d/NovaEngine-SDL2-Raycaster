@@ -32,6 +32,8 @@ namespace nva
     bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
     const int MAX_THREADS = 1; //Attempt at multithreading not working lol
     const double BRIGHTNESS = 5; //resolution of the brightness scale
+    const int SCREEN_WIDTH = 1280;
+    const int SCREEN_HEIGHT = 720;
 }
 
 struct Door
@@ -88,7 +90,7 @@ private:
     std::vector<std::vector<unsigned char>> loadedTextures;
     std::vector<std::pair<int, int>> loadedTextureSizes; //width height pairs
 public:
-    TextureHandler(std::vector<std::string>);
+    TextureHandler(SDL_Renderer* renderer, std::vector<std::string>);
     int numOfTextures() { return loadedTextures.size(); };
     inline std::vector<unsigned char> textureAt(int i) { return loadedTextures[i]; };
     inline std::pair<int, int> widthHeightAt(int i) { return loadedTextureSizes[i]; };

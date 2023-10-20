@@ -566,11 +566,25 @@ GridGame::~GridGame()
 }
 
 //Texture handler constructor takes in vector of filenames and loads them in
-TextureHandler::TextureHandler(std::vector<std::string> in)
+TextureHandler::TextureHandler(SDL_Renderer* renderer, std::vector<std::string> in)
 {
     int width, height;
-    for (std::string filename : in)
+    SDL_Rect progressBar;
+    progressBar.x = nva::SCREEN_WIDTH / 4;
+    progressBar.y = nva::SCREEN_HEIGHT / 2;
+    progressBar.h = 20;
+
+    // In your loading loop, update the progress bar width based on loading progress
+    int progress = 0;
+
+    // Set render color to white (for the progress bar)
+
+    // Render the progress bar
+    for (auto i = in.begin(); i != in.end(); i++)
     {
+        progress += 1;
+        progressBar.w = (nva::SCREEN_WIDTH / 2) * ((float)progress / in.size());
+        std::string filename = *i;
         std::vector<unsigned char> image;
         bool success = nva::loadImage(image, filename, width, height);
         if (!success)
@@ -579,6 +593,13 @@ TextureHandler::TextureHandler(std::vector<std::string> in)
         }
         loadedTextures.emplace_back(image);
         loadedTextureSizes.emplace_back(std::make_pair(width, height));
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderFillRect(renderer, &progressBar);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+        SDL_RenderPresent(renderer);
+        //SDL_Delay(100); for the proper loading screen effect lol
     }
 }
 

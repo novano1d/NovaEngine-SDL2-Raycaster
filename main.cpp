@@ -1,4 +1,3 @@
-#include <SDL2/SDL.h>
 #include "sdlgame.hpp"
 #include <iostream>
 
@@ -9,8 +8,8 @@
 //Global def
 // #define SCREEN_WIDTH 640 
 // #define SCREEN_HEIGHT 480
-#define SCREEN_WIDTH 1280 
-#define SCREEN_HEIGHT 720
+#define SCREEN_WIDTH nva::SCREEN_WIDTH 
+#define SCREEN_HEIGHT nva::SCREEN_HEIGHT
 // #define SCREEN_WIDTH 1920 
 // #define SCREEN_HEIGHT 1080
 KeyHandler *keyhandler = new KeyHandler();
@@ -136,7 +135,6 @@ int main(int argc, char** argv)
     myMap->setDoorMap(doorMap);
     myMap->setLightMap(lightMap);
     myMap->setSkyTexture(3);
-    TextureHandler *myTexture = new TextureHandler({"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif"});
     SDL_Init(SDL_INIT_VIDEO);
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("3D!! Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -144,6 +142,7 @@ int main(int argc, char** argv)
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); // for resolution scaling
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
+    TextureHandler *myTexture = new TextureHandler(renderer, {"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif"});
     game->setTextureSet(myTexture);
     game->setAngle(0);
     game->setMap(myMap);
