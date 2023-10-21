@@ -362,6 +362,11 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     {
         thread.join();
     }
+    /*
+    
+        SPRITES RENDERING
+
+    */
     std::vector<Sprite> *temp = &(map->getSprites()); //pointer so we don't sort each time :)
     //sort sprites by distance from player
     //std::vector<double> distance; //parallel distance vector
@@ -554,7 +559,28 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 
     // Render the back buffer texture in the window
     SDL_RenderCopy(renderer, textureBuffer, nullptr, &targetRect);
+    /*
+    
+            UI HERE DOWN THEN RENDER PRESENT
+    
+    */
+    SDL_Color white = { 255, 255, 255 };  // white color_
+    auto font = TTF_OpenFont("./fonts/SuboleyaRegular.ttf", 25);
+    if (font == nullptr) {
+        std::cerr << "Error loading font.";
+    }
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, "Health: 100", white);
 
+    // Convert the surface into a texture
+    SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+
+    // Create a rect for the text
+    SDL_Rect Message_rect; 
+    Message_rect.x = 0;  // The x position of the text, 0 in this case which means the text will be rendered at the left of the screen
+    Message_rect.y = SCREEN_HEIGHT - 30;  // The y position of the text, 0 in this case which means the text will be rendered at the bottom of the screen
+    Message_rect.w = 100; // The width of the text box
+    Message_rect.h = 30; // The height of the text box
+    SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
     // Present the rendered frame
     SDL_RenderPresent(renderer);
 }
@@ -566,6 +592,7 @@ GridGame::~GridGame()
 }
 
 //Texture handler constructor takes in vector of filenames and loads them in
+//Also takes in the renderer to handle a loading screen
 TextureHandler::TextureHandler(SDL_Renderer* renderer, std::vector<std::string> in)
 {
     int width, height;

@@ -2,8 +2,11 @@
 #include <iostream>
 #include <SDL2/SDL_ttf.h>
 //TODO
-// lighting?
-// render outside area
+//ui
+//animate doors
+//menu 
+//guns
+//enemy/sprite raycast collision
 
 //Global def
 // #define SCREEN_WIDTH 640 
