@@ -1,7 +1,7 @@
 #include "sdlgame.hpp"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
+#include <SDL2/SDL_ttf.h>
 // Game class implementation
 
 double Game::frameTime()
@@ -597,10 +597,26 @@ TextureHandler::TextureHandler(SDL_Renderer* renderer, std::vector<std::string> 
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderFillRect(renderer, &progressBar);
+        std::string percentage = std::to_string((progress / (float)in.size()) * 100) + "%";
+        SDL_Color color = { 255, 255, 255 };  // white color_
+        auto font = TTF_OpenFont("./fonts/SuboleyaRegular.ttf", 25);
+        if (font == nullptr) {
+            std::cerr << "Error loading font.";
+        }
+        SDL_Surface* surface = TTF_RenderText_Solid(font, percentage.c_str(), color);
+        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+        int textW = 0;
+        int textH = 0;
+        SDL_QueryTexture(texture, NULL, NULL, &textW, &textH);
+        SDL_Rect dstrect = { (nva::SCREEN_WIDTH - textW) / 2, progressBar.y - textH, textW, textH };
+        SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+        SDL_DestroyTexture(texture);
+        SDL_FreeSurface(surface);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderPresent(renderer);
-        //SDL_Delay(100); for the proper loading screen effect lol
+        TTF_CloseFont(font);
     }
+    
 }
 
 //might prove to be a bottleneck in performance since this function is called for every pixel being rendered on the wall.... therefore we may need to reduce

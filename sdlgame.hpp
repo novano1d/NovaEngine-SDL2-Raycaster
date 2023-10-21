@@ -191,6 +191,7 @@ private:
     TextureHandler* currentTextureSet = nullptr;
     SDL_Texture* textureBuffer;
     const double SKYSCALEFACTOR = 2;
+    
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
     //sets the current map pointer

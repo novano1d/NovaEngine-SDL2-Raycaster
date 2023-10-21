@@ -1,6 +1,6 @@
 #include "sdlgame.hpp"
 #include <iostream>
-
+#include <SDL2/SDL_ttf.h>
 //TODO
 // lighting?
 // render outside area
@@ -135,6 +135,7 @@ int main(int argc, char** argv)
     myMap->setLightMap(lightMap);
     myMap->setSkyTexture(3);
     SDL_Init(SDL_INIT_VIDEO);
+    TTF_Init();
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("3D!! Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     // Create SDL renderer with target texture flag
@@ -149,6 +150,8 @@ int main(int argc, char** argv)
     game->setEventHandler(eventHandler);
     SDL_SetRelativeMouseMode(SDL_TRUE);
     //std::cout << SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), 150, 0, 0, 255) << std::endl;
-    game->gameplayLoop(playLoop);
+    	
+    game->gameplayLoop(playLoop);	
+    TTF_Quit();
     return 0;
 }
