@@ -1,3 +1,26 @@
+/*
+
+Copyright © 2023 Matthew Moore
+
+This engine is free software. You can redistribute it and/or modify it under the terms of the License below.
+The Nova SDL Game Library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+This engine is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
+https://creativecommons.org/licenses/by-sa/4.0/
+
+ You are free to:
+
+    Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
+    Adapt — remix, transform, and build upon the material for any purpose, even commercially. 
+
+ Under the following terms:
+
+    Attribution - You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+    ShareAlike - If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original. 
+
+*/
+
 #include "sdlgame.hpp"
 #include <iostream>
 #include <SDL2/SDL_ttf.h>
@@ -43,14 +66,14 @@ std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
-                                          {1, 1, 1, 1, 1, 1, 1, 1},
-                                          {1, 1, 1, 1, 1, 1, 1, 1},
+                                          {1, 1, SKY, SKY, 1, 1, 1, 1},
+                                          {1, 1, SKY, SKY, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1}};
 
 std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
-                                           {{0}, {0}, {0}, {0}, {0}, {0}, {1, 17, true, 0.5}, {0}},
+                                           {{0}, {0}, {0}, {0}, {0}, {0}, {1, 17, true, 0.35}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
@@ -59,11 +82,11 @@ std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {
 std::vector<std::vector<double>> lightMap = {{1, 1, 1, 1, 1, 1, 1, 1},
                                              {1, 1, 1, 1, 1, 1, 1, 1},
                                              {1, 1, 1, 1, 1, 1, 1, 1},
-                                             {1, 1, 1, 0.5, 1, 1, 1, 1},
+                                             {1, 1, 1, 0.8, 1, 1, 1, 1},
                                              {1, 1, 1, 1, 1, 1, 1, 1},
-                                             {1, 0.7, 0.7, 0.7, 1, 1, 1, 1},
-                                             {1, 0.5, 0.7, 1, 1, 1, 1, 1},
-                                             {1, 0.5, 0.7, 1, 1, 1, 1, 1}};
+                                             {1, 1, 1, 1, 1, 1, 1, 1},
+                                             {1, 1, 1, 1, 1, 1, 1, 1},
+                                             {1, 1, 1, 1, 1, 1, 1, 1}};
 const int FOV = 60; 
  
 double ticktime;
@@ -152,7 +175,7 @@ int main(int argc, char** argv)
     game->setPlayerPos({1.5,1.5});
     game->setEventHandler(eventHandler);
     SDL_SetRelativeMouseMode(SDL_TRUE);
-    //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     //std::cout << SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), 150, 0, 0, 255) << std::endl;
     	
     game->gameplayLoop(playLoop);	
