@@ -92,7 +92,6 @@ void handleInput()
         game->setMoveSpeed(1.5);
         game->setRotSpeed(110);
     }
-        
 }       
 
 double totalTime = 0; //debug var
