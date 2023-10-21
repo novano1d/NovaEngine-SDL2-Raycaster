@@ -171,11 +171,12 @@ private:
 //Little object to tidy up raycast return
 struct CollisionEvent
 {
-    bool hit = false; //Hit or not
+    int hit = 0; //Hit or not and index
     Point intersect = {-1,-1}; //point of intersection
     int sideHit = 0; //side hit
     double perpWallDist = -1; //perpendicular wall distance (from viewing plane)
     int tileData = -1; //Contains tile data for texture
+    double doorProgress; //door data
 };
 
 //Specific type of game that contains a 2d map and various functions to build a game from such a 2d map

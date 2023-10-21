@@ -165,14 +165,14 @@ inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
                 {
                     if (intersection.x >= mapCheck.x + 0.0001 && intersection.x <= mapCheck.x - 0.0001 + doorProgress) //rounding error sigh
                     {
-                        return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex}; 
+                        return {2, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex, map->getDoorTileAt(mapCheck.x, mapCheck.y).doorProgress}; 
                     }
                 }
                 else //vert
                 {
                     if (intersection.y >= mapCheck.y + 0.0001 && intersection.y <= mapCheck.y - 0.0001 + doorProgress)
                     {
-                        return {true, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex}; 
+                        return {2, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex, map->getDoorTileAt(mapCheck.x, mapCheck.y).doorProgress}; 
                     }
                 }
             }
@@ -277,10 +277,21 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         int textureToRender = collision.tileData;
         int texX = static_cast<int>(texCoord * currentTextureSet->widthHeightAt(textureToRender - 1).first);
         texX = nva::clamp<int>(texX, 0, currentTextureSet->widthHeightAt(textureToRender - 1).first);
+        if (collision.hit == 2) // door we need to offset the texture according to the progress
+        {
+            texX = static_cast<int>((texCoord + (1 - collision.doorProgress)) * currentTextureSet->widthHeightAt(textureToRender - 1).first);
+            texX = nva::clamp<int>(texX, 0, currentTextureSet->widthHeightAt(textureToRender - 1).first);
+        }
+        
         double lightVal = nva::BRIGHTNESS - map->getLightTileAt(collision.intersect.x + 0.001, collision.intersect.y + 0.001) * nva::BRIGHTNESS;
         if (lightVal == 0) lightVal = 1;
         if (textureToRender)
         {
+            /*
+            
+                Walls
+
+            */
             for (int y = drawStart; y < drawEnd; y++)
             {
                 int texY = (((y * 2 - renderHeight + lineHeight) * currentTextureSet->widthHeightAt(textureToRender - 1).second) / lineHeight) / 2;
@@ -577,7 +588,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     // Create a rect for the text
     SDL_Rect Message_rect; 
     Message_rect.x = 0;  // The x position of the text, 0 in this case which means the text will be rendered at the left of the screen
-    Message_rect.y = SCREEN_HEIGHT - 30;  // The y position of the text, 0 in this case which means the text will be rendered at the bottom of the screen
+    Message_rect.y = 0;  // The y position of the text, 0 in this case which means the text will be rendered at the bottom of the screen
     Message_rect.w = 100; // The width of the text box
     Message_rect.h = 30; // The height of the text box
     SDL_RenderCopy(renderer, Message, NULL, &Message_rect);

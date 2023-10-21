@@ -50,7 +50,7 @@ std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
 std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
-                                           {{0}, {0}, {0}, {0}, {0}, {0}, {1, 17, true, 1}, {0}},
+                                           {{0}, {0}, {0}, {0}, {0}, {0}, {1, 17, true, 0.5}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
@@ -152,6 +152,7 @@ int main(int argc, char** argv)
     game->setPlayerPos({1.5,1.5});
     game->setEventHandler(eventHandler);
     SDL_SetRelativeMouseMode(SDL_TRUE);
+    //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     //std::cout << SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), 150, 0, 0, 255) << std::endl;
     	
     game->gameplayLoop(playLoop);	
