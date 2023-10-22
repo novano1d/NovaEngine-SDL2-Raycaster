@@ -31,6 +31,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 #include <unordered_set>
 #include <string>
 #include <thread>
+#include <SDL2/SDL_ttf.h>
 #include "./src/include/SDL2/SDL_fox.h"
 //Personal best resolution bc my engine performance is BAD
 // #define INTERNAL_RENDER_RES_HORIZ 512

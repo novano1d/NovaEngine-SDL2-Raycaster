@@ -22,11 +22,9 @@ https://creativecommons.org/licenses/by-sa/4.0/
 */
 
 #include "engine.hpp"
-#include <iostream>
-#include <SDL2/SDL_ttf.h>
 //TODO
-//code terminal
 //ui
+//code terminal
 //animate doors
 //menu 
 //guns
