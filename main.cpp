@@ -155,7 +155,7 @@ int main(int argc, char** argv)
     //myMap->addSprite(animSides);
     myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
     myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
-    myMap->addSprite({2, 2, 3, 0, true, {16, 13, 16, 14, 16, 15, 64, 5}});
+    myMap->addSprite({2, 2, 3, 0, true, {32, 13, 32, 14, 32, 15, 160, 5}});
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
     myMap->setDoorMap(doorMap);
@@ -167,7 +167,7 @@ int main(int argc, char** argv)
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("3D!! Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     // Create SDL renderer with target texture flag
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); // for resolution scaling
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
     TextureHandler *myTexture = new TextureHandler(renderer, {"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif"});

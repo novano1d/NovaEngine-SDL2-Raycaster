@@ -30,10 +30,11 @@ https://creativecommons.org/licenses/by-sa/4.0/
 double Game::frameTime()
 {
     oldTime = time;
-    time = SDL_GetTicks();
-    double ticktime = (time - oldTime) / 1000.0;
+    time = SDL_GetPerformanceCounter();
+    double ticktime = static_cast<float>(time - oldTime) / static_cast<float>(SDL_GetPerformanceFrequency());
     ticks += TICKS * ticktime;
     if (ticks >= UINT64_MAX) ticks = 0; //reset ticks if too big
+    std::cout << ticks << std::endl << time << std::endl << ticktime;
     return ticktime;
 } 
 
