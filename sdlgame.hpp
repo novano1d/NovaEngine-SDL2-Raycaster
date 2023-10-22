@@ -31,6 +31,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 #include <unordered_set>
 #include <string>
 #include <thread>
+#include "./src/include/SDL2/SDL_fox.h"
 //Personal best resolution bc my engine performance is BAD
 // #define INTERNAL_RENDER_RES_HORIZ 512
 // #define INTERNAL_RENDER_RES_VERT 288
@@ -127,6 +128,7 @@ protected:
     SDL_PixelFormat* format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
     SDL_Renderer* renderer = nullptr;
     SDL_Window* window = nullptr;
+    FOX_Font *font;
     const int SCREEN_WIDTH;
     const int SCREEN_HEIGHT;
     double oldTime = 0;
@@ -143,6 +145,8 @@ public:
     void setEventHandler(void(*ptr)(SDL_Event));
     //returns frameTime
     double frameTime();
+    void setFont(FOX_Font* p) { font = p; };
+    FOX_Font* getFont() { return font; };
     void setTicks(int t) { ticks = t; };
     int getTicks() { return ticks; };
 };
@@ -201,6 +205,8 @@ struct CollisionEvent
     int tileData = -1; //Contains tile data for texture
     double doorProgress; //door data
 };
+
+//Console for purposes
 
 //Specific type of game that contains a 2d map and various functions to build a game from such a 2d map
 class GridGame : public Game

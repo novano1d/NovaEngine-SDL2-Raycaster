@@ -25,6 +25,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 #include <iostream>
 #include <SDL2/SDL_ttf.h>
 //TODO
+//code terminal
 //ui
 //animate doors
 //menu 
@@ -162,6 +163,7 @@ int main(int argc, char** argv)
     myMap->setSkyTexture(3);
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
+    FOX_Init();
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("3D!! Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     // Create SDL renderer with target texture flag
@@ -175,10 +177,12 @@ int main(int argc, char** argv)
     game->setPlayerPos({1.5,1.5});
     game->setEventHandler(eventHandler);
     SDL_SetRelativeMouseMode(SDL_TRUE);
-    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     //std::cout << SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), 150, 0, 0, 255) << std::endl;
-    	
+    game->setFont(FOX_OpenFont(renderer, "./fonts/SuboleyaRegular.ttf", 25));
     game->gameplayLoop(playLoop);	
     TTF_Quit();
+    FOX_CloseFont(game->getFont());
+    FOX_Exit();
     return 0;
 }

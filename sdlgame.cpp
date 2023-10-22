@@ -599,23 +599,25 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             UI HERE DOWN THEN RENDER PRESENT
     
     */
-    SDL_Color white = { 255, 255, 255 };  // white color_
-    auto font = TTF_OpenFont("./fonts/SuboleyaRegular.ttf", 25);
-    if (font == nullptr) {
-        std::cerr << "Error loading font.";
-    }
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, "Health: 100", white);
+    // SDL_Color white = { 255, 255, 255 };  // white color_
+    // auto font = TTF_OpenFont("./fonts/SuboleyaRegular.ttf", 25);
+    // if (font == nullptr) {
+    //     std::cerr << "Error loading font.";
+    // }
+    // SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, "Health: 100", white);
 
     // Convert the surface into a texture
-    SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    //SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
 
     // Create a rect for the text
-    SDL_Rect Message_rect; 
-    Message_rect.x = 0;  // The x position of the text, 0 in this case which means the text will be rendered at the left of the screen
-    Message_rect.y = 0;  // The y position of the text, 0 in this case which means the text will be rendered at the bottom of the screen
-    Message_rect.w = 100; // The width of the text box
-    Message_rect.h = 30; // The height of the text box
-    SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
+    // SDL_Rect Message_rect; 
+    // Message_rect.x = 0;  // The x position of the text, 0 in this case which means the text will be rendered at the left of the screen
+    // Message_rect.y = 0;  // The y position of the text, 0 in this case which means the text will be rendered at the bottom of the screen
+    // Message_rect.w = 100; // The width of the text box
+    // Message_rect.h = 30; // The height of the text box
+    // SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
+    SDL_Point point = {0, 0};
+    FOX_RenderText(font, (const Uint8*)"Health: 100", &point);
     // Present the rendered frame
     SDL_RenderPresent(renderer);
 }
