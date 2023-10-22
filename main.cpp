@@ -21,7 +21,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 */
 
-#include "sdlgame.hpp"
+#include "engine.hpp"
 #include <iostream>
 #include <SDL2/SDL_ttf.h>
 //TODO
