@@ -34,7 +34,6 @@ double Game::frameTime()
     double ticktime = static_cast<float>(time - oldTime) / static_cast<float>(SDL_GetPerformanceFrequency());
     ticks += TICKS * ticktime;
     if (ticks >= UINT64_MAX) ticks = 0; //reset ticks if too big
-    std::cout << ticks << std::endl << time << std::endl << ticktime;
     return ticktime;
 } 
 

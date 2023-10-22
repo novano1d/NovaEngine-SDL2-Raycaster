@@ -39,7 +39,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 //360p
 // #define INTERNAL_RENDER_RES_HORIZ 640
 // #define INTERNAL_RENDER_RES_VERT 360
-#define TICKS 256
+#define TICKS 256 //Ticks need to be increased if frame rate is going to be really high or you need to limit the main game loop to ~144hz
 #define INTERNAL_RENDER_RES_HORIZ 320
 #define INTERNAL_RENDER_RES_VERT 180
 #define SKY 0xFFFFF
