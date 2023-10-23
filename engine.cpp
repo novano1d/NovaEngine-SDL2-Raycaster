@@ -588,7 +588,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         targetRect.w = windowWidth;
         targetRect.h = targetHeight;
     }
-
     // Clear the window with black color
     //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
@@ -600,25 +599,39 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             UI HERE DOWN THEN RENDER PRESENT
     
     */
-    // SDL_Color white = { 255, 255, 255 };  // white color_
-    // auto font = TTF_OpenFont("./fonts/SuboleyaRegular.ttf", 25);
-    // if (font == nullptr) {
-    //     std::cerr << "Error loading font.";
-    // }
-    // SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, "Health: 100", white);
 
-    // Convert the surface into a texture
-    //SDL_Texture* Message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+    //Render gun
+    const int GUNSCALE = 4;
+    std::vector<unsigned char> imageData = currentTextureSet->getLoadedTextures()[gunIndex];
+    std::pair<int, int> dimensions = currentTextureSet->widthHeightAt(gunIndex);
+    int32_t width = dimensions.first;
+    int32_t height = dimensions.second;
+    if (width <= 0 || height <= 0 || imageData.size() % (width * height) != 0) {
+        // Handle the error
+        std::cerr << "Invalid image dimensions or data size" << std::endl;
+        return;
+    }
+    int screenWidth, screenHeight;
+    SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight); 
+    int x = (screenWidth - (width*GUNSCALE)) / 2; // Horizontal position for center alignment.
+    int y = screenHeight - height*GUNSCALE; // Vertical position for bottom alignment.
+    SDL_Rect dstrect = { x, y, width*GUNSCALE, height*GUNSCALE };
+    int32_t bytesPerPixel = imageData.size() / (width * height);
+    int32_t pit = width * bytesPerPixel;
+    pit = (pit + 3) & ~3; // Align the pitch to 4 bytes
+    int32_t Rmask = 0x000000FF;
+    int32_t Gmask = 0x0000FF00;
+    int32_t Bmask = 0x00FF0000;
+    int32_t Amask = (bytesPerPixel == 4) ? 0xFF000000 : 0;
+    SDL_Surface * surface = SDL_CreateRGBSurfaceFrom((imageData.data()), width, height, bytesPerPixel * 8, pit, Rmask, Gmask, Bmask, Amask);
+    SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
 
-    // Create a rect for the text
-    // SDL_Rect Message_rect; 
-    // Message_rect.x = 0;  // The x position of the text, 0 in this case which means the text will be rendered at the left of the screen
-    // Message_rect.y = 0;  // The y position of the text, 0 in this case which means the text will be rendered at the bottom of the screen
-    // Message_rect.w = 100; // The width of the text box
-    // Message_rect.h = 30; // The height of the text box
-    // SDL_RenderCopy(renderer, Message, NULL, &Message_rect);
-    SDL_Point point = {0, 0};
-    FOX_RenderText(font, (const Uint8*)"Health: 100", &point);
+    // SDL_Point point = {0, 0};
+    // FOX_RenderText(font, (const Uint8*)"Health: 100", &point);
+
     // Present the rendered frame
     SDL_RenderPresent(renderer);
 }

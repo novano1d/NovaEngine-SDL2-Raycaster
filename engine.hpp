@@ -120,6 +120,7 @@ public:
     inline std::vector<unsigned char> textureAt(int i) { return loadedTextures[i]; };
     inline std::pair<int, int> widthHeightAt(int i) { return loadedTextureSizes[i]; };
     inline rgba colorAt(int textureIndex, int x, int y);
+    inline std::vector<std::vector<unsigned char>> getLoadedTextures() {return loadedTextures;};
 };
 
 //Game Class to clean things up a bit and provide a template
@@ -213,6 +214,7 @@ struct CollisionEvent
 class GridGame : public Game
 {
 private:
+    int gunIndex = 0;
     Map* map = nullptr;
     Point playerPos;
     double angle = 0;
@@ -222,7 +224,6 @@ private:
     TextureHandler* currentTextureSet = nullptr;
     SDL_Texture* textureBuffer;
     const double SKYSCALEFACTOR = 2;
-    
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
     //sets the current map pointer
@@ -255,6 +256,8 @@ public:
     void setTextureSet(TextureHandler* t){ currentTextureSet = t; };
     double getMouseSens() { return mouseSens; };
     void setMouseSens(double d) { mouseSens = d; };
+    void setGunIndex(int i) {gunIndex = i;};
+    int getGunIndex() { return gunIndex; };
     ~GridGame();
 };
 

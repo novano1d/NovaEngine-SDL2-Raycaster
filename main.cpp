@@ -50,7 +50,6 @@ Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
                       {1, 1, 1, 1, 3, 1, 1, 1}});
 
-
 std::vector<std::vector<int>> floormap = {{1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
                                           {1, 1, 1, 1, 1, 1, 1, 1},
@@ -89,6 +88,14 @@ std::vector<std::vector<double>> lightMap = {{1, 1, 1, 1, 1, 1, 1, 1},
 const int FOV = 60; 
  
 double ticktime;
+SDL_TimerID timerID;
+bool canShoot = true;
+Uint32 resetGun(Uint32 interval, void* name) {
+    canShoot = true;
+    game->setGunIndex(17);
+    SDL_RemoveTimer(timerID);
+    return 0;
+}
 
 //Deals with actions to be performed on certain keypresses
 void handleInput()
@@ -116,6 +123,12 @@ void handleInput()
     {
         game->setMoveSpeed(1.5);
         game->setRotSpeed(110);
+    }
+    if (keyhandler->isKeyDown(SDLK_LCTRL) && canShoot) 
+    {
+        game->setGunIndex(18);
+        canShoot = false;
+        timerID = SDL_AddTimer(750, resetGun, const_cast<char*>("SDL"));
     }
 }       
 
@@ -159,7 +172,7 @@ int main(int argc, char** argv)
     myMap->setDoorMap(doorMap);
     myMap->setLightMap(lightMap);
     myMap->setSkyTexture(3);
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     TTF_Init();
     FOX_Init();
     //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
@@ -168,7 +181,7 @@ int main(int argc, char** argv)
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); // for resolution scaling
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
-    TextureHandler *myTexture = new TextureHandler(renderer, {"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif"});
+    TextureHandler *myTexture = new TextureHandler(renderer, {"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif", "DESuperShotgun_f02.png", "DESuperShotgun_f03.png"});
     game->setTextureSet(myTexture);
     game->setAngle(0);
     game->setMap(myMap);
@@ -178,6 +191,7 @@ int main(int argc, char** argv)
     //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     //std::cout << SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), 150, 0, 0, 255) << std::endl;
     game->setFont(FOX_OpenFont(renderer, "./fonts/SuboleyaRegular.ttf", 25));
+    game->setGunIndex(17);
     game->gameplayLoop(playLoop);	
     TTF_Quit();
     FOX_CloseFont(game->getFont());
