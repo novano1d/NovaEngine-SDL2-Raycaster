@@ -59,7 +59,7 @@ namespace nva
     const double BRIGHTNESS = 10; //resolution of the brightness scale
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
-    inline bool checkCirc(int cx, int cy, int r, int x, int y) {
+    inline bool checkCirc(double cx, double cy, double r, double x, double y) {
         return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= r * r;
     }
 }

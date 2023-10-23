@@ -165,9 +165,9 @@ int main(int argc, char** argv)
     //     {64, 3, 64, 2}
     //     }};
     //myMap->addSprite(animSides);
-    myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0, 0.5, 10});
-    myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
-    myMap->addSprite({2, 2, 3, 0, true, {32, 13, 32, 14, 32, 15, 160, 5}});
+    myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0, 0.2, 69});
+    //myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
+    //myMap->addSprite({2, 2, 3, 0, true, {32, 13, 32, 14, 32, 15, 160, 5}});
     myMap->setFloorMap(floormap);
     myMap->setCeilingMap(ceilmap);
     myMap->setDoorMap(doorMap);
