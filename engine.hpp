@@ -59,6 +59,9 @@ namespace nva
     const double BRIGHTNESS = 10; //resolution of the brightness scale
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
+    inline bool test(int cx, int cy, int r, int x, int y) {
+        return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= r * r;
+    }
 }
 
 struct Door
@@ -103,6 +106,7 @@ struct Sprite
     std::vector<std::vector<int>> animIndexesAngled; //each vector of reels [frametime (ticks), index, frametime(ticks), index] for each different angle
     int curAnimIndex = 0; // internal tracker of current frame if animated
     int lastSpriteTick = 0; //internal tick for determining current frame if animated
+    double radius = 0.5; //we need a radius for collision detection on each sprite
 };
 
 //This class will handle loading all necessary texture images
@@ -208,8 +212,6 @@ struct CollisionEvent
     double doorProgress; //door data
 };
 
-//Console for purposes
-
 //Specific type of game that contains a 2d map and various functions to build a game from such a 2d map
 class GridGame : public Game
 {
@@ -258,6 +260,7 @@ public:
     void setMouseSens(double d) { mouseSens = d; };
     void setGunIndex(int i) {gunIndex = i;};
     int getGunIndex() { return gunIndex; };
+    int shoot(Point p, double a);
     ~GridGame();
 };
 

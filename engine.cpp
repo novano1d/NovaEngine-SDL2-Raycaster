@@ -254,6 +254,37 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
     SDL_RenderPresent(renderer); // fast enough we don't need a buffer
 }
 
+//returns the index of the sprite hit
+int GridGame::shoot(Point p, double a)
+{
+    CollisionEvent e = ddaRaycast(p, a);
+    std::vector<std::pair<double, int>> distIndexVec;
+    a *= M_PI/180;
+    double xcom = cos(a) * 0.01; //change so we increment
+    double ycom = sin(a) * 0.01;
+    auto sprites = map->getSprites();
+    double RANGE = 100;
+    int index = 0;
+    for (auto s = sprites.begin(); s != sprites.end(); s++)
+    {
+        for (double i = 0; i < RANGE; i += 0.01)
+        {
+            if (nva::checkCirc(s->x, s->y, s->radius, p.x, p.y))
+            {
+                distIndexVec.push_back(std::make_pair(i, index));
+            }
+            p.x += xcom;
+            p.y += ycom;
+        }
+        index++;
+    }
+    std::sort(distIndexVec.begin(), distIndexVec.end(), std::less<std::pair<double, int>>());
+    if(distIndexVec.size() == 0) return 0;
+    if (distIndexVec.at(0).first < e.perpWallDist)
+        return index;
+    return 0;
+}
+
 //speed could almost certainly be improved with multithreading or decreasing # of raycasts
 void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 {

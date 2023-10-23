@@ -128,6 +128,7 @@ void handleInput()
     {
         game->setGunIndex(18);
         canShoot = false;
+        std::cout << game->shoot(game->getPlayerPos(), game->getAngle()) << std::endl;
         timerID = SDL_AddTimer(750, resetGun, const_cast<char*>("SDL"));
     }
 }       
