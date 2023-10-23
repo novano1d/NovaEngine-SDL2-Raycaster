@@ -258,31 +258,38 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
 int GridGame::shoot(Point p, double a)
 {
     CollisionEvent e = ddaRaycast(p, a);
-    std::vector<std::pair<double, int>> distIndexVec;
+    std::vector<std::pair<int, int>> distIndexVec;
+    a = fmod(a, 360);
     a *= M_PI/180;
     double xcom = cos(a) * 0.01; //change so we increment
     double ycom = sin(a) * 0.01;
     auto sprites = map->getSprites();
-    double RANGE = 100;
+    double RANGE = 1000;
     int index = 0;
-    for (auto s = sprites.begin(); s != sprites.end(); s++)
+    Point check = p;
+    for (int t = 0; t < sprites.size(); t++)
     {
-        for (double i = 0; i < RANGE; i += 0.01)
+        Sprite s = sprites[t];
+        check = p;
+        double d = 0;
+        for (int i = 0; i < RANGE; i++)
         {
-            if (nva::checkCirc(s->x, s->y, s->radius, p.x, p.y))
+            if (nva::checkCirc(s.x, s.y, s.radius, check.x, check.y))
             {
-                distIndexVec.push_back(std::make_pair(i, index));
+                distIndexVec.push_back(std::make_pair(d, s.ID));
+                goto brloop;
             }
-            p.x += xcom;
-            p.y += ycom;
+            check.x += xcom;
+            check.y += ycom;
+            d += hypot(xcom, ycom);
         }
-        index++;
+        brloop:
     }
-    std::sort(distIndexVec.begin(), distIndexVec.end(), std::less<std::pair<double, int>>());
-    if(distIndexVec.size() == 0) return 0;
+    std::sort(distIndexVec.begin(), distIndexVec.end());
+    if (distIndexVec.size() == 0) return -1;
     if (distIndexVec.at(0).first < e.perpWallDist)
-        return index;
-    return 0;
+        return distIndexVec.at(0).second;
+    return -1;
 }
 
 //speed could almost certainly be improved with multithreading or decreasing # of raycasts

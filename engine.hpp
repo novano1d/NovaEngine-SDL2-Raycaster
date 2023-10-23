@@ -59,7 +59,7 @@ namespace nva
     const double BRIGHTNESS = 10; //resolution of the brightness scale
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
-    inline bool test(int cx, int cy, int r, int x, int y) {
+    inline bool checkCirc(int cx, int cy, int r, int x, int y) {
         return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= r * r;
     }
 }
@@ -107,6 +107,7 @@ struct Sprite
     int curAnimIndex = 0; // internal tracker of current frame if animated
     int lastSpriteTick = 0; //internal tick for determining current frame if animated
     double radius = 0.5; //we need a radius for collision detection on each sprite
+    int ID = 255; //necessary for determining collision
 };
 
 //This class will handle loading all necessary texture images
