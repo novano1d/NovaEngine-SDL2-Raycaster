@@ -128,12 +128,16 @@ private:
     inline static int ID = 0;
 public:
     EntityHandler() {};
-    EntityHandler(std::vector<Entity> e) {
-        for (Entity i : e)            {
-            i.ID = ID;
+    EntityHandler(std::vector<Entity> e){
+        for (auto i = e.begin(); i != e.end(); i++){
+            i->ID = ID;
             ID++;
-            entities.emplace_back(i); }  }
-    void addEntity(Entity i) { entities.emplace_back(i); };
+            entities.push_back(*i); }}
+    void addEntity(Entity i) { 
+        i.ID = ID;
+        ID++;
+        entities.push_back(i); 
+        };
     Entity entityAt(int i) { return entities.at(i); };
     void setEntityAt(int i, Entity e) { entities[i] = e; };
     std::vector<Entity>& getEntityVec() { return entities; };
