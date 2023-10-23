@@ -254,7 +254,9 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
     SDL_RenderPresent(renderer); // fast enough we don't need a buffer
 }
 
-//returns the index of the sprite hit
+
+
+//returns the ID of the entity hit
 int GridGame::shoot(Point p, double a)
 {
     CollisionEvent e = ddaRaycast(p, a);
@@ -263,20 +265,21 @@ int GridGame::shoot(Point p, double a)
     a *= M_PI/180;
     double xcom = cos(a) * 0.01; //change so we increment
     double ycom = sin(a) * 0.01;
-    auto sprites = map->getSprites();
+    //auto sprites = map->getSprites();
+    auto entities = map->getEntities()->getEntityVec();
     double RANGE = 1000;
     int index = 0;
     Point check = p;
-    for (int t = 0; t < sprites.size(); t++)
+    for (int t = 0; t < entities.size(); t++)
     {
-        Sprite s = sprites[t];
+        Entity e = entities[t]; //modify so looping through entities, not all sprites
         check = p;
         double d = 0;
         for (int i = 0; i < RANGE; i++)
         {
-            if (nva::checkCirc(s.x, s.y, s.radius, check.x, check.y))
+            if (nva::checkCirc(e.pos.x, e.pos.y, e.radius, check.x, check.y))
             {
-                distIndexVec.push_back(std::make_pair(d, s.ID));
+                distIndexVec.push_back(std::make_pair(d, e.ID));
                 goto brloop;
             }
             check.x += xcom;
@@ -287,7 +290,7 @@ int GridGame::shoot(Point p, double a)
     }
     std::sort(distIndexVec.begin(), distIndexVec.end());
     if (distIndexVec.size() == 0) return -1;
-    if (distIndexVec.at(0).first < e.perpWallDist)
+    if (distIndexVec.at(0).first < e.perpWallDist) //if the bullet is occluded we don't want to reg a hit
         return distIndexVec.at(0).second;
     return -1;
 }

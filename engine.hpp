@@ -106,8 +106,38 @@ struct Sprite
     std::vector<std::vector<int>> animIndexesAngled; //each vector of reels [frametime (ticks), index, frametime(ticks), index] for each different angle
     int curAnimIndex = 0; // internal tracker of current frame if animated
     int lastSpriteTick = 0; //internal tick for determining current frame if animated
-    double radius = 0.5; //we need a radius for collision detection on each sprite
-    int ID = 255; //necessary for determining collision
+};
+
+struct Entity
+{
+    Point pos;
+    double radius = 0.2;
+    std::string nametype;
+    int HP = 100;
+    int ID;
+    
+    
+    //can add sprite information and loop through and handle all the entities on the map during the game loop
+    //change and update their sprites appropriately
+};
+
+class EntityHandler
+{
+private:
+    std::vector<Entity> entities;
+    inline static int ID = 0;
+public:
+    EntityHandler() {};
+    EntityHandler(std::vector<Entity> e) {
+        for (Entity i : e)            {
+            i.ID = ID;
+            ID++;
+            entities.emplace_back(i); }  }
+    void addEntity(Entity i) { entities.emplace_back(i); };
+    Entity entityAt(int i) { return entities.at(i); };
+    void setEntityAt(int i, Entity e) { entities[i] = e; };
+    std::vector<Entity>& getEntityVec() { return entities; };
+    void deleteEntityAt(int i) { entities.erase(entities.begin() + i); };
 };
 
 //This class will handle loading all necessary texture images
@@ -174,6 +204,7 @@ public:
     Map(std::vector<std::vector<int>> m, std::vector<Sprite> s = {}) : map(m) {}
     void addSprite(Sprite s) { sprites.push_back(s); };
     void removeSpriteAtEnd() { sprites.pop_back(); };
+    void removeSpriteAt(int i) { sprites.erase(sprites.begin() + i); };
     int getTileAt(int x, int y) { return map[y][x]; };
     int ySize() { return map[0].size(); };
     int xSize() { return map.size(); };
@@ -190,6 +221,8 @@ public:
     void setLightStateAt(int x, int y, double d) { lightMap[y][x] = d; };
     void setSkyTexture(int i) { skyTexture = i; };
     int getSkyTexture() {return skyTexture; };
+    EntityHandler* getEntities() { return entitiesOnMap; };
+    void setEntityHandler(EntityHandler* p) { entitiesOnMap = p; };
 private:
     //Could eventually swap int for a Tile class
     int skyTexture;
@@ -200,6 +233,7 @@ private:
     //lightmap values may need to be prebaked to improve performance (division x amount of times per frame adds up)
     std::vector<std::vector<double>> lightMap;
     std::vector<Sprite> sprites;
+    EntityHandler* entitiesOnMap = nullptr;
 };
 
 //Little object to tidy up raycast return
