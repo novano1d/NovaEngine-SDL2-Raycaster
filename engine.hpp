@@ -40,7 +40,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 //360p
 // #define INTERNAL_RENDER_RES_HORIZ 640
 // #define INTERNAL_RENDER_RES_VERT 360
-#define TICKS 256 //Ticks need to be increased if frame rate is going to be really high or you need to limit the main game loop to ~144hz
+#define TICKS 64 //Ticks need to be increased if frame rate is going to be really high or you need to limit the main game loop to ~144hz
 #define INTERNAL_RENDER_RES_HORIZ 320
 #define INTERNAL_RENDER_RES_VERT 180
 #define SKY 0xFFFFF
@@ -159,7 +159,7 @@ public:
     inline std::vector<unsigned char> textureAt(int i) { return loadedTextures[i]; };
     inline std::pair<int, int> widthHeightAt(int i) { return loadedTextureSizes[i]; };
     inline rgba colorAt(int textureIndex, int x, int y);
-    inline std::vector<std::vector<unsigned char>> getLoadedTextures() {return loadedTextures;};
+    inline std::vector<std::vector<unsigned char>>& getLoadedTextures() {return loadedTextures;};
 };
 
 //Game Class to clean things up a bit and provide a template
@@ -297,7 +297,7 @@ public:
     void setTextureSet(TextureHandler* t){ currentTextureSet = t; };
     double getMouseSens() { return mouseSens; };
     void setMouseSens(double d) { mouseSens = d; };
-    void setGunIndex(int i) {gunIndex = i;};
+    void setGunIndex(int i) { gunIndex = i; };
     int getGunIndex() { return gunIndex; };
     int shoot(Point p, double a);
     ~GridGame();

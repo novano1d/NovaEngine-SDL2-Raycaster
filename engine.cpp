@@ -647,11 +647,6 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     std::pair<int, int> dimensions = currentTextureSet->widthHeightAt(gunIndex);
     int32_t width = dimensions.first;
     int32_t height = dimensions.second;
-    if (width <= 0 || height <= 0 || imageData.size() % (width * height) != 0) {
-        // Handle the error
-        std::cerr << "Invalid image dimensions or data size" << std::endl;
-        return;
-    }
     int screenWidth, screenHeight;
     SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight); 
     int x = (screenWidth - (width*GUNSCALE)) / 2; // Horizontal position for center alignment.
@@ -664,11 +659,11 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     int32_t Gmask = 0x0000FF00;
     int32_t Bmask = 0x00FF0000;
     int32_t Amask = (bytesPerPixel == 4) ? 0xFF000000 : 0;
-    SDL_Surface * surface = SDL_CreateRGBSurfaceFrom((imageData.data()), width, height, bytesPerPixel * 8, pit, Rmask, Gmask, Bmask, Amask);
-    SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_RenderCopy(renderer, texture, NULL, &dstrect);
-    SDL_FreeSurface(surface);
-    SDL_DestroyTexture(texture);
+    auto cachedGunSurface = SDL_CreateRGBSurfaceFrom((imageData.data()), width, height, bytesPerPixel * 8, pit, Rmask, Gmask, Bmask, Amask);
+    auto cachedGunTex = SDL_CreateTextureFromSurface(renderer, cachedGunSurface);
+    SDL_RenderCopy(renderer, cachedGunTex, NULL, &dstrect);
+    SDL_FreeSurface(cachedGunSurface);
+    SDL_DestroyTexture(cachedGunTex);
 
     // SDL_Point point = {0, 0};
     // FOX_RenderText(font, (const Uint8*)"Health: 100", &point);
