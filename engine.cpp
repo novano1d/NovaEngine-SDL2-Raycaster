@@ -753,3 +753,9 @@ inline rgba TextureHandler::colorAt(int textureIndex, int x, int y)
     //           << '\n';
     return { r, g, b, a };
 }
+
+void EntityController::createEntityAndSpriteAt(Entity e, Sprite s, Point pos, double radius, std::string type)
+{
+    eh->addEntity({pos, radius, type});
+    m->addSprite(s);
+}

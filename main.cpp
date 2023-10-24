@@ -27,16 +27,10 @@ https://creativecommons.org/licenses/by-sa/4.0/
 //code terminal
 //animate doors
 //menu 
-//guns
-//enemy/sprite raycast collision
 
 //Global def
-// #define SCREEN_WIDTH 640 
-// #define SCREEN_HEIGHT 480
 #define SCREEN_WIDTH nva::SCREEN_WIDTH 
 #define SCREEN_HEIGHT nva::SCREEN_HEIGHT
-// #define SCREEN_WIDTH 1920 
-// #define SCREEN_HEIGHT 1080
 KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
@@ -88,6 +82,7 @@ std::vector<std::vector<double>> lightMap = {{1, 1, 1, 1, 1, 1, 1, 1},
 
 
 EntityHandler *mapEntities = new EntityHandler();
+EntityController *entCon = new EntityController(myMap, mapEntities);
 
 const int FOV = 60; 
  
@@ -171,10 +166,11 @@ int main(int argc, char** argv)
     //myMap->addSprite(animSides);
 
     //need to create an object for the game that handles the sprites for all the entities
-    myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0});\
+    // myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0});
+    // mapEntities->addEntity({{4.5, 4.5}, 0.2, "TEST"});
     myMap->setEntityHandler(mapEntities);
-    mapEntities->addEntity({{4.5, 4.5}, 0.2, "TEST"});
-    mapEntities->addEntity({{3.5, 3.5}, 0.2, "TEST"});
+
+    entCon->createEntityAndSpriteAt({{4.5, 4.5}, 0.2, "TEST"}, {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0}, {4.5, 4.5}, 0.2);
     //myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
     //myMap->addSprite({2, 2, 3, 0, true, {32, 13, 32, 14, 32, 15, 160, 5}});
     myMap->setFloorMap(floormap);
@@ -185,7 +181,6 @@ int main(int argc, char** argv)
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     TTF_Init();
     FOX_Init();
-    //SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
     window = SDL_CreateWindow("3D!! Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     // Create SDL renderer with target texture flag
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
@@ -199,7 +194,6 @@ int main(int argc, char** argv)
     game->setEventHandler(eventHandler);
     SDL_SetRelativeMouseMode(SDL_TRUE);
     //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    //std::cout << SDL_MapRGBA(SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888), 150, 0, 0, 255) << std::endl;
     game->setFont(FOX_OpenFont(renderer, "./fonts/SuboleyaRegular.ttf", 25));
     game->setGunIndex(17);
     game->gameplayLoop(playLoop);	

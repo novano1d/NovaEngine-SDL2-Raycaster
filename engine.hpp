@@ -314,4 +314,16 @@ public:
     bool isKeyDown(SDL_Keycode key) { return keysDown.count(key) > 0; };
 };
 
+//Controlls entities and the sprites on the map associated with them
+class EntityController
+{
+private:
+    EntityHandler* eh = nullptr;
+    Map* m = nullptr;
+public:
+    EntityController(Map* im, EntityHandler* em) : m(im), eh(em) {};
+    void Update(); //called when entities need to be updated in position
+    void createEntityAndSpriteAt(Entity e, Sprite s, Point pos, double radius, std::string type="NULL");
+};
+
 #endif
