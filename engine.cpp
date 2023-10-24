@@ -768,6 +768,14 @@ void EntityController::createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, 
 
 void EntityController::removeEntityAndSpriteByID(int id)
 {
-    eh->deleteEntityAt(id);
+    eh->deleteEntityByID(id);
     m->removeSpriteAt(id);
+}
+
+void EntityHandler::deleteEntityByID(int i)
+{
+    for (Entity* e : entities)
+    {
+        if (e->ID == i) entities.erase(entities.begin() + i);
+    }
 }

@@ -141,7 +141,7 @@ public:
     Entity* entityAt(int i) { return entities.at(i); };
     void setEntityAt(int i, Entity *e) { entities[i] = e; };
     std::vector<Entity*>& getEntityVec() { return entities; };
-    void deleteEntityAt(int i) { entities.erase(entities.begin() + i); };
+    void deleteEntityByID(int i);
 };
 
 //This class will handle loading all necessary texture images
