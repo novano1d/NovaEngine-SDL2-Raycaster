@@ -765,3 +765,9 @@ void EntityController::createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, 
     m->addSprite(s);
     matchup.push_back(std::make_pair(e, s));
 }
+
+void EntityController::removeEntityAndSpriteByID(int id)
+{
+    eh->deleteEntityAt(id);
+    m->removeSpriteAt(id);
+}

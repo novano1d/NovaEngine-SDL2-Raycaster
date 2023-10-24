@@ -127,7 +127,9 @@ void handleInput()
     {
         game->setGunIndex(18);
         canShoot = false;
-        std::cout << game->shoot(game->getPlayerPos(), game->getAngle()) << std::endl;
+        int shot = game->shoot(game->getPlayerPos(), game->getAngle());
+        std::cout << shot << std::endl;
+        if (shot != -1) entCon->removeEntityAndSpriteByID(shot);
         timerID = SDL_AddTimer(750, resetGun, const_cast<char*>("SDL"));
     }
 }       

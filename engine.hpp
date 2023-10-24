@@ -326,6 +326,7 @@ public:
     EntityController(Map* im, EntityHandler* em) : m(im), eh(em) {};
     void Update(); //called when entities need to be updated in position
     void createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, double radius, std::string type="NULL");
+    void removeEntityAndSpriteByID(int id);
 };
 
 
