@@ -761,15 +761,25 @@ void EntityController::createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, 
     e->pos = pos;
     s->x = pos.x;
     s->y = pos.y;
-    eh->addEntity(e);
+    int ID = eh->addEntity(e);
+    IDtoIndex[ID] = eh->getEntityVec().size() - 1;
     m->addSprite(s);
-    matchup.push_back(std::make_pair(e, s));
 }
 
 void EntityController::removeEntityAndSpriteByID(int id)
 {
-    eh->deleteEntityByID(id);
-    m->removeSpriteAt(id);
+    auto it = IDtoIndex.find(id);
+    if (it != IDtoIndex.end())
+    {
+        int index = it->second;
+        eh->deleteEntityByID(index);
+        m->removeSpriteAt(index);
+        for (auto& entry : IDtoIndex) {
+        if (entry.second > index) {
+            entry.second--;
+            }
+        }
+    }
 }
 
 void EntityHandler::deleteEntityByID(int i)
