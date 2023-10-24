@@ -31,6 +31,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 #include <unordered_set>
 #include <string>
 #include <thread>
+#include <unordered_map>
 #include <SDL2/SDL_ttf.h>
 #include "./src/include/SDL2/SDL_fox.h"
 //Personal best resolution bc my engine performance is BAD
@@ -133,10 +134,11 @@ public:
             (**i).ID = ID;
             ID++;
             entities.push_back(*i); }}
-    void addEntity(Entity *i) { 
+    int addEntity(Entity *i) { 
         i->ID = ID;
         ID++;
         entities.push_back(i); 
+        return (ID - 1);
         };
     Entity* entityAt(int i) { return entities.at(i); };
     void setEntityAt(int i, Entity *e) { entities[i] = e; };
@@ -319,7 +321,7 @@ public:
 class EntityController
 {
 private:
-    std::vector<std::pair<Entity*, Sprite*>> matchup;
+    std::unordered_map<int, int> IDtoIndex;
     EntityHandler* eh = nullptr;
     Map* m = nullptr;
 public:
