@@ -450,7 +450,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     // std::transform(temp.begin(), temp.end(), distance.begin(), [this](Sprite s){ return hypot(s.x - getPlayerPos().x, s.y - getPlayerPos().y); });
     // std::sort(distance.begin(), distance.end(), [](double &a, double &b){ return a > b; }); //sort distances to sprites in descending order
     std::sort(temp.begin(), temp.end(), [this](Sprite *a, Sprite *b){
-    return hypot(a->x - getPlayerPos().x, a->y - getPlayerPos().y) < hypot(b->x - getPlayerPos().x, b->y - getPlayerPos().y);
+    return hypot(a->x - getPlayerPos().x, a->y - getPlayerPos().y) > hypot(b->x - getPlayerPos().x, b->y - getPlayerPos().y);
     });
 
     //rendering
