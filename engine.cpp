@@ -272,14 +272,14 @@ int GridGame::shoot(Point p, double a)
     Point check = p;
     for (int t = 0; t < entities.size(); t++)
     {
-        Entity e = entities[t]; //modify so looping through entities, not all sprites
+        Entity *e = entities[t]; //modify so looping through entities, not all sprites
         check = p;
         double d = 0;
         for (int i = 0; i < RANGE; i++)
         {
-            if (nva::checkCirc(e.pos.x, e.pos.y, e.radius, check.x, check.y))
+            if (nva::checkCirc((*e).pos.x, (*e).pos.y, (*e).radius, check.x, check.y))
             {
-                distIndexVec.push_back(std::make_pair(d, e.ID));
+                distIndexVec.push_back(std::make_pair(d, (*e).ID));
                 goto brloop;
             }
             check.x += xcom;
@@ -444,21 +444,23 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         SPRITES RENDERING
 
     */
-    std::vector<Sprite> *temp = &(map->getSprites()); //pointer so we don't sort each time :)
+    std::vector<Sprite*> temp = (map->getSprites()); //pointer so we don't sort each time :)
     //sort sprites by distance from player
     //std::vector<double> distance; //parallel distance vector
     // std::transform(temp.begin(), temp.end(), distance.begin(), [this](Sprite s){ return hypot(s.x - getPlayerPos().x, s.y - getPlayerPos().y); });
     // std::sort(distance.begin(), distance.end(), [](double &a, double &b){ return a > b; }); //sort distances to sprites in descending order
-    std::sort(temp->begin(), temp->end(), [this](Sprite &a, Sprite &b){ 
-        return hypot(a.x - getPlayerPos().x, a.y - getPlayerPos().y) > hypot(b.x - getPlayerPos().x, b.y - getPlayerPos().y); }); //could eliminate hypot and just use pow
+    std::sort(temp.begin(), temp.end(), [this](Sprite *a, Sprite *b){
+    return hypot(a->x - getPlayerPos().x, a->y - getPlayerPos().y) < hypot(b->x - getPlayerPos().x, b->y - getPlayerPos().y);
+    });
+
     //rendering
     double planeLength = tan(FOV * M_PI / 180); 
     double planeX = -sin(angle * M_PI / 180) * planeLength; 
     double planeY = cos(angle * M_PI / 180) * planeLength;
-    for (auto it = temp->begin(); it != temp->end(); it++)
+    for (auto it = temp.begin(); it != temp.end(); it++)
     {
-        double spriteX = it->x - getPlayerPos().x;
-        double spriteY = it->y - getPlayerPos().y;
+        double spriteX = (*it)->x - getPlayerPos().x;
+        double spriteY = (*it)->y - getPlayerPos().y;
         double invDet = 1.0 / (planeX * sin(angle * M_PI / 180) - cos(angle * M_PI / 180) * planeY);
         double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
         double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
@@ -474,9 +476,9 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         int drawEndX = spriteWidth / 2 + spriteScreenX;
         if(drawEndX >= renderWidth) drawEndX = renderWidth - 1;
         int texSelect = 0; //default
-        double lightVal = nva::BRIGHTNESS - map->getLightTileAt(it->x, it->y) * nva::BRIGHTNESS;
+        double lightVal = nva::BRIGHTNESS - map->getLightTileAt((*it)->x, (*it)->y) * nva::BRIGHTNESS;
         if (lightVal == 0) lightVal = 1;
-        if (it->multiAngle && it->animated)
+        if ((*it)->multiAngle && (*it)->animated)
         {
             const int numOrientations = 8; // Eight orientations
 
@@ -491,7 +493,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             double orientationAngle = 360.0 / numOrientations;
 
             // Normalize the angle difference to be within [0, 360) degrees
-            diff += it->angle; //add angle of sprite
+            diff += (*it)->angle; //add angle of sprite
             diff = fmod(diff + 360, 360);
 
             // Determine the orientation index based on the angle
@@ -516,16 +518,16 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             //Use the selected orientation index to get the texture for rendering
             int reelSelect = orientationIndex;
             //reel determined from different angle
-            auto reel = it->animIndexesAngled[reelSelect];
-            if (ticks - it->lastSpriteTick >= reel[2*it->curAnimIndex])
+            auto reel = (*it)->animIndexesAngled[reelSelect];
+            if (ticks - (*it)->lastSpriteTick >= reel[2*(*it)->curAnimIndex])
             {
-                it->curAnimIndex += 1;
-                it->lastSpriteTick = ticks; 
-                if (it->curAnimIndex >= reel.size()/2) it->curAnimIndex = 0;
+                (*it)->curAnimIndex += 1;
+                (*it)->lastSpriteTick = ticks; 
+                if ((*it)->curAnimIndex >= reel.size()/2) (*it)->curAnimIndex = 0;
             }
-            texSelect = reel[2*it->curAnimIndex + 1];
+            texSelect = reel[2*(*it)->curAnimIndex + 1];
         }
-        else if (it->multiAngle)
+        else if ((*it)->multiAngle)
         {
             const int numOrientations = 8; // Eight orientations
 
@@ -540,44 +542,44 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             double orientationAngle = 360.0 / numOrientations;
 
             // Normalize the angle difference to be within [0, 360) degrees
-            diff += it->angle; //add angle of sprite
+            diff += (*it)->angle; //add angle of sprite
             diff = fmod(diff + 360, 360);
 
             // Determine the orientation index based on the angle
             if (diff >= 0 * orientationAngle && diff < 1 * orientationAngle) {
-                orientationIndex = it->angleIndexes[0]; // Facing front
+                orientationIndex = (*it)->angleIndexes[0]; // Facing front
             } else if (diff >= 1 * orientationAngle && diff < 2 * orientationAngle) {
-                orientationIndex = it->angleIndexes[1]; // Facing front-left
+                orientationIndex = (*it)->angleIndexes[1]; // Facing front-left
             } else if (diff >= 2 * orientationAngle && diff < 3 * orientationAngle) {
-                orientationIndex = it->angleIndexes[2]; // Facing left
+                orientationIndex = (*it)->angleIndexes[2]; // Facing left
             } else if (diff >= 3 * orientationAngle && diff < 4 * orientationAngle) {
-                orientationIndex = it->angleIndexes[3]; // Facing right (wrap around)
+                orientationIndex = (*it)->angleIndexes[3]; // Facing right (wrap around)
             } else if (diff >= 4 * orientationAngle && diff < 5 * orientationAngle) {
-                orientationIndex = it->angleIndexes[4]; // Facing front-right
+                orientationIndex = (*it)->angleIndexes[4]; // Facing front-right
             } else if (diff >= 5 * orientationAngle && diff < 6 * orientationAngle) {
-                orientationIndex = it->angleIndexes[5]; // Facing front
+                orientationIndex = (*it)->angleIndexes[5]; // Facing front
             } else if (diff >= 6 * orientationAngle && diff < 7 * orientationAngle) {
-                orientationIndex = it->angleIndexes[6]; // Facing front-left
+                orientationIndex = (*it)->angleIndexes[6]; // Facing front-left
             } else if (diff >= 7 * orientationAngle && diff < 8 * orientationAngle) {
-                orientationIndex = it->angleIndexes[7]; // Facing left
+                orientationIndex = (*it)->angleIndexes[7]; // Facing left
             }
 
             //Use the selected orientation index to get the texture for rendering
             texSelect = orientationIndex;
         }
-        else if (it->animated)
+        else if ((*it)->animated)
         {
-            auto reel = it->animIndexes;
-            if (ticks - it->lastSpriteTick >= reel[2*it->curAnimIndex])
+            auto reel = (*it)->animIndexes;
+            if (ticks - (*it)->lastSpriteTick >= reel[2*(*it)->curAnimIndex])
             {
-                it->curAnimIndex += 1;
-                it->lastSpriteTick = ticks;
-                if (it->curAnimIndex >= reel.size()/2) it->curAnimIndex = 0;
+                (*it)->curAnimIndex += 1;
+                (*it)->lastSpriteTick = ticks;
+                if ((*it)->curAnimIndex >= reel.size()/2) (*it)->curAnimIndex = 0;
             }
-            texSelect = reel[2*it->curAnimIndex + 1];
+            texSelect = reel[2*(*it)->curAnimIndex + 1];
         }
 
-        else texSelect = it->texIndex;
+        else texSelect = (*it)->texIndex;
         
         for(int stripe = drawStartX; stripe < drawEndX; stripe++)
         {
@@ -754,8 +756,12 @@ inline rgba TextureHandler::colorAt(int textureIndex, int x, int y)
     return { r, g, b, a };
 }
 
-void EntityController::createEntityAndSpriteAt(Entity e, Sprite s, Point pos, double radius, std::string type)
+void EntityController::createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, double radius, std::string type)
 {
-    eh->addEntity({pos, radius, type});
+    e->pos = pos;
+    s->x = pos.x;
+    s->y = pos.y;
+    eh->addEntity(e);
     m->addSprite(s);
+    matchup.push_back(std::make_pair(e, s));
 }

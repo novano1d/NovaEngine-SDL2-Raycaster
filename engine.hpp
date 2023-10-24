@@ -47,6 +47,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 // #define INTERNAL_RENDER_RES_HORIZ 360
 // #define INTERNAL_RENDER_RES_VERT 360
 
+
 //probably should move load image into here
 namespace nva
 {
@@ -120,27 +121,26 @@ struct Entity
     //can add sprite information and loop through and handle all the entities on the map during the game loop
     //change and update their sprites appropriately
 };
-
 class EntityHandler
 {
 private:
-    std::vector<Entity> entities;
+    std::vector<Entity*> entities;
     inline static int ID = 0;
 public:
     EntityHandler() {};
-    EntityHandler(std::vector<Entity> e){
+    EntityHandler(std::vector<Entity*> e){
         for (auto i = e.begin(); i != e.end(); i++){
-            i->ID = ID;
+            (**i).ID = ID;
             ID++;
             entities.push_back(*i); }}
-    void addEntity(Entity i) { 
-        i.ID = ID;
+    void addEntity(Entity *i) { 
+        i->ID = ID;
         ID++;
         entities.push_back(i); 
         };
-    Entity entityAt(int i) { return entities.at(i); };
-    void setEntityAt(int i, Entity e) { entities[i] = e; };
-    std::vector<Entity>& getEntityVec() { return entities; };
+    Entity* entityAt(int i) { return entities.at(i); };
+    void setEntityAt(int i, Entity *e) { entities[i] = e; };
+    std::vector<Entity*>& getEntityVec() { return entities; };
     void deleteEntityAt(int i) { entities.erase(entities.begin() + i); };
 };
 
@@ -206,13 +206,14 @@ class Map
 {
 public:
     Map(std::vector<std::vector<int>> m, std::vector<Sprite> s = {}) : map(m) {}
-    void addSprite(Sprite s) { sprites.push_back(s); };
+    void addSprite(Sprite *s) { sprites.push_back(s); };
+    Sprite& getSpriteAt(int i) { return *sprites[i];};
     void removeSpriteAtEnd() { sprites.pop_back(); };
     void removeSpriteAt(int i) { sprites.erase(sprites.begin() + i); };
     int getTileAt(int x, int y) { return map[y][x]; };
     int ySize() { return map[0].size(); };
     int xSize() { return map.size(); };
-    std::vector<Sprite>& getSprites() { return sprites; };
+    std::vector<Sprite*> getSprites() { return sprites; };
     void setFloorMap(std::vector<std::vector<int>> m) { floorMap = m; };
     int getFloorTileAt(int x, int y) { return floorMap[y][x]; };
     void setCeilingMap(std::vector<std::vector<int>> m) { ceilingMap = m; };
@@ -236,7 +237,7 @@ private:
     std::vector<std::vector<Door>> doorMap;
     //lightmap values may need to be prebaked to improve performance (division x amount of times per frame adds up)
     std::vector<std::vector<double>> lightMap;
-    std::vector<Sprite> sprites;
+    std::vector<Sprite*> sprites;
     EntityHandler* entitiesOnMap = nullptr;
 };
 
@@ -318,12 +319,15 @@ public:
 class EntityController
 {
 private:
+    std::vector<std::pair<Entity*, Sprite*>> matchup;
     EntityHandler* eh = nullptr;
     Map* m = nullptr;
 public:
     EntityController(Map* im, EntityHandler* em) : m(im), eh(em) {};
     void Update(); //called when entities need to be updated in position
-    void createEntityAndSpriteAt(Entity e, Sprite s, Point pos, double radius, std::string type="NULL");
+    void createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, double radius, std::string type="NULL");
 };
+
+
 
 #endif
