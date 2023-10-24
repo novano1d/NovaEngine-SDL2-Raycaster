@@ -772,13 +772,18 @@ void EntityController::removeEntityAndSpriteByID(int id)
     if (it != IDtoIndex.end())
     {
         int index = it->second;
+        std::cout << "ID: " << id << std::endl;
+        std::cout << "Index: " << index << std::endl;
         eh->deleteEntityByID(index);
         m->removeSpriteAt(index);
-        for (auto& entry : IDtoIndex) {
-        if (entry.second > index) {
-            entry.second--;
+        
+        for (auto entry = IDtoIndex.begin(); entry != IDtoIndex.end();) {
+            if (entry->second > index) {
+                entry->second = entry->second - 1;
             }
+            entry++;
         }
+        IDtoIndex.erase(it);
     }
 }
 
