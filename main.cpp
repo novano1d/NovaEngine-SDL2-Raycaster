@@ -131,6 +131,9 @@ void handleInput()
         std::cout << shot << std::endl;
         if (shot != -1) entCon->removeEntityAndSpriteByID(shot);
         timerID = SDL_AddTimer(750, resetGun, const_cast<char*>("SDL"));
+        static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
+        static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
+        entCon->createEntityAndSpriteAt(&e, &s, game->getPlayerPos(), 0.2);
     }
 }       
 
@@ -171,10 +174,10 @@ int main(int argc, char** argv)
     // myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0});
     // mapEntities->addEntity({{4.5, 4.5}, 0.2, "TEST"});
     myMap->setEntityHandler(mapEntities);
-    Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
-    Entity e = {{4.5, 4.5}, 0.2, "TEST"};
-    Sprite s2 = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
-    Entity e2 = {{4.5, 4.5}, 0.2, "TEST"};
+    static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
+    static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
+    static Sprite s2 = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
+    static Entity e2 = {{4.5, 4.5}, 0.2, "TEST"};
     entCon->createEntityAndSpriteAt(&e, &s, {2, 2}, 0.2);
     entCon->createEntityAndSpriteAt(&e2, &s2, {2.5, 2.5}, 0.2);
     //myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
