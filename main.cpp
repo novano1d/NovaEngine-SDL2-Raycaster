@@ -128,16 +128,15 @@ void handleInput()
         game->setGunIndex(18);
         canShoot = false;
         int shot = game->shoot(game->getPlayerPos(), game->getAngle());
-        std::cout << shot << std::endl;
         if (shot != -1) entCon->removeEntityAndSpriteByID(shot);
         timerID = SDL_AddTimer(750, resetGun, const_cast<char*>("SDL"));
         static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
         static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
         entCon->createEntityAndSpriteAt(&e, &s, game->getPlayerPos(), 0.2);
     }
-        if (keyhandler->isKeyDown(SDLK_RCTRL)) 
+    if (keyhandler->isKeyDown(SDLK_RCTRL)) 
     {
-        entCon->updateEntityRelPos(0, 0.1, 0.1);
+        entCon->updateEntityRelPos(0, 0.1 * ticktime, 0.1 * ticktime);
     }
 }       
 

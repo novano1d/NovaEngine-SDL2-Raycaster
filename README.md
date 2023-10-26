@@ -5,3 +5,4 @@ Simple game library in SDL
 
 Currently supports omni-directional sprites, textured walls and ceilings.
 Easy to implement interface.
+Compiled on winlibs personal build version gcc-13.1.0-mingw-w64msvcrt-11.0.0-r5.
