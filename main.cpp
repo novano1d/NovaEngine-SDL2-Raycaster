@@ -65,7 +65,7 @@ std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
 std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
-                                           {{0}, {0}, {0}, {0}, {0}, {0}, {1, 17, true, 0.35}, {0}},
+                                           {{0}, {0}, {0}, {0}, {0}, {0}, {1, 17, true, 0.35, 1, 1}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
@@ -205,6 +205,7 @@ int main(int argc, char** argv)
     game->setPlayerPos({1.5,1.5});
     game->setEventHandler(eventHandler);
     SDL_SetRelativeMouseMode(SDL_TRUE);
+    myMap->setDoorProgresByID(1, 0.25);
     //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     game->setFont(FOX_OpenFont(renderer, "./fonts/SuboleyaRegular.ttf", 25));
     game->setGunIndex(17);

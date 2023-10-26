@@ -87,6 +87,24 @@ void Game::setEventHandler(void(*ptr)(SDL_Event))
     eventMethod = ptr;
 }
 
+void Map::setDoorProgresByID(int id, double p)
+{
+    for (int y = 0; y < doorMap.size(); y++)
+    {
+        for (int x = 0; x < doorMap[y].size(); x++)
+        {
+            std::cout << x << " " << y << "\n";
+            std::cout << "door progress: " << doorMap[y][x].doorProgress << "\nP: " << p << std::endl;
+            std::cout << "door ID: " << doorMap[y][x].id << "\nID check: " << id << std::endl;
+           if (doorMap[y][x].id == id) 
+           {
+            doorMap[y][x].doorProgress = p;
+            std::cout << "!!!!!!!!!ACTUALLY CHANGING\n\n\n!!!!!!!!!!\n\n\n";
+           }
+        }
+    }
+    
+}
 
 //GridGame implementation
 

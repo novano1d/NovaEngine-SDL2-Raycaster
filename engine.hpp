@@ -73,6 +73,8 @@ struct Door
     bool doorState = false; //transversible or not
     double doorProgress = 1; //scale for animation of how far the door is opened/closed
     bool orientation = 1; // 1 for on x 0 for on y
+    int id = -1;
+    int ticks = 64; //time in ticks to open/close the door
 };
 
 //Convenience
@@ -227,6 +229,7 @@ public:
     void setDoorMap(std::vector<std::vector<Door>> m) { doorMap = m; };
     Door getDoorTileAt(int x, int y) { return doorMap[y][x]; };
     void setDoorStateAt(int x, int y, Door d) { doorMap[y][x] = d; };
+    void setDoorProgresByID(int ID, double p);
     void setLightMap(std::vector<std::vector<double>> d) { lightMap = d; };
     double getLightTileAt(int x, int y) { return lightMap[y][x]; };
     void setLightStateAt(int x, int y, double d) { lightMap[y][x] = d; };
