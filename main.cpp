@@ -135,6 +135,10 @@ void handleInput()
         static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
         entCon->createEntityAndSpriteAt(&e, &s, game->getPlayerPos(), 0.2);
     }
+        if (keyhandler->isKeyDown(SDLK_RCTRL)) 
+    {
+        entCon->updateEntityRelPos(0, 0.1, 0.1);
+    }
 }       
 
 double totalTime = 0; //debug var

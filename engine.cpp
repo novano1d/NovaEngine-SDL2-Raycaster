@@ -12,7 +12,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
  You are free to:
 
     Share — copy and redistribute the material in any medium or format for any purpose, even commercially.
-    Adapt — remix, transform, and build upon the material for any purpose, even commercially. 
+    Adapt — remix, transform, and build upon the material for any purpose, even commercially.  
 
  Under the following terms:
 
@@ -784,6 +784,20 @@ void EntityController::removeEntityAndSpriteByID(int id)
             entry++;
         }
         IDtoIndex.erase(it);
+    }
+}
+
+void EntityController:: updateEntityRelPos(int ID, double x, double y)
+{
+    auto it = IDtoIndex.find(ID);
+    if (it != IDtoIndex.end())
+    {
+        int index = it->second;
+        Entity* e = eh->entityAt(index);
+        Point newPos = {e->pos.x + x, e->pos.y + y};
+        e->pos = newPos;
+        m->getSpriteAt(index).x = newPos.x;
+        m->getSpriteAt(index).y = newPos.y;
     }
 }
 

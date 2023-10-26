@@ -45,8 +45,8 @@ https://creativecommons.org/licenses/by-sa/4.0/
 #define INTERNAL_RENDER_RES_HORIZ 320
 #define INTERNAL_RENDER_RES_VERT 180
 #define SKY 0xFFFFF
-// #define INTERNAL_RENDER_RES_HORIZ 360
-// #define INTERNAL_RENDER_RES_VERT 360
+// #define INTERNAL_RENDER_RES_HORIZ 1920
+// #define INTERNAL_RENDER_RES_VERT 1080
 
 
 //probably should move load image into here
@@ -57,7 +57,7 @@ namespace nva
     return (n < lower) ? lower : (n > upper) ? upper : n;
     }
     bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
-    const int MAX_THREADS = 1; //Attempt at multithreading not working lol
+    const int MAX_THREADS = 1; //Attempt at multithreading not working well lol
     const double BRIGHTNESS = 10; //resolution of the brightness scale
     const int SCREEN_WIDTH = 1280;
     const int SCREEN_HEIGHT = 720;
@@ -85,6 +85,10 @@ struct Point
     Point operator*(const double& a) const
     {
         return {a*x, a*y};
+    }
+    Point operator+(const double& a) const
+    {
+        return {a+x, a+y};
     }
     Point operator+(const Point& a) const
     {
@@ -329,6 +333,7 @@ public:
     void Update(); //called when entities need to be updated in position
     void createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, double radius, std::string type="NULL");
     void removeEntityAndSpriteByID(int id);
+    void updateEntityRelPos(int ID, double x, double y);
 };
 
 
