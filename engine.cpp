@@ -806,3 +806,81 @@ void EntityHandler::deleteEntityByID(int i)
         if (e->ID == i) entities.erase(entities.begin() + i);
     }
 }
+
+Door Map::getDoorByID(int ID)
+{
+    for (int y = 0; y < doorMap.size(); y++)
+    {
+        for (int x = 0; x < doorMap[0].size(); x++)
+        {
+            if(doorMap[y][x].ID == ID)
+            { 
+                return doorMap[y][x];
+            }
+        }
+    }
+    return {0};
+}
+
+void Map::setDoorByID(int ID, Door d)
+{
+    for (int y = 0; y < doorMap.size(); y++)
+    {
+        for (int x = 0; x < doorMap[0].size(); x++)
+        {
+            if(doorMap[y][x].ID == ID)
+            { 
+                doorMap[y][x] = d;
+            }
+        }
+    }
+}
+
+void Map::toggleDoorByID(int ID)
+{
+    doorsInProgress.insert(ID); // keep track so updating doors is fast
+    Door tempd = getDoorByID(ID);
+    if (tempd.state == DOOR_CLOSED)
+    {
+        tempd.state = DOOR_OPENING;
+        setDoorByID(ID, tempd);
+    }
+    else if (tempd.state == DOOR_OPEN)
+    {
+        tempd.state = DOOR_CLOSING;
+        setDoorByID(ID, tempd);
+    }
+}
+
+void Map::updateDoors(double t)
+{
+    if (!doorsInProgress.empty())
+    {
+        for (int id : doorsInProgress)
+        {
+            Door tempd = getDoorByID(id);
+            if (tempd.state == DOOR_OPENING)
+            {
+                tempd.doorProgress += t * tempd.doorTime;
+                if (tempd.doorProgress >= 1)
+                {
+                    tempd.doorProgress = 1;
+                    tempd.state = DOOR_OPEN;
+                    tempd.doorState = false;
+                }
+                setDoorByID(id, tempd);
+            }
+            else if (tempd.state == DOOR_CLOSING)
+            {
+                tempd.doorProgress -= t * tempd.doorTime;
+                if (tempd.doorProgress <= 0)
+                {
+                    tempd.doorProgress = 0;
+                    tempd.state = DOOR_CLOSED;
+                    tempd.doorState = true;
+                }
+                setDoorByID(id, tempd);
+            }
+        }
+    }
+}

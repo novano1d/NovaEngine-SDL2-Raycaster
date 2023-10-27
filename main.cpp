@@ -65,7 +65,7 @@ std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
 std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
-                                           {{0}, {0}, {0}, {0}, {0}, {0}, {1, 17, true, 0.35}, {0}},
+                                           {{0}, {0}, {0}, {0}, {0}, {0}, {1, 17, true, 0.35, 1, 1}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
@@ -133,6 +133,7 @@ void handleInput()
         static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
         static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
         entCon->createEntityAndSpriteAt(&e, &s, game->getPlayerPos(), 0.2);
+        game->getCurMap()->toggleDoorByID(1);
     }
     if (keyhandler->isKeyDown(SDLK_RCTRL)) 
     {
@@ -145,6 +146,7 @@ void playLoop()
 {
     handleInput();
     ticktime = game->frameTime();
+    game->getCurMap()->updateDoors(ticktime);
     totalTime += ticktime;
     game->pseudo3dRenderTextured(FOV);
 }
