@@ -49,6 +49,8 @@ https://creativecommons.org/licenses/by-sa/4.0/
 // #define INTERNAL_RENDER_RES_VERT 1080
 
 
+enum DoorState { DOOR_CLOSED, DOOR_OPEN, DOOR_OPENING, DOOR_CLOSING };
+
 //probably should move load image into here
 namespace nva
 {
@@ -70,9 +72,12 @@ struct Door
 {
     bool exists = false;
     int texIndex = 0;
-    bool doorState = false; //transversible or not
+    bool doorState = false; //transversible if false
     double doorProgress = 1; //scale for animation of how far the door is opened/closed
     bool orientation = 1; // 1 for on x 0 for on y
+    int ID = -1; // ID NEEDED FOR LINKING TOGGLE OF DOORS
+    double doorTime = 1; //time in seconds for the door to open/close
+    DoorState state = DOOR_CLOSED;
 };
 
 //Convenience
@@ -234,6 +239,10 @@ public:
     int getSkyTexture() {return skyTexture; };
     EntityHandler* getEntities() { return entitiesOnMap; };
     void setEntityHandler(EntityHandler* p) { entitiesOnMap = p; };
+    Door getDoorByID(int ID);
+    void setDoorByID(int ID, Door d);
+    void updateDoors(double t);
+    void toggleDoorByID(int ID);
 private:
     //Could eventually swap int for a Tile class
     int skyTexture;
@@ -245,6 +254,7 @@ private:
     std::vector<std::vector<double>> lightMap;
     std::vector<Sprite*> sprites;
     EntityHandler* entitiesOnMap = nullptr;
+    std::unordered_set<int> doorsInProgress;
 };
 
 //Little object to tidy up raycast return
