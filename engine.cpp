@@ -843,11 +843,13 @@ void Map::toggleDoorByID(int ID)
     if (tempd.state == DOOR_CLOSED)
     {
         tempd.state = DOOR_OPENING;
+        tempd.doorState = true;
         setDoorByID(ID, tempd);
     }
     else if (tempd.state == DOOR_OPEN)
     {
         tempd.state = DOOR_CLOSING;
+        tempd.doorState = true;
         setDoorByID(ID, tempd);
     }
 }
@@ -866,7 +868,7 @@ void Map::updateDoors(double t)
                 {
                     tempd.doorProgress = 1;
                     tempd.state = DOOR_OPEN;
-                    tempd.doorState = false;
+                    tempd.doorState = true;
                 }
                 setDoorByID(id, tempd);
             }
@@ -877,7 +879,7 @@ void Map::updateDoors(double t)
                 {
                     tempd.doorProgress = 0;
                     tempd.state = DOOR_CLOSED;
-                    tempd.doorState = true;
+                    tempd.doorState = false;
                 }
                 setDoorByID(id, tempd);
             }
