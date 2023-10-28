@@ -76,7 +76,7 @@ struct Door
     double doorProgress = 1; //scale for animation of how far the door is opened/closed
     bool orientation = 1; // 1 for on x 0 for on y
     int ID = -1; // ID NEEDED FOR LINKING TOGGLE OF DOORS
-    double doorTime = 1; //time in seconds for the door to open/close
+    double doorTime = 1; //speed in units per second in which the door opens
     DoorState state = DOOR_CLOSED;
 };
 

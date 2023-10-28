@@ -838,7 +838,6 @@ void Map::setDoorByID(int ID, Door d)
 
 void Map::toggleDoorByID(int ID)
 {
-    if (doorsInProgress.find(ID) == doorsInProgress.end()) return;
     doorsInProgress.insert(ID); // keep track so updating doors is fast
     Door tempd = getDoorByID(ID);
     if (tempd.state == DOOR_CLOSED)
@@ -847,7 +846,7 @@ void Map::toggleDoorByID(int ID)
         tempd.doorState = true;
         setDoorByID(ID, tempd);
     }
-    else if (tempd.state == DOOR_OPEN)
+    if (tempd.state == DOOR_OPEN)
     {
         tempd.state = DOOR_CLOSING;
         tempd.doorState = true;
@@ -862,25 +861,25 @@ void Map::updateDoors(double t)
         for (int id : doorsInProgress)
         {
             Door tempd = getDoorByID(id);
-            if (tempd.state == DOOR_OPENING)
+            if (tempd.state == DOOR_CLOSING)
             {
                 tempd.doorProgress += t * tempd.doorTime;
                 if (tempd.doorProgress >= 1)
                 {
                     tempd.doorProgress = 1;
-                    tempd.state = DOOR_OPEN;
+                    tempd.state = DOOR_CLOSED;
                     tempd.doorState = true;
                     doorsInProgress.erase(doorsInProgress.find(id));
                 }
                 setDoorByID(id, tempd);
             }
-            else if (tempd.state == DOOR_CLOSING)
+            else if (tempd.state == DOOR_OPENING)
             {
                 tempd.doorProgress -= t * tempd.doorTime;
                 if (tempd.doorProgress <= 0)
                 {
                     tempd.doorProgress = 0;
-                    tempd.state = DOOR_CLOSED;
+                    tempd.state = DOOR_OPEN;
                     tempd.doorState = false;
                     doorsInProgress.erase(doorsInProgress.find(id));
                 }
