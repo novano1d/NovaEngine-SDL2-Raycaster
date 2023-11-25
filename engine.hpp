@@ -243,6 +243,8 @@ public:
     void setDoorByID(int ID, Door d);
     void updateDoors(double t);
     void toggleDoorByID(int ID);
+    //checks if a given point is within one unit of the door (for locally opening doors)
+    bool isDoorNeighbor(Point p);
 private:
     //Could eventually swap int for a Tile class
     int skyTexture;
@@ -314,6 +316,7 @@ public:
     void setTextureSet(TextureHandler* t){ currentTextureSet = t; };
     double getMouseSens() { return mouseSens; };
     void setMouseSens(double d) { mouseSens = d; };
+    //The index of the image of the gun currently being rendered
     void setGunIndex(int i) { gunIndex = i; };
     int getGunIndex() { return gunIndex; };
     int shoot(Point p, double a);

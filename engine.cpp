@@ -888,3 +888,17 @@ void Map::updateDoors(double t)
         }
     }
 }
+
+bool Map::isDoorNeighbor(Point p)
+{
+    Point c1 = {0 , 1};
+    Point c2 = {1 , 0};
+    Point c3 = {0 , -1};
+    Point c4 = {-1 , 0};
+    c1 = p + c1;
+    c2 = p + c2;
+    c3 = p + c3;
+    c4 = p + c4;
+    if (getDoorTileAt(c1.x, c1.y).exists || getDoorTileAt(c2.x, c2.y).exists || getDoorTileAt(c3.x, c3.y).exists || getDoorTileAt(c4.x, c4.y).exists) return true;
+    return false;
+}
