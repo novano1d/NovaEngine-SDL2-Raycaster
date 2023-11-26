@@ -785,7 +785,7 @@ void EntityController::removeEntityAndSpriteByID(int id)
     }
 }
 
-void EntityController:: updateEntityRelPos(int ID, double x, double y)
+void EntityController::updateEntityRelPos(int ID, double x, double y)
 {
     auto it = IDtoIndex.find(ID);
     if (it != IDtoIndex.end())

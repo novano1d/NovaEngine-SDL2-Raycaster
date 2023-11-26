@@ -56,7 +56,7 @@ namespace nva
 {
     template <typename T>
     inline T clamp(const T& n, const T& lower, const T& upper) {
-    return (n < lower) ? lower : (n > upper) ? upper : n;
+        return (n < lower) ? lower : (n > upper) ? upper : n;
     }
     bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
     const int MAX_THREADS = 1; //Attempt at multithreading not working well lol

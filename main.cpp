@@ -22,11 +22,13 @@ https://creativecommons.org/licenses/by-sa/4.0/
 */
 
 #include "engine.hpp"
-//TODO
-//ui
-//code terminal
-//animate doors
-//menu 
+/*          TODO LIST
+    *ui
+    *Pathfinding (A*)
+    *menu
+    *loading and storing into binary
+    *code terminal? 
+*/
 
 //Global def
 #define SCREEN_WIDTH nva::SCREEN_WIDTH 
@@ -111,7 +113,7 @@ void handleInput()
         game->setAngle(game->getAngle() + ticktime * game->getRotSpeed());
     if (keyhandler->isKeyDown(SDLK_LEFT))
         game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
-    if (keyhandler->isKeyDown(SDLK_ESCAPE) && game->getTicks() % 17 == 1) //mod by random prime to prevent spamming the key lol
+    if (keyhandler->isKeyDown(SDLK_ESCAPE) && game->getTicks() % 17 == 0) //mod by random prime to prevent spamming the key lol
         SDL_SetRelativeMouseMode(static_cast<SDL_bool>((!SDL_GetRelativeMouseMode())));
     if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 3)
     {
