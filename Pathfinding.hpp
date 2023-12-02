@@ -40,17 +40,15 @@ inline bool operator<(const Node& lhs, const Node& rhs)
 class Pathfinder
 {
 public:
-    static void setMap(Map* ptr) { map = ptr;
-        xmax = map->xSize();
-        ymax = map->ySize(); };
-    static bool isValid(int x, int y);
-    static bool isDest(int x, int y, Node dest);
-    static double calculateH(int x, int y, Node dest);
-    static std::vector<Node> aStar(Node player, Node dest);
-    static std::vector<Node> makePath(std::vector<std::vector<Node>> allMap, Node dest);
+    void setMap(Map* ptr);
+    bool isValid(int x, int y);
+    bool isDest(int x, int y, Node dest);
+    double calculateH(int x, int y, Node dest);
+    std::vector<Node> aStar(Node player, Node dest);
+    std::vector<Node> makePath(std::vector<std::vector<Node>> allMap, Node dest);
 private:
-    inline static Map* map = nullptr;
-    static int xmax, ymax;
+    Map* map = nullptr;
+    int xmax = 0, ymax = 0;
 };
 
 

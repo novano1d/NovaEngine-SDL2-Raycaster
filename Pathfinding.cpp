@@ -21,17 +21,47 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 */
 #include "Pathfinding.hpp"
-#include <array>
+#include <stack>
+
+void Pathfinder::setMap(Map* m) { map = m; xmax = map->xSize(); ymax = map->ySize(); };
+
+std::vector<Node> Pathfinder::makePath(std::vector<std::vector<Node>> map, Node dest) {
+    try {
+        std::cout << "Found a path" << std::endl;
+        int x = dest.pos.x;
+        int y = dest.pos.y;
+        std::stack<Node> path;
+        std::vector<Node> usablePath;
+        while (!(map[x][y].parent.x == x && map[x][y].parent.x == y)
+            && map[x][y].pos.x != -1 && map[x][y].pos.y != -1) 
+        {
+            path.push(map[x][y]);
+            int tempX = map[x][y].parent.x;
+            int tempY = map[x][y].parent.y;
+            x = tempX;
+            y = tempY;
+        }
+        path.push(map[x][y]);
+        while (!path.empty()) {
+            Node top = path.top();
+            path.pop();
+            usablePath.emplace_back(top);
+        }
+        return usablePath;
+    }
+    catch(const _exception& e){
+        std::cout << e.name << std::endl;
+    }
+}
+
 bool Pathfinder::isValid(int x, int y)
 {
-    int id = x + y * (xmax);
-        if (map->getTileAt(x, y) == 0) {
-            if (x < 0 || y < 0 || x >= (xmax) || y >= (ymax)) {
-                return false;
-            }
-            return true;
-        } 
+    if (x < 0 || y < 0 || x >= (xmax) || y >= (ymax)) {
         return false;
+    }
+    if (map->getTileAt(x,y) > 0) return false;
+    if (map->getDoorTileAt(x,y).state == DOOR_CLOSED) return false;
+    return true;
 }
 
 bool Pathfinder::isDest(int x, int y, Node dest) {
@@ -63,7 +93,7 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
     bool closedList[(xmax)][(ymax)];
     //Initialize whole map
     //Node allMap[50][25];
-    std::vector<std::vector<Node>> allMap;
+    std::vector<std::vector<Node>> allMap(xmax, std::vector<Node>(ymax));
     for (int x = 0; x < (xmax); x++) {
         for (int y = 0; y < (ymax); y++) {
             allMap[x][y].fCost = std::numeric_limits<float>::max();

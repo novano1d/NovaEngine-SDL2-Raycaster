@@ -22,6 +22,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 */
 
 #include "engine.hpp"
+#include "Pathfinding.hpp"
 /*          TODO LIST
     *ui
     *Pathfinding (A*)
@@ -213,6 +214,14 @@ int main(int argc, char** argv)
     //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     game->setFont(FOX_OpenFont(renderer, "./fonts/SuboleyaRegular.ttf", 25));
     game->setGunIndex(17);
+    Pathfinder *pf = new Pathfinder();
+    pf->setMap(myMap);
+    Node start = { { 1, 1 } };
+    Node end = { { 6, 6 } };
+    auto test = pf->aStar(start, end);
+    for (Node node : test) {
+        std::cout << node.pos.x << " " << node.pos.y << std::endl;
+    }
     game->gameplayLoop(playLoop);	
     TTF_Quit();
     FOX_CloseFont(game->getFont());
