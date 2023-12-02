@@ -302,7 +302,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     const int renderWidth = INTERNAL_RENDER_RES_HORIZ;
     const int renderHeight = INTERNAL_RENDER_RES_VERT;
     double ZBuffer[renderWidth]; // store Z distances for sprite rendering (necessary for occlusion)
-    if (!textureBuffer)
+    if (textureBuffer == nullptr)
         textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, renderWidth, renderHeight);
     std::vector<std::thread> threads;
     const int sectionWidth = renderWidth / nva::MAX_THREADS;

@@ -20,3 +20,17 @@ https://creativecommons.org/licenses/by-sa/4.0/
     ShareAlike - If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original. 
 
 */
+#include "Pathfinding.hpp"
+
+bool Pathfinder::isValid(int x, int y)
+{
+
+    int id = x + y;
+        if (map->getTileAt(x, y) == 0) {
+            if (x < 0 || y < 0) {
+                return false;
+            }
+            return true;
+        } 
+        return false;
+}
