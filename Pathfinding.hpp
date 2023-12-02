@@ -47,7 +47,7 @@ public:
     static bool isDest(int x, int y, Node dest);
     static double calculateH(int x, int y, Node dest);
     static std::vector<Node> aStar(Node player, Node dest);
-    static std::vector<Node> makePath(Map map, Node dest);
+    static std::vector<Node> makePath(std::vector<std::vector<Node>> allMap, Node dest);
 private:
     inline static Map* map = nullptr;
     static int xmax, ymax;
