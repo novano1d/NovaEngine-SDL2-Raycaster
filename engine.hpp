@@ -176,17 +176,6 @@ public:
 //Game Class to clean things up a bit and provide a template
 class Game
 {
-protected:
-    SDL_PixelFormat* format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
-    SDL_Renderer* renderer = nullptr;
-    SDL_Window* window = nullptr;
-    FOX_Font *font;
-    const int SCREEN_WIDTH;
-    const int SCREEN_HEIGHT;
-    double oldTime = 0;
-    double time = 0;
-    int ticks = 0;
-    void(*eventMethod)(SDL_Event) = nullptr;
 public:
     Game(int w, int h, SDL_Window* win, SDL_Renderer* r) : renderer(r), SCREEN_WIDTH(w), SCREEN_HEIGHT(h), window(win) {} 
     //Clears screen with certain color
@@ -201,6 +190,17 @@ public:
     FOX_Font* getFont() { return font; };
     void setTicks(int t) { ticks = t; };
     int getTicks() { return ticks; };
+protected:
+    SDL_PixelFormat* format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+    SDL_Renderer* renderer = nullptr;
+    SDL_Window* window = nullptr;
+    FOX_Font *font;
+    const int SCREEN_WIDTH;
+    const int SCREEN_HEIGHT;
+    double oldTime = 0;
+    double time = 0;
+    int ticks = 0;
+    void(*eventMethod)(SDL_Event) = nullptr;
 };
 
 /*
@@ -282,7 +282,7 @@ private:
     double rotSpeed = 100; //degrees per second
     double mouseSens = 0.1;
     TextureHandler* currentTextureSet = nullptr;
-    SDL_Texture* textureBuffer;
+    SDL_Texture* textureBuffer = nullptr;
     const double SKYSCALEFACTOR = 2;
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}

@@ -766,6 +766,8 @@ void EntityController::createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, 
     m->addSprite(s);
 }
 
+/// @brief Removes entity and sprite by ID.
+/// @param id to be deleted.
 void EntityController::removeEntityAndSpriteByID(int id)
 {
     auto it = IDtoIndex.find(id);
@@ -785,6 +787,10 @@ void EntityController::removeEntityAndSpriteByID(int id)
     }
 }
 
+/// @brief Updates the relative position of an entity given the entity ID.
+/// @param ID Entity ID
+/// @param x relative change in X
+/// @param y relative change in Y
 void EntityController::updateEntityRelPos(int ID, double x, double y)
 {
     auto it = IDtoIndex.find(ID);
@@ -799,6 +805,8 @@ void EntityController::updateEntityRelPos(int ID, double x, double y)
     }
 }
 
+/// @brief Deletes entity by the entity ID.
+/// @param i the ID
 void EntityHandler::deleteEntityByID(int i)
 {
     for (Entity* e : entities)
