@@ -26,6 +26,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 /*          TODO LIST
     *ui
     *Pathfinding (A*)
+        -AI
     *menu
     *loading and storing into binary
     *code terminal? 

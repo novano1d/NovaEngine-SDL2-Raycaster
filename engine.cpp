@@ -270,24 +270,25 @@ int GridGame::shoot(Point p, double a)
     double RANGE = 1000;
     int index = 0;
     Point check = p;
-    for (int t = 0; t < entities.size(); t++)
-    {
-        Entity *e = entities[t]; //modify so looping through entities, not all sprites
-        check = p;
-        double d = 0;
-        for (int i = 0; i < RANGE; i++)
+    [&] { //lambda to avoid goto statement
+        for (int t = 0; t < entities.size(); t++)
         {
-            if (nva::checkCirc((*e).pos.x, (*e).pos.y, (*e).radius, check.x, check.y))
+            Entity *e = entities[t]; //modify so looping through entities, not all sprites
+            check = p;
+            double d = 0;
+            for (int i = 0; i < RANGE; i++)
             {
-                distIndexVec.push_back(std::make_pair(d, (*e).ID));
-                goto brloop;
+                if (nva::checkCirc((*e).pos.x, (*e).pos.y, (*e).radius, check.x, check.y))
+                {
+                    distIndexVec.push_back(std::make_pair(d, (*e).ID));
+                    return;
+                }
+                check.x += xcom;
+                check.y += ycom;
+                d += hypot(xcom, ycom);
             }
-            check.x += xcom;
-            check.y += ycom;
-            d += hypot(xcom, ycom);
         }
-        brloop:
-    }
+    }();
     std::sort(distIndexVec.begin(), distIndexVec.end());
     if (distIndexVec.size() == 0) return -1;
     if (distIndexVec.at(0).first < e.perpWallDist) //if the bullet is occluded we don't want to reg a hit
