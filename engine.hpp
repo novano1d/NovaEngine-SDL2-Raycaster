@@ -77,7 +77,7 @@ struct Door
     bool orientation = 1; // 1 for on x 0 for on y
     int ID = -1; // ID NEEDED FOR LINKING TOGGLE OF DOORS
     double doorTime = 1; //speed in units per second in which the door opens
-    DoorState state = DOOR_CLOSED;
+    DoorState state = DOOR_CLOSING;
 };
 
 //Convenience

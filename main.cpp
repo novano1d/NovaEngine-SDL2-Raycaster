@@ -41,9 +41,9 @@ SDL_Window* window = nullptr;
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
-                      {1, 0, 0, 0, 1, 0, 0, 1},
+                      {1, 1, 1, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
-                      {1, 0, 0, 0, 1, 0, 0, 1},
+                      {1, 0, 1, 1, 1, 0, 0, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1, 1, 1}});
 
@@ -217,7 +217,7 @@ int main(int argc, char** argv)
     Pathfinder *pf = new Pathfinder();
     pf->setMap(myMap);
     Node start = { { 1, 1 } };
-    Node end = { { 6, 6 } };
+    Node end = { { 3, 6 } };
     auto test = pf->aStar(start, end);
     for (Node node : test) {
         std::cout << node.pos.x << " " << node.pos.y << std::endl;

@@ -37,6 +37,7 @@ inline bool operator<(const Node& lhs, const Node& rhs)
 {
     return lhs.fCost < rhs.fCost;
 }
+
 class Pathfinder
 {
 public:
