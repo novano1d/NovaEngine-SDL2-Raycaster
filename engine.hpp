@@ -51,6 +51,28 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 enum DoorState { DOOR_CLOSED, DOOR_OPEN, DOOR_OPENING, DOOR_CLOSING };
 
+//Point structure that acts as a point and doubles as a 2d vector structure
+struct Point
+{
+    double x,y;
+    Point operator*(const double& a) const
+    {
+        return {a*x, a*y};
+    }
+    Point operator+(const double& a) const
+    {
+        return {a+x, a+y};
+    }
+    Point operator+(const Point& a) const
+    {
+        return {a.x+x, a.y+y};
+    }
+    Point operator-(const Point& a) const
+    {
+        return {a.x-x, a.y-y};
+    }
+};
+
 //probably should move load image into here
 namespace nva
 {
@@ -83,27 +105,7 @@ struct Door
 //Convenience
 struct rgba { int r,g,b,a; } ;
 
-//Point structure that acts as a point and doubles as a 2d vector structure
-struct Point
-{
-    double x,y;
-    Point operator*(const double& a) const
-    {
-        return {a*x, a*y};
-    }
-    Point operator+(const double& a) const
-    {
-        return {a+x, a+y};
-    }
-    Point operator+(const Point& a) const
-    {
-        return {a.x+x, a.y+y};
-    }
-    Point operator-(const Point& a) const
-    {
-        return {a.x-x, a.y-y};
-    }
-};
+
 
 struct Sprite
 {
@@ -153,6 +155,7 @@ public:
     void setEntityAt(int i, Entity *e) { entities[i] = e; };
     std::vector<Entity*>& getEntityVec() { return entities; };
     void deleteEntityByID(int i);
+    Entity* getEntityByID(int i);
 };
 
 //This class will handle loading all necessary texture images
@@ -343,7 +346,7 @@ private:
     Map* m = nullptr;
 public:
     EntityController(Map* im, EntityHandler* em) : m(im), eh(em) {};
-    void Update(); //called when entities need to be updated in position
+    Point getPosByID(int id);
     void createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, double radius, std::string type="NULL");
     void removeEntityAndSpriteByID(int id);
     void updateEntityRelPos(int ID, double x, double y);

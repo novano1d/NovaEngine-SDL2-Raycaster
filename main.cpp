@@ -39,6 +39,7 @@ KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;   
+Pathfinder *pf = new Pathfinder();
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
@@ -88,7 +89,7 @@ std::vector<std::vector<double>> lightMap = {{.1, .1, .1, .1, .1, .1, 1, 1},
 EntityHandler *mapEntities = new EntityHandler();
 EntityController *entCon = new EntityController(myMap, mapEntities);
 
-const int FOV = 60; 
+const int FOV = 90; 
  
 double ticktime;
 SDL_TimerID timerID;
@@ -142,7 +143,23 @@ void handleInput()
     }
     if (keyhandler->isKeyDown(SDLK_RCTRL)) 
     {
-        entCon->updateEntityRelPos(0, 0.1 * ticktime, 0.1 * ticktime);
+        Point location = entCon->getPosByID(0);
+        Node start = { { (int)location.x, (int)location.y } };
+        Node end = { {(int)game->getPlayerPos().x, (int)game->getPlayerPos().y} };
+        auto test = pf->aStar(start, end);
+        std::cout << "Astar complete\n";
+        for (Node node : test) {
+        std::cout << node.pos.x << " " << node.pos.y << std::endl;
+        }
+        // Node nextNode;
+        // if (test.size() >= 1) nextNode = test.at(0);
+        // else nextNode = end;
+        // end = { { nextNode.pos.x, nextNode.pos.y } };
+        // Point endp = {(int)end.pos.x + 0.5, (int)end.pos.y + 0.5};
+        // double angle = Pathfinder::calcAngle(location, endp) * (M_PI / 180.0);
+        // double xcom, ycom;
+        // xcom = 0.1 * cos(angle), ycom = 0.1 * sin(angle); 
+        // entCon->updateEntityRelPos(0, xcom * ticktime, ycom * ticktime);
     }
 }       
 
@@ -215,7 +232,6 @@ int main(int argc, char** argv)
     //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     game->setFont(FOX_OpenFont(renderer, "./fonts/SuboleyaRegular.ttf", 25));
     game->setGunIndex(17);
-    Pathfinder *pf = new Pathfinder();
     pf->setMap(myMap);
     Node start = { { 1, 1 } };
     Node end = { { 3, 6 } };

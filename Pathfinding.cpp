@@ -93,7 +93,6 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
     }
     bool closedList[(xmax)][(ymax)];
     //Initialize whole map
-    //Node allMap[50][25];
     std::vector<std::vector<Node>> allMap(xmax, std::vector<Node>(ymax));
     for (int x = 0; x < (xmax); x++) {
         for (int y = 0; y < (ymax); y++) {
@@ -121,11 +120,6 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
     while (!openList.empty()&&openList.size()<(xmax)*(ymax)) {
         Node node;
         do {
-            //This do-while loop could be replaced with extracting the first
-            //element from a set, but you'd have to make the openList a set.
-            //To be completely honest, I don't remember the reason why I do
-            //it with a vector, but for now it's still an option, although
-            //not as good as a set performance wise.
             float temp = std::numeric_limits<float>::max();
             std::vector<Node>::iterator itNode;
             for (std::vector<Node>::iterator it = openList.begin();
@@ -181,4 +175,14 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
             std::cout << "Destination not found" << std::endl;
             return empty;
     }
+}
+
+double Pathfinder::calcAngle(const Point& p1, const Point& p2)
+{
+    double dx = p2.x - p1.x;
+    double dy = p2.y - p1.y;
+    double angle = std::atan2(dy, dx);
+    angle = angle * 180 / M_PI;
+    angle = fmod(angle + 360, 360);
+    return angle; // returns angles in degrees
 }

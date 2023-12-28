@@ -47,6 +47,7 @@ public:
     double calculateH(int x, int y, Node dest);
     std::vector<Node> aStar(Node player, Node dest);
     std::vector<Node> makePath(std::vector<std::vector<Node>> allMap, Node dest);
+    static double calcAngle(const Point&, const Point&);
 private:
     Map* map = nullptr;
     int xmax = 0, ymax = 0;

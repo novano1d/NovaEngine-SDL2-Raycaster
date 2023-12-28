@@ -325,7 +325,11 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             //mtx.lock();
             for (int i = startX; i < endX; i++)
     {
-        double scanDir = 2 * i / static_cast<double>(renderWidth) - 1; // -1 ---- 0 ---- 1 for the scan across the screen
+        //change scandir in order to fix the spherical distortion
+        //double scanDir = 2 * i / static_cast<double>(renderWidth) - 1; // -1 ---- 0 ---- 1 for the scan across the screen
+        double opp = i - renderWidth / 2.0;
+        double adj = renderWidth / (tan((FOV * M_PI / 180)));
+        double scanDir = atan(opp / adj); // Updated scanDir
         CollisionEvent collision = ddaRaycast(getPlayerPos(), angle + FOV * scanDir);
         //could probably change perpwalldist in order to get infinitely thin walls
         ZBuffer[i] = collision.perpWallDist; //set zbuffer value
@@ -455,6 +459,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     });
 
     //rendering
+    
     double planeLength = tan(FOV * M_PI / 180); 
     double planeX = -sin(angle * M_PI / 180) * planeLength; 
     double planeY = cos(angle * M_PI / 180) * planeLength;
@@ -463,9 +468,11 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         double spriteX = (*it)->x - getPlayerPos().x;
         double spriteY = (*it)->y - getPlayerPos().y;
         double invDet = 1.0 / (planeX * sin(angle * M_PI / 180) - cos(angle * M_PI / 180) * planeY);
-        double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
+        //double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
         double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-        int spriteScreenX = int((renderWidth / 2) * (1 + transformX / transformY));
+        //int spriteScreenX = int((renderWidth / 2) * (1 + transformX / transformY));
+        double spriteDir = atan2(spriteY, spriteX); //helps to correct s distortion
+        int spriteScreenX = std::round(renderWidth / 2.0 + renderWidth * tan(spriteDir - angle * M_PI / 180) / (tan(FOV * M_PI / 180))); //corrects spherical distortion
         int spriteHeight = abs(int(renderHeight / transformY));
         int drawStartY = -spriteHeight / 2 + renderHeight / 2;
         if(drawStartY < 0) drawStartY = 0;
@@ -788,6 +795,19 @@ void EntityController::removeEntityAndSpriteByID(int id)
     }
 }
 
+Point EntityController::getPosByID(int id)
+{
+    auto it = IDtoIndex.find(id);
+    if (it != IDtoIndex.end())
+    {
+        int index = it->second;
+        Sprite temp = m->getSpriteAt(index);
+        Point pos = { temp.x , temp.y };
+        return pos;
+    }
+    return {-1,-1};
+}
+
 /// @brief Updates the relative position of an entity given the entity ID.
 /// @param ID Entity ID
 /// @param x relative change in X
@@ -813,6 +833,14 @@ void EntityHandler::deleteEntityByID(int i)
     for (Entity* e : entities)
     {
         if (e->ID == i) entities.erase(entities.begin() + i);
+    }
+}
+
+Entity* EntityHandler::getEntityByID(int i)
+{
+    for (Entity* e : entities)
+    {
+        if (e->ID == i) return entityAt(i);
     }
 }
 
