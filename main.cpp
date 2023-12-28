@@ -89,7 +89,7 @@ std::vector<std::vector<double>> lightMap = {{.1, .1, .1, .1, .1, .1, 1, 1},
 EntityHandler *mapEntities = new EntityHandler();
 EntityController *entCon = new EntityController(myMap, mapEntities);
 
-const int FOV = 90; 
+const int FOV = 120; 
  
 double ticktime;
 SDL_TimerID timerID;

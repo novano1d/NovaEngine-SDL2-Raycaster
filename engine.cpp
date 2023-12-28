@@ -460,7 +460,16 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 
     //rendering
     
-    double planeLength = tan(FOV * M_PI / 180); 
+/*
+double opp = i - renderWidth / 2.0;
+double adj = renderWidth / (tan((FOV * M_PI / 180)));
+double scanDir = atan(opp / adj); // Updated scanDir
+
+SPRITES ARE FIXED!!!
+I HAVE NO IDEA HOW I FIXED IT, BUT IT WORKS NOW
+*/
+
+    double planeLength = tan((FOV/2.0) * M_PI / 180) * 2.0; 
     double planeX = -sin(angle * M_PI / 180) * planeLength; 
     double planeY = cos(angle * M_PI / 180) * planeLength;
     for (auto it = temp.begin(); it != temp.end(); it++)
@@ -468,11 +477,11 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         double spriteX = (*it)->x - getPlayerPos().x;
         double spriteY = (*it)->y - getPlayerPos().y;
         double invDet = 1.0 / (planeX * sin(angle * M_PI / 180) - cos(angle * M_PI / 180) * planeY);
-        //double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
+        double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
         double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-        //int spriteScreenX = int((renderWidth / 2) * (1 + transformX / transformY));
-        double spriteDir = atan2(spriteY, spriteX); //helps to correct s distortion
-        int spriteScreenX = std::round(renderWidth / 2.0 + renderWidth * tan(spriteDir - angle * M_PI / 180) / (tan(FOV * M_PI / 180))); //corrects spherical distortion
+        //int spriteScreenX = int((static_cast<double>(renderWidth) / 2.0) * (1.0 + transformX / transformY));
+        double spriteDir = atan2(spriteY, spriteX);
+        int spriteScreenX = std::round(renderWidth / 2.0 + renderWidth * tan((spriteDir * 180 / M_PI - angle) * M_PI / 180) / (tan(FOV * M_PI / 180)));
         int spriteHeight = abs(int(renderHeight / transformY));
         int drawStartY = -spriteHeight / 2 + renderHeight / 2;
         if(drawStartY < 0) drawStartY = 0;
