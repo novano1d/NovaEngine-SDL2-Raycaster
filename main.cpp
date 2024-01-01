@@ -89,7 +89,7 @@ std::vector<std::vector<double>> lightMap = {{.1, .1, .1, .1, .1, .1, 1, 1},
 EntityHandler *mapEntities = new EntityHandler();
 EntityController *entCon = new EntityController(myMap, mapEntities);
 
-const int FOV = 100; 
+const int FOV = 105; 
  
 double ticktime;
 SDL_TimerID timerID;
@@ -143,23 +143,49 @@ void handleInput()
     }
     if (keyhandler->isKeyDown(SDLK_RCTRL)) 
     {
-        Point location = entCon->getPosByID(0);
-        Node start = { { (int)location.x, (int)location.y } };
-        Node end = { {(int)game->getPlayerPos().x, (int)game->getPlayerPos().y} };
-        auto test = pf->aStar(start, end);
-        std::cout << "Astar complete\n";
-        for (Node node : test) {
-        std::cout << node.pos.x << " " << node.pos.y << std::endl;
+        try
+        {
+            std::cout << "starting Astar\n";
+            Point location = entCon->getPosByID(0);
+            std::cout << "location obtained\n";
+            Node start = { { (int)location.x, (int)location.y } };
+            Node end = { {(int)game->getPlayerPos().x, (int)game->getPlayerPos().y} };
+            std::cout << "running algorithm\n";
+            auto test = pf->aStar(start, end);
+            std::cout << "Astar complete\n";
+            std::vector<Node> path;
+            for (Node node : test) {
+                std::cout << node.pos.x << " " << node.pos.y << std::endl;
+                path.push_back(node);
+            }
+            if (path.empty()) return;
+            else
+            {
+                std::cout << "updating location...\n";
+                if (path.size() < 2) return;
+                Node nextNode = path.at(1);
+                end = { { nextNode.pos.x, nextNode.pos.y } };
+                Point endp = {((int)end.pos.x) + 0.15, ((int)end.pos.y) + 0.15};
+                double angle = Pathfinder::calcAngle(location, endp) * (M_PI / 180.0);
+                double xcom, ycom;
+                xcom = 0.5 * cos(angle), ycom = 0.5 * sin(angle); 
+                entCon->updateEntityRelPos(0, xcom * ticktime, ycom * ticktime);
+            }
+            // Node nextNode;
+            // if (test.size() >= 1) nextNode = test.at(0);
+            // else nextNode = end;
+            // end = { { nextNode.pos.x, nextNode.pos.y } };
+            // Point endp = {(int)end.pos.x + 0.5, (int)end.pos.y + 0.5};
+            // double angle = Pathfinder::calcAngle(location, endp) * (M_PI / 180.0);
+            // double xcom, ycom;
+            // xcom = 0.1 * cos(angle), ycom = 0.1 * sin(angle); 
+            // entCon->updateEntityRelPos(0, xcom * ticktime, ycom * ticktime);
         }
-        // Node nextNode;
-        // if (test.size() >= 1) nextNode = test.at(0);
-        // else nextNode = end;
-        // end = { { nextNode.pos.x, nextNode.pos.y } };
-        // Point endp = {(int)end.pos.x + 0.5, (int)end.pos.y + 0.5};
-        // double angle = Pathfinder::calcAngle(location, endp) * (M_PI / 180.0);
-        // double xcom, ycom;
-        // xcom = 0.1 * cos(angle), ycom = 0.1 * sin(angle); 
-        // entCon->updateEntityRelPos(0, xcom * ticktime, ycom * ticktime);
+        catch(const std::exception& e)
+        {
+            std::cout << "error\n";
+        }
+        
     }
 }       
 

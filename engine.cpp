@@ -477,10 +477,24 @@ double scanDir = atan(opp / adj); // Updated scanDir
         //double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
         double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
         //int spriteScreenX = int((static_cast<double>(renderWidth) / 2.0) * (1.0 + transformX / transformY));
-        double spriteDir = atan2(spriteY, spriteX);
-        double aspect_ratio = static_cast<double>(renderWidth) / static_cast<double>(renderHeight);
-        //int spriteScreenX = std::round(renderWidth / 2.0 + renderWidth * tan((spriteDir * 180 / M_PI - angle) * M_PI / 180) / (tan(FOV * M_PI / 180)));
-        int spriteScreenX = std::round(renderWidth / aspect_ratio + (renderWidth) * tan((spriteDir * 180 / M_PI - (angle)) * M_PI / 180) / (tan(FOV * M_PI / 180)));
+        // double spriteDir = atan2(spriteY, spriteX);
+        // double aspect_ratio = static_cast<double>(renderWidth) / static_cast<double>(renderHeight);
+        // //int spriteScreenX = std::round(renderWidth / 2.0 + renderWidth * tan((spriteDir * 180 / M_PI - angle) * M_PI / 180) / (tan(FOV * M_PI / 180)));
+        // int spriteScreenX = std::round(renderWidth / aspect_ratio + (renderWidth) * tan((spriteDir * 180 / M_PI - (angle)) * M_PI / 180) / (tan(FOV * M_PI / 180)));
+        double spriteDir = atan2(spriteY, spriteX) * 180.0 / M_PI;
+        double relativeAngle = ((spriteDir) - angle);
+        
+        // Ensure the sprite is within the FOV range
+        std::cout << relativeAngle << std::endl;
+        double distanceToProjectionPlane = (renderWidth / 2.0) / tan(FOV / 2.0 * M_PI / 180);
+        // Apply a fish-eye correction to the sprite positions
+        double correctionFactor = 0.85 / cos(relativeAngle * M_PI / 180);
+        double correctedDistance = distanceToProjectionPlane * correctionFactor;
+        double spriteScreenX = round((correctedDistance * tan(relativeAngle * M_PI / 180)) + (renderWidth / 2.0));
+        
+        //std::cout << spriteDir << std::endl;
+        // Correct spriteScreenX for spherical distortion
+        //double spriteScreenX = spriteScreenXtemp;
         int spriteHeight = abs(int(renderHeight / transformY));
         int drawStartY = -spriteHeight / 2 + renderHeight / 2;
         if(drawStartY < 0) drawStartY = 0;

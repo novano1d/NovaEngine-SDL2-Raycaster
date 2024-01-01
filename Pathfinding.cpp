@@ -32,10 +32,12 @@ std::vector<Node> Pathfinder::makePath(std::vector<std::vector<Node>> map, Node 
         int y = dest.pos.y;
         std::stack<Node> path;
         std::vector<Node> usablePath;
-        while (!(map[x][y].parent.x == x && map[x][y].parent.x == y)
+        std::cout << "before map check" << std::endl;
+        while (!(map[x][y].parent.x == x && map[x][y].parent.y == y)
             && map[x][y].pos.x != -1 && map[x][y].pos.y != -1) 
         {
             path.push(map[x][y]);
+            std::cout << "after map check" << std::endl;
             int tempX = map[x][y].parent.x;
             int tempY = map[x][y].parent.y;
             x = tempX;
@@ -94,6 +96,7 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
     bool closedList[(xmax)][(ymax)];
     //Initialize whole map
     std::vector<std::vector<Node>> allMap(xmax, std::vector<Node>(ymax));
+    std::cout << "allmap init" << std::endl;
     for (int x = 0; x < (xmax); x++) {
         for (int y = 0; y < (ymax); y++) {
             allMap[x][y].fCost = std::numeric_limits<float>::max();
@@ -106,6 +109,7 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
             closedList[x][y] = false;
         }
     }
+    std::cout << "starting list init" << std::endl;
     //Initialize our starting list
     int x = player.pos.x;
     int y = player.pos.y;
@@ -116,12 +120,16 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
     allMap[x][y].parent.y = y;
     std::vector<Node> openList;  
     openList.emplace_back(allMap[x][y]);
+    std::cout << "emplace" << std::endl;
     bool destinationFound = false;
     while (!openList.empty()&&openList.size()<(xmax)*(ymax)) {
         Node node;
+        std::cout << "in while" << std::endl;
+        bool validNodeFound = false;
         do {
             float temp = std::numeric_limits<float>::max();
-            std::vector<Node>::iterator itNode;
+            std::vector<Node>::iterator itNode = openList.begin();
+            
             for (std::vector<Node>::iterator it = openList.begin();
                 it != openList.end(); it = next(it)) {
                 Node n = *it;
@@ -131,11 +139,15 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
                 }
             }
             node = *itNode;
-            openList.erase(itNode);
-        } while (isValid(node.pos.x, node.pos.y) == false);
+            if(isValid(node.pos.x, node.pos.y)) {
+                validNodeFound = true;
+            }
+            if(!openList.empty()) openList.erase(itNode);
+        } while (!validNodeFound && !openList.empty());
         x = node.pos.x;
         y = node.pos.y;
         closedList[x][y] = true;
+        std::cout << "after do loop" << std::endl;
         //For each neighbour starting from North-West to South-East
         for (int newX = -1; newX <= 1; newX++) {
             for (int newY = -1; newY <= 1; newY++) {
