@@ -488,7 +488,7 @@ double scanDir = atan(opp / adj); // Updated scanDir
         std::cout << relativeAngle << std::endl;
         double distanceToProjectionPlane = (renderWidth / 2.0) / tan(FOV / 2.0 * M_PI / 180);
         // Apply a fish-eye correction to the sprite positions
-        double correctionFactor = 0.80 / cos(relativeAngle * M_PI / 180);
+        double correctionFactor = (0.80) / cos(relativeAngle * M_PI / 180); //Correction factor constant will need to cahnge with FOV changes (FOV 105 when testing)
         double correctedDistance = distanceToProjectionPlane * correctionFactor;
         double spriteScreenX = round((correctedDistance * tan(relativeAngle * M_PI / 180)) + (renderWidth / 2.0));
         

@@ -164,8 +164,8 @@ void handleInput()
                 std::cout << "updating location...\n";
                 if (path.size() < 2) return;
                 Node nextNode = path.at(1);
-                end = { { nextNode.pos.x, nextNode.pos.y } };
-                Point endp = {((int)end.pos.x) + 0.15, ((int)end.pos.y) + 0.15};
+                //end = { { nextNode.pos.x, nextNode.pos.y } };
+                Point endp = {((int)nextNode.pos.x), ((int)nextNode.pos.y)};
                 double angle = Pathfinder::calcAngle(location, endp) * (M_PI / 180.0);
                 double xcom, ycom;
                 xcom = 0.5 * cos(angle), ycom = 0.5 * sin(angle); 
