@@ -478,17 +478,17 @@ double scanDir = atan(opp / adj); // Updated scanDir
         double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
         //int spriteScreenX = int((static_cast<double>(renderWidth) / 2.0) * (1.0 + transformX / transformY));
         // double spriteDir = atan2(spriteY, spriteX);
-        // double aspect_ratio = static_cast<double>(renderWidth) / static_cast<double>(renderHeight);
+        double aspect_ratio = static_cast<double>(renderWidth) / static_cast<double>(renderHeight);
         // //int spriteScreenX = std::round(renderWidth / 2.0 + renderWidth * tan((spriteDir * 180 / M_PI - angle) * M_PI / 180) / (tan(FOV * M_PI / 180)));
         // int spriteScreenX = std::round(renderWidth / aspect_ratio + (renderWidth) * tan((spriteDir * 180 / M_PI - (angle)) * M_PI / 180) / (tan(FOV * M_PI / 180)));
         double spriteDir = atan2(spriteY, spriteX) * 180.0 / M_PI;
         double relativeAngle = ((spriteDir) - angle);
         
         // Ensure the sprite is within the FOV range
-        std::cout << relativeAngle << std::endl;
+        //std::cout << relativeAngle << std::endl;
         double distanceToProjectionPlane = (renderWidth / 2.0) / tan(FOV / 2.0 * M_PI / 180);
         // Apply a fish-eye correction to the sprite positions
-        double correctionFactor = (0.80) / cos(relativeAngle * M_PI / 180); //Correction factor constant will need to cahnge with FOV changes (FOV 105 when testing)
+        double correctionFactor = sin(FOV * M_PI / 180) / cos(relativeAngle * M_PI / 180); //Correction factor constant will need to change with dramatic FOV changes (FOV 105 when testing)
         double correctedDistance = distanceToProjectionPlane * correctionFactor;
         double spriteScreenX = round((correctedDistance * tan(relativeAngle * M_PI / 180)) + (renderWidth / 2.0));
         
@@ -836,17 +836,39 @@ Point EntityController::getPosByID(int id)
 /// @param y relative change in Y
 void EntityController::updateEntityRelPos(int ID, double x, double y)
 {
+    const float WALL_CLOSENESS = 0.1; // Adjust this value as needed
+
     auto it = IDtoIndex.find(ID);
     if (it != IDtoIndex.end())
     {
         int index = it->second;
         Entity* e = eh->entityAt(index);
-        Point newPos = {e->pos.x + x, e->pos.y + y};
-        e->pos = newPos;
-        m->getSpriteAt(index).x = newPos.x;
-        m->getSpriteAt(index).y = newPos.y;
+
+        // Current position of the entity
+        Point currentPos = e->pos;
+        // Proposed new position
+        Point newPos = {currentPos.x + x, currentPos.y + y};
+        auto map = m;
+        // Check for walls and doors similarly to setPlayerPos
+        bool stuckOnVerticalWall = map->getTileAt(currentPos.x - WALL_CLOSENESS, currentPos.y) || map->getTileAt(currentPos.x + WALL_CLOSENESS, currentPos.y);
+        bool stuckOnHorizontalWall = map->getTileAt(currentPos.x, currentPos.y - WALL_CLOSENESS) || map->getTileAt(currentPos.x, currentPos.y + WALL_CLOSENESS);
+
+        bool stuckOnVerticalDoor = (map->getDoorTileAt(currentPos.x - WALL_CLOSENESS, currentPos.y).doorState == true) || (map->getDoorTileAt(currentPos.x + WALL_CLOSENESS, currentPos.y).doorState == true);
+        bool stuckOnHorizontalDoor = (map->getDoorTileAt(currentPos.x, currentPos.y - WALL_CLOSENESS).doorState == true) || (map->getDoorTileAt(currentPos.x, currentPos.y + WALL_CLOSENESS).doorState == true);
+
+        // Update position if not stuck or moving away from the wall/door
+        if ((!stuckOnVerticalWall && !stuckOnVerticalDoor) || (stuckOnVerticalWall && ((newPos.x < currentPos.x && !map->getTileAt(newPos.x - WALL_CLOSENESS, newPos.y)) || (newPos.x > currentPos.x && !map->getTileAt(newPos.x + WALL_CLOSENESS, newPos.y)))) || (stuckOnVerticalDoor && ((newPos.x < currentPos.x && !(map->getDoorTileAt(newPos.x - WALL_CLOSENESS, newPos.y).doorState == true)) || (newPos.x > currentPos.x && !(map->getDoorTileAt(newPos.x + WALL_CLOSENESS, newPos.y).doorState == true)))))
+            currentPos.x = newPos.x;
+        if ((!stuckOnHorizontalWall && !stuckOnHorizontalDoor) || (stuckOnHorizontalWall && ((newPos.y < currentPos.y && !map->getTileAt(newPos.x, newPos.y - WALL_CLOSENESS)) || (newPos.y > currentPos.y && !map->getTileAt(newPos.x, newPos.y + WALL_CLOSENESS)))) || (stuckOnHorizontalDoor && ((newPos.y < currentPos.y && !(map->getDoorTileAt(newPos.x, newPos.y - WALL_CLOSENESS).doorState == true)) || (newPos.y > currentPos.y && !(map->getDoorTileAt(newPos.x, newPos.y + WALL_CLOSENESS).doorState == true)))))
+            currentPos.y = newPos.y;
+
+        // Update the entity's position
+        e->pos = currentPos;
+        m->getSpriteAt(index).x = currentPos.x;
+        m->getSpriteAt(index).y = currentPos.y;
     }
 }
+
 
 /// @brief Deletes entity by the entity ID.
 /// @param i the ID

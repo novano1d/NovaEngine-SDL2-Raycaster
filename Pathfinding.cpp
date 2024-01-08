@@ -58,10 +58,10 @@ std::vector<Node> Pathfinder::makePath(std::vector<std::vector<Node>> map, Node 
 
 bool Pathfinder::isValid(int x, int y)
 {
-    if (map->getTileAt(x,y) == 0) return true;
     if (x < 0 || y < 0 || x >= (xmax) || y >= (ymax)) {
         return false;
     }
+    if (map->getTileAt(x,y) == 0) return true;
     if (map->getTileAt(x,y) > 0) return false;
     if (map->getDoorTileAt(x,y).state == DOOR_CLOSED || map->getDoorTileAt(x,y).state == DOOR_CLOSING) return false;
     return false;

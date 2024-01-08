@@ -30,6 +30,8 @@ https://creativecommons.org/licenses/by-sa/4.0/
     *menu
     *loading and storing into binary
     *code terminal? 
+    *gun still not handling id properly
+    *re org code better (sprites and entites the same)
 */
 
 //Global def
@@ -165,10 +167,11 @@ void handleInput()
                 if (path.size() < 2) return;
                 Node nextNode = path.at(1);
                 //end = { { nextNode.pos.x, nextNode.pos.y } };
-                Point endp = {((int)nextNode.pos.x), ((int)nextNode.pos.y)};
+                Point endp = {((int)nextNode.pos.x) + 0.5, ((int)nextNode.pos.y) + 0.5};
                 double angle = Pathfinder::calcAngle(location, endp) * (M_PI / 180.0);
                 double xcom, ycom;
-                xcom = 0.5 * cos(angle), ycom = 0.5 * sin(angle); 
+                double speed = 1;
+                xcom = speed * cos(angle), ycom = speed * sin(angle); 
                 entCon->updateEntityRelPos(0, xcom * ticktime, ycom * ticktime);
             }
             // Node nextNode;
@@ -221,16 +224,16 @@ int main(int argc, char** argv)
     //     {64, 0, 64, 1},
     //     {64, 3, 64, 2}
     //     }};
-    //myMap->addSprite(animSides);
+    // myMap->addSprite(&animSides);
 
     //need to create an object for the game that handles the sprites for all the entities
     // myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0});
     // mapEntities->addEntity({{4.5, 4.5}, 0.2, "TEST"});
     myMap->setEntityHandler(mapEntities);
     static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
-    static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
+    static Entity e = {{4.5, 4.5}, 0.1, "TEST"};
     static Sprite s2 = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
-    static Entity e2 = {{4.5, 4.5}, 0.2, "TEST"};
+    static Entity e2 = {{4.5, 4.5}, 0.1, "TEST"};
     entCon->createEntityAndSpriteAt(&e, &s, {2, 2}, 0.2);
     entCon->createEntityAndSpriteAt(&e2, &s2, {2.5, 2.5}, 0.2);
     //myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
