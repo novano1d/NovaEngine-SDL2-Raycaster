@@ -289,7 +289,10 @@ int GridGame::shoot(Point p, double a)
             }
         }
     }();
-    std::sort(distIndexVec.begin(), distIndexVec.end());
+    std::sort(distIndexVec.begin(), distIndexVec.end(), 
+    [](const std::pair<int, int> &a, const std::pair<int, int> &b) {
+        return a.first > b.first;
+    });
     if (distIndexVec.size() == 0) return -1;
     if (distIndexVec.at(0).first < e.perpWallDist) //if the bullet is occluded we don't want to reg a hit
         return distIndexVec.at(0).second;
