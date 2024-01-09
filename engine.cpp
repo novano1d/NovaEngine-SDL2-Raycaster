@@ -270,24 +270,25 @@ int GridGame::shoot(Point p, double a)
     double RANGE = 1000;
     int index = 0;
     Point check = p;
-    for (int t = 0; t < entities.size(); t++)
-    {
-        Entity *e = entities[t]; //modify so looping through entities, not all sprites
-        check = p;
-        double d = 0;
-        for (int i = 0; i < RANGE; i++)
+    [&] { //lambda to avoid goto statement
+        for (int t = 0; t < entities.size(); t++)
         {
-            if (nva::checkCirc((*e).pos.x, (*e).pos.y, (*e).radius, check.x, check.y))
+            Entity *e = entities[t]; //modify so looping through entities, not all sprites
+            check = p;
+            double d = 0;
+            for (int i = 0; i < RANGE; i++)
             {
-                distIndexVec.push_back(std::make_pair(d, (*e).ID));
-                goto brloop;
+                if (nva::checkCirc((*e).pos.x, (*e).pos.y, (*e).radius, check.x, check.y))
+                {
+                    distIndexVec.push_back(std::make_pair(d, (*e).ID));
+                    return;
+                }
+                check.x += xcom;
+                check.y += ycom;
+                d += hypot(xcom, ycom);
             }
-            check.x += xcom;
-            check.y += ycom;
-            d += hypot(xcom, ycom);
         }
-        brloop:
-    }
+    }();
     std::sort(distIndexVec.begin(), distIndexVec.end());
     if (distIndexVec.size() == 0) return -1;
     if (distIndexVec.at(0).first < e.perpWallDist) //if the bullet is occluded we don't want to reg a hit
@@ -302,7 +303,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     const int renderWidth = INTERNAL_RENDER_RES_HORIZ;
     const int renderHeight = INTERNAL_RENDER_RES_VERT;
     double ZBuffer[renderWidth]; // store Z distances for sprite rendering (necessary for occlusion)
-    if (!textureBuffer)
+    if (textureBuffer == nullptr)
         textureBuffer = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, renderWidth, renderHeight);
     std::vector<std::thread> threads;
     const int sectionWidth = renderWidth / nva::MAX_THREADS;
@@ -324,7 +325,11 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             //mtx.lock();
             for (int i = startX; i < endX; i++)
     {
-        double scanDir = 2 * i / static_cast<double>(renderWidth) - 1; // -1 ---- 0 ---- 1 for the scan across the screen
+        //change scandir in order to fix the spherical distortion
+        //double scanDir = 2 * i / static_cast<double>(renderWidth) - 1; // -1 ---- 0 ---- 1 for the scan across the screen
+        double opp = i - renderWidth / 2.0;
+        double adj = renderWidth / (tan((FOV * M_PI / 180)));
+        double scanDir = atan(opp / adj); // Updated scanDir
         CollisionEvent collision = ddaRaycast(getPlayerPos(), angle + FOV * scanDir);
         //could probably change perpwalldist in order to get infinitely thin walls
         ZBuffer[i] = collision.perpWallDist; //set zbuffer value
@@ -454,7 +459,14 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     });
 
     //rendering
-    double planeLength = tan(FOV * M_PI / 180); 
+    
+/*
+double opp = i - renderWidth / 2.0;
+double adj = renderWidth / (tan((FOV * M_PI / 180)));
+double scanDir = atan(opp / adj); // Updated scanDir
+*/
+
+    double planeLength = tan((FOV) * M_PI / 180); 
     double planeX = -sin(angle * M_PI / 180) * planeLength; 
     double planeY = cos(angle * M_PI / 180) * planeLength;
     for (auto it = temp.begin(); it != temp.end(); it++)
@@ -462,9 +474,32 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
         double spriteX = (*it)->x - getPlayerPos().x;
         double spriteY = (*it)->y - getPlayerPos().y;
         double invDet = 1.0 / (planeX * sin(angle * M_PI / 180) - cos(angle * M_PI / 180) * planeY);
-        double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
+        //double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
         double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-        int spriteScreenX = int((renderWidth / 2) * (1 + transformX / transformY));
+        //int spriteScreenX = int((static_cast<double>(renderWidth) / 2.0) * (1.0 + transformX / transformY));
+        // double spriteDir = atan2(spriteY, spriteX);
+        double aspect_ratio = static_cast<double>(renderWidth) / static_cast<double>(renderHeight);
+        // //int spriteScreenX = std::round(renderWidth / 2.0 + renderWidth * tan((spriteDir * 180 / M_PI - angle) * M_PI / 180) / (tan(FOV * M_PI / 180)));
+        // int spriteScreenX = std::round(renderWidth / aspect_ratio + (renderWidth) * tan((spriteDir * 180 / M_PI - (angle)) * M_PI / 180) / (tan(FOV * M_PI / 180)));
+        double spriteDir = atan2(spriteY, spriteX) * 180.0 / M_PI;
+        double relativeAngle = ((spriteDir) - angle);
+        
+        // Ensure the sprite is within the FOV range
+        //std::cout << relativeAngle << std::endl;
+        double distanceToProjectionPlane = (renderWidth / 2.0) / tan(FOV / 2.0 * M_PI / 180);
+        // Apply a fish-eye correction to the sprite positions
+        /*
+            The correction factor is arbitrary. Just did a lot of experimenting and found that it works well.
+            where does the 0.7777... come from? experimenting
+            But it might be 1 - aspect_ratio
+        */
+        double correctionFactor = (0.7777 * (52.5 / FOV)) / cos(relativeAngle * M_PI / 180); //Correction factor constant will need to change with FOV changes (FOV 105 when testing)
+        double correctedDistance = distanceToProjectionPlane * correctionFactor;
+        double spriteScreenX = round((correctedDistance * tan(relativeAngle * M_PI / 180)) + (renderWidth / 2.0));
+        
+        //std::cout << spriteDir << std::endl;
+        // Correct spriteScreenX for spherical distortion
+        //double spriteScreenX = spriteScreenXtemp;
         int spriteHeight = abs(int(renderHeight / transformY));
         int drawStartY = -spriteHeight / 2 + renderHeight / 2;
         if(drawStartY < 0) drawStartY = 0;
@@ -766,6 +801,8 @@ void EntityController::createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, 
     m->addSprite(s);
 }
 
+/// @brief Removes entity and sprite by ID.
+/// @param id to be deleted.
 void EntityController::removeEntityAndSpriteByID(int id)
 {
     auto it = IDtoIndex.find(id);
@@ -785,25 +822,72 @@ void EntityController::removeEntityAndSpriteByID(int id)
     }
 }
 
-void EntityController:: updateEntityRelPos(int ID, double x, double y)
+Point EntityController::getPosByID(int id)
 {
+    auto it = IDtoIndex.find(id);
+    if (it != IDtoIndex.end())
+    {
+        int index = it->second;
+        Sprite temp = m->getSpriteAt(index);
+        Point pos = { temp.x , temp.y };
+        return pos;
+    }
+    return {-1,-1};
+}
+
+/// @brief Updates the relative position of an entity given the entity ID.
+/// @param ID Entity ID
+/// @param x relative change in X
+/// @param y relative change in Y
+void EntityController::updateEntityRelPos(int ID, double x, double y)
+{
+    const float WALL_CLOSENESS = 0.2; // Adjust this value as needed
     auto it = IDtoIndex.find(ID);
     if (it != IDtoIndex.end())
     {
         int index = it->second;
         Entity* e = eh->entityAt(index);
-        Point newPos = {e->pos.x + x, e->pos.y + y};
-        e->pos = newPos;
-        m->getSpriteAt(index).x = newPos.x;
-        m->getSpriteAt(index).y = newPos.y;
+
+        // Current position of the entity
+        Point currentPos = e->pos;
+        // Proposed new position
+        Point newPos = {currentPos.x + x, currentPos.y + y};
+        auto map = m;
+        // Check for walls and doors similarly to setPlayerPos
+        bool stuckOnVerticalWall = map->getTileAt(currentPos.x - WALL_CLOSENESS, currentPos.y) || map->getTileAt(currentPos.x + WALL_CLOSENESS, currentPos.y);
+        bool stuckOnHorizontalWall = map->getTileAt(currentPos.x, currentPos.y - WALL_CLOSENESS) || map->getTileAt(currentPos.x, currentPos.y + WALL_CLOSENESS);
+
+        bool stuckOnVerticalDoor = (map->getDoorTileAt(currentPos.x - WALL_CLOSENESS, currentPos.y).doorState == true) || (map->getDoorTileAt(currentPos.x + WALL_CLOSENESS, currentPos.y).doorState == true);
+        bool stuckOnHorizontalDoor = (map->getDoorTileAt(currentPos.x, currentPos.y - WALL_CLOSENESS).doorState == true) || (map->getDoorTileAt(currentPos.x, currentPos.y + WALL_CLOSENESS).doorState == true);
+
+        // Update position if not stuck or moving away from the wall/door
+        if ((!stuckOnVerticalWall && !stuckOnVerticalDoor) || (stuckOnVerticalWall && ((newPos.x < currentPos.x && !map->getTileAt(newPos.x - WALL_CLOSENESS, newPos.y)) || (newPos.x > currentPos.x && !map->getTileAt(newPos.x + WALL_CLOSENESS, newPos.y)))) || (stuckOnVerticalDoor && ((newPos.x < currentPos.x && !(map->getDoorTileAt(newPos.x - WALL_CLOSENESS, newPos.y).doorState == true)) || (newPos.x > currentPos.x && !(map->getDoorTileAt(newPos.x + WALL_CLOSENESS, newPos.y).doorState == true)))))
+            currentPos.x = newPos.x;
+        if ((!stuckOnHorizontalWall && !stuckOnHorizontalDoor) || (stuckOnHorizontalWall && ((newPos.y < currentPos.y && !map->getTileAt(newPos.x, newPos.y - WALL_CLOSENESS)) || (newPos.y > currentPos.y && !map->getTileAt(newPos.x, newPos.y + WALL_CLOSENESS)))) || (stuckOnHorizontalDoor && ((newPos.y < currentPos.y && !(map->getDoorTileAt(newPos.x, newPos.y - WALL_CLOSENESS).doorState == true)) || (newPos.y > currentPos.y && !(map->getDoorTileAt(newPos.x, newPos.y + WALL_CLOSENESS).doorState == true)))))
+            currentPos.y = newPos.y;
+
+        // Update the entity's position
+        e->pos = currentPos;
+        m->getSpriteAt(index).x = currentPos.x;
+        m->getSpriteAt(index).y = currentPos.y;
     }
 }
 
+/// @brief Deletes entity by the entity ID.
+/// @param i the ID
 void EntityHandler::deleteEntityByID(int i)
 {
     for (Entity* e : entities)
     {
         if (e->ID == i) entities.erase(entities.begin() + i);
+    }
+}
+
+Entity* EntityHandler::getEntityByID(int i)
+{
+    for (Entity* e : entities)
+    {
+        if (e->ID == i) return entityAt(i);
     }
 }
 

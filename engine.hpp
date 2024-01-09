@@ -51,38 +51,6 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 enum DoorState { DOOR_CLOSED, DOOR_OPEN, DOOR_OPENING, DOOR_CLOSING };
 
-//probably should move load image into here
-namespace nva
-{
-    template <typename T>
-    inline T clamp(const T& n, const T& lower, const T& upper) {
-    return (n < lower) ? lower : (n > upper) ? upper : n;
-    }
-    bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
-    const int MAX_THREADS = 1; //Attempt at multithreading not working well lol
-    const double BRIGHTNESS = 10; //resolution of the brightness scale
-    const int SCREEN_WIDTH = 1280;
-    const int SCREEN_HEIGHT = 720;
-    inline bool checkCirc(double cx, double cy, double r, double x, double y) {
-        return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= r * r;
-    }
-}
-
-struct Door
-{
-    bool exists = false;
-    int texIndex = 0;
-    bool doorState = false; //transversible if false
-    double doorProgress = 1; //scale for animation of how far the door is opened/closed
-    bool orientation = 1; // 1 for on x 0 for on y
-    int ID = -1; // ID NEEDED FOR LINKING TOGGLE OF DOORS
-    double doorTime = 1; //speed in units per second in which the door opens
-    DoorState state = DOOR_CLOSED;
-};
-
-//Convenience
-struct rgba { int r,g,b,a; } ;
-
 //Point structure that acts as a point and doubles as a 2d vector structure
 struct Point
 {
@@ -104,6 +72,40 @@ struct Point
         return {a.x-x, a.y-y};
     }
 };
+
+//probably should move load image into here
+namespace nva
+{
+    template <typename T>
+    inline T clamp(const T& n, const T& lower, const T& upper) {
+        return (n < lower) ? lower : (n > upper) ? upper : n;
+    }
+    bool loadImage(std::vector<unsigned char>& image, const std::string& filename, int& x, int&y);
+    const int MAX_THREADS = 1; //Attempt at multithreading not working well lol
+    const double BRIGHTNESS = 10; //resolution of the brightness scale
+    const int SCREEN_WIDTH = 1280;
+    const int SCREEN_HEIGHT = 720;
+    inline bool checkCirc(double cx, double cy, double r, double x, double y) {
+        return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) <= r * r;
+    }
+}
+
+struct Door
+{
+    bool exists = false;
+    int texIndex = 0;
+    bool doorState = false; //transversible if false
+    double doorProgress = 1; //scale for animation of how far the door is opened/closed
+    bool orientation = 1; // 1 for on x 0 for on y
+    int ID = -1; // ID NEEDED FOR LINKING TOGGLE OF DOORS
+    double doorTime = 1; //speed in units per second in which the door opens
+    DoorState state = DOOR_CLOSING;
+};
+
+//Convenience
+struct rgba { int r,g,b,a; } ;
+
+
 
 struct Sprite
 {
@@ -153,6 +155,7 @@ public:
     void setEntityAt(int i, Entity *e) { entities[i] = e; };
     std::vector<Entity*>& getEntityVec() { return entities; };
     void deleteEntityByID(int i);
+    Entity* getEntityByID(int i);
 };
 
 //This class will handle loading all necessary texture images
@@ -176,17 +179,6 @@ public:
 //Game Class to clean things up a bit and provide a template
 class Game
 {
-protected:
-    SDL_PixelFormat* format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
-    SDL_Renderer* renderer = nullptr;
-    SDL_Window* window = nullptr;
-    FOX_Font *font;
-    const int SCREEN_WIDTH;
-    const int SCREEN_HEIGHT;
-    double oldTime = 0;
-    double time = 0;
-    int ticks = 0;
-    void(*eventMethod)(SDL_Event) = nullptr;
 public:
     Game(int w, int h, SDL_Window* win, SDL_Renderer* r) : renderer(r), SCREEN_WIDTH(w), SCREEN_HEIGHT(h), window(win) {} 
     //Clears screen with certain color
@@ -201,6 +193,17 @@ public:
     FOX_Font* getFont() { return font; };
     void setTicks(int t) { ticks = t; };
     int getTicks() { return ticks; };
+protected:
+    SDL_PixelFormat* format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+    SDL_Renderer* renderer = nullptr;
+    SDL_Window* window = nullptr;
+    FOX_Font *font;
+    const int SCREEN_WIDTH;
+    const int SCREEN_HEIGHT;
+    double oldTime = 0;
+    double time = 0;
+    int ticks = 0;
+    void(*eventMethod)(SDL_Event) = nullptr;
 };
 
 /*
@@ -282,7 +285,7 @@ private:
     double rotSpeed = 100; //degrees per second
     double mouseSens = 0.1;
     TextureHandler* currentTextureSet = nullptr;
-    SDL_Texture* textureBuffer;
+    SDL_Texture* textureBuffer = nullptr;
     const double SKYSCALEFACTOR = 2;
 public:
     GridGame(int w, int h, SDL_Window* win, SDL_Renderer* r) : Game(w, h, win, r) {}
@@ -343,7 +346,7 @@ private:
     Map* m = nullptr;
 public:
     EntityController(Map* im, EntityHandler* em) : m(im), eh(em) {};
-    void Update(); //called when entities need to be updated in position
+    Point getPosByID(int id);
     void createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, double radius, std::string type="NULL");
     void removeEntityAndSpriteByID(int id);
     void updateEntityRelPos(int ID, double x, double y);

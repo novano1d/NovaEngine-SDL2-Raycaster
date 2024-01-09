@@ -22,11 +22,17 @@ https://creativecommons.org/licenses/by-sa/4.0/
 */
 
 #include "engine.hpp"
-//TODO
-//ui
-//code terminal
-//animate doors
-//menu 
+#include "Pathfinding.hpp"
+/*          TODO LIST
+    *ui
+    *Pathfinding (A*)
+        -AI
+    *menu
+    *loading and storing into binary
+    *code terminal? 
+    *gun still not handling id properly
+    *re org code better (sprites and entites the same)
+*/
 
 //Global def
 #define SCREEN_WIDTH nva::SCREEN_WIDTH 
@@ -35,12 +41,13 @@ KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;   
+Pathfinder *pf = new Pathfinder();
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
-                      {1, 0, 0, 0, 1, 0, 0, 1},
+                      {1, 1, 1, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
-                      {1, 0, 0, 0, 1, 0, 0, 1},
+                      {1, 0, 1, 1, 1, 0, 0, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1, 1, 1}});
 
@@ -84,7 +91,7 @@ std::vector<std::vector<double>> lightMap = {{.1, .1, .1, .1, .1, .1, 1, 1},
 EntityHandler *mapEntities = new EntityHandler();
 EntityController *entCon = new EntityController(myMap, mapEntities);
 
-const int FOV = 60; 
+const int FOV = 105; 
  
 double ticktime;
 SDL_TimerID timerID;
@@ -111,7 +118,7 @@ void handleInput()
         game->setAngle(game->getAngle() + ticktime * game->getRotSpeed());
     if (keyhandler->isKeyDown(SDLK_LEFT))
         game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
-    if (keyhandler->isKeyDown(SDLK_ESCAPE) && game->getTicks() % 17 == 1) //mod by random prime to prevent spamming the key lol
+    if (keyhandler->isKeyDown(SDLK_ESCAPE) && game->getTicks() % 17 == 0) //mod by random prime to prevent spamming the key lol
         SDL_SetRelativeMouseMode(static_cast<SDL_bool>((!SDL_GetRelativeMouseMode())));
     if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 3)
     {
@@ -138,7 +145,45 @@ void handleInput()
     }
     if (keyhandler->isKeyDown(SDLK_RCTRL)) 
     {
-        entCon->updateEntityRelPos(0, 0.1 * ticktime, 0.1 * ticktime);
+        try
+        {
+            Point location = entCon->getPosByID(0);
+            Node start = { { (int)location.x, (int)location.y } };
+            Node end = { {(int)game->getPlayerPos().x, (int)game->getPlayerPos().y} };
+            auto test = pf->aStar(start, end);
+            std::vector<Node> path;
+            for (Node node : test) {
+                std::cout << node.pos.x << " " << node.pos.y << std::endl;
+                path.push_back(node);
+            }
+            if (path.empty()) return;
+            else
+            {
+                if (path.size() < 2) return;
+                Node nextNode = path.at(1);
+                //end = { { nextNode.pos.x, nextNode.pos.y } };
+                Point endp = {((int)nextNode.pos.x) + 0.5, ((int)nextNode.pos.y) + 0.5};
+                double angle = Pathfinder::calcAngle(location, endp) * (M_PI / 180.0);
+                double xcom, ycom;
+                double speed = 1;
+                xcom = speed * cos(angle), ycom = speed * sin(angle); 
+                entCon->updateEntityRelPos(0, xcom * ticktime, ycom * ticktime);
+            }
+            // Node nextNode;
+            // if (test.size() >= 1) nextNode = test.at(0);
+            // else nextNode = end;
+            // end = { { nextNode.pos.x, nextNode.pos.y } };
+            // Point endp = {(int)end.pos.x + 0.5, (int)end.pos.y + 0.5};
+            // double angle = Pathfinder::calcAngle(location, endp) * (M_PI / 180.0);
+            // double xcom, ycom;
+            // xcom = 0.1 * cos(angle), ycom = 0.1 * sin(angle); 
+            // entCon->updateEntityRelPos(0, xcom * ticktime, ycom * ticktime);
+        }
+        catch(const std::exception& e)
+        {
+            std::cout << "error\n";
+        }
+        
     }
 }       
 
@@ -174,16 +219,16 @@ int main(int argc, char** argv)
     //     {64, 0, 64, 1},
     //     {64, 3, 64, 2}
     //     }};
-    //myMap->addSprite(animSides);
+    // myMap->addSprite(&animSides);
 
     //need to create an object for the game that handles the sprites for all the entities
     // myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0});
     // mapEntities->addEntity({{4.5, 4.5}, 0.2, "TEST"});
     myMap->setEntityHandler(mapEntities);
     static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
-    static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
+    static Entity e = {{4.5, 4.5}, 0.1, "TEST"};
     static Sprite s2 = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
-    static Entity e2 = {{4.5, 4.5}, 0.2, "TEST"};
+    static Entity e2 = {{4.5, 4.5}, 0.1, "TEST"};
     entCon->createEntityAndSpriteAt(&e, &s, {2, 2}, 0.2);
     entCon->createEntityAndSpriteAt(&e2, &s2, {2.5, 2.5}, 0.2);
     //myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
@@ -211,6 +256,13 @@ int main(int argc, char** argv)
     //SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     game->setFont(FOX_OpenFont(renderer, "./fonts/SuboleyaRegular.ttf", 25));
     game->setGunIndex(17);
+    pf->setMap(myMap);
+    Node start = { { 1, 1 } };
+    Node end = { { 3, 6 } };
+    auto test = pf->aStar(start, end);
+    for (Node node : test) {
+        std::cout << node.pos.x << " " << node.pos.y << std::endl;
+    }
     game->gameplayLoop(playLoop);	
     TTF_Quit();
     FOX_CloseFont(game->getFont());
