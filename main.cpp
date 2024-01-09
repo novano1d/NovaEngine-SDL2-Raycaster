@@ -30,8 +30,8 @@ https://creativecommons.org/licenses/by-sa/4.0/
     *menu
     *loading and storing into binary
     *code terminal? 
-    *gun still not handling id properly
     *re org code better (sprites and entites the same)
+        -Maybe static sprite entity factory? gameobject or something
 */
 
 //Global def
@@ -45,7 +45,7 @@ Pathfinder *pf = new Pathfinder();
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
-                      {1, 1, 1, 0, 1, 0, 0, 1},
+                      {1, 0, 1, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
                       {1, 0, 1, 1, 1, 0, 0, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
@@ -227,7 +227,7 @@ int main(int argc, char** argv)
     myMap->setEntityHandler(mapEntities);
     static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
     static Entity e = {{4.5, 4.5}, 0.1, "TEST"};
-    static Sprite s2 = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
+    static Sprite s2 = {4.5, 4.5, 4, 45, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
     static Entity e2 = {{4.5, 4.5}, 0.1, "TEST"};
     entCon->createEntityAndSpriteAt(&e, &s, {2, 2}, 0.2);
     entCon->createEntityAndSpriteAt(&e2, &s2, {2.5, 2.5}, 0.2);

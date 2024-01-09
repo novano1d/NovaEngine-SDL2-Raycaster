@@ -873,6 +873,13 @@ void EntityController::updateEntityRelPos(int ID, double x, double y)
         e->pos = currentPos;
         m->getSpriteAt(index).x = currentPos.x;
         m->getSpriteAt(index).y = currentPos.y;
+        if (x != 0 || y != 0) {
+            double angle = atan2(y, x) + M_PI/8;
+            // Convert radians to degrees, if necessary
+            angle = angle * (180.0 / M_PI);
+            // Update the entity's facing angle
+            m->getSpriteAt(index).angle = angle;
+        }
     }
 }
 
