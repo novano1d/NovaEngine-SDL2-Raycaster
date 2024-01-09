@@ -147,14 +147,10 @@ void handleInput()
     {
         try
         {
-            std::cout << "starting Astar\n";
             Point location = entCon->getPosByID(0);
-            std::cout << "location obtained\n";
             Node start = { { (int)location.x, (int)location.y } };
             Node end = { {(int)game->getPlayerPos().x, (int)game->getPlayerPos().y} };
-            std::cout << "running algorithm\n";
             auto test = pf->aStar(start, end);
-            std::cout << "Astar complete\n";
             std::vector<Node> path;
             for (Node node : test) {
                 std::cout << node.pos.x << " " << node.pos.y << std::endl;
@@ -163,7 +159,6 @@ void handleInput()
             if (path.empty()) return;
             else
             {
-                std::cout << "updating location...\n";
                 if (path.size() < 2) return;
                 Node nextNode = path.at(1);
                 //end = { { nextNode.pos.x, nextNode.pos.y } };

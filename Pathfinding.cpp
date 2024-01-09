@@ -96,7 +96,6 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
     bool closedList[(xmax)][(ymax)];
     //Initialize whole map
     std::vector<std::vector<Node>> allMap(xmax, std::vector<Node>(ymax));
-    std::cout << "allmap init" << std::endl;
     for (int x = 0; x < (xmax); x++) {
         for (int y = 0; y < (ymax); y++) {
             allMap[x][y].fCost = std::numeric_limits<float>::max();
@@ -109,7 +108,6 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
             closedList[x][y] = false;
         }
     }
-    std::cout << "starting list init" << std::endl;
     //Initialize our starting list
     int x = player.pos.x;
     int y = player.pos.y;
@@ -120,11 +118,9 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
     allMap[x][y].parent.y = y;
     std::vector<Node> openList;  
     openList.emplace_back(allMap[x][y]);
-    std::cout << "emplace" << std::endl;
     bool destinationFound = false;
     while (!openList.empty()&&openList.size()<(xmax)*(ymax)) {
         Node node;
-        std::cout << "in while" << std::endl;
         bool validNodeFound = false;
         do {
             float temp = std::numeric_limits<float>::max();
@@ -147,7 +143,6 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
         x = node.pos.x;
         y = node.pos.y;
         closedList[x][y] = true;
-        std::cout << "after do loop" << std::endl;
         //For each neighbour starting from North-West to South-East
         for (int newX = -1; newX <= 1; newX++) {
             for (int newY = -1; newY <= 1; newY++) {
