@@ -488,7 +488,12 @@ double scanDir = atan(opp / adj); // Updated scanDir
         //std::cout << relativeAngle << std::endl;
         double distanceToProjectionPlane = (renderWidth / 2.0) / tan(FOV / 2.0 * M_PI / 180);
         // Apply a fish-eye correction to the sprite positions
-        double correctionFactor = sin(FOV * M_PI / 180) / cos(relativeAngle * M_PI / 180); //Correction factor constant will need to change with dramatic FOV changes (FOV 105 when testing)
+        /*
+            The correction factor is arbitrary. Just did a lot of experimenting and found that it works well.
+            where does the 0.7777... come from? experimenting
+            But it might be 1 - aspect_ratio
+        */
+        double correctionFactor = (0.7777 * (52.5 / FOV)) / cos(relativeAngle * M_PI / 180); //Correction factor constant will need to change with FOV changes (FOV 105 when testing)
         double correctedDistance = distanceToProjectionPlane * correctionFactor;
         double spriteScreenX = round((correctedDistance * tan(relativeAngle * M_PI / 180)) + (renderWidth / 2.0));
         
@@ -836,8 +841,7 @@ Point EntityController::getPosByID(int id)
 /// @param y relative change in Y
 void EntityController::updateEntityRelPos(int ID, double x, double y)
 {
-    const float WALL_CLOSENESS = 0.1; // Adjust this value as needed
-
+    const float WALL_CLOSENESS = 0.2; // Adjust this value as needed
     auto it = IDtoIndex.find(ID);
     if (it != IDtoIndex.end())
     {
@@ -868,7 +872,6 @@ void EntityController::updateEntityRelPos(int ID, double x, double y)
         m->getSpriteAt(index).y = currentPos.y;
     }
 }
-
 
 /// @brief Deletes entity by the entity ID.
 /// @param i the ID
