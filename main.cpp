@@ -29,7 +29,6 @@ https://creativecommons.org/licenses/by-sa/4.0/
         -AI
     *menu
     *loading and storing into binary
-    *code terminal? 
     *re org code better (sprites and entites the same)
         -Maybe static sprite entity factory? gameobject or something
 */
@@ -40,7 +39,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
 SDL_Renderer* renderer = nullptr;
-SDL_Window* window = nullptr;   
+SDL_Window* window = nullptr;
 Pathfinder *pf = new Pathfinder();
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 1, 0, 0, 1},
@@ -257,12 +256,6 @@ int main(int argc, char** argv)
     game->setFont(FOX_OpenFont(renderer, "./fonts/SuboleyaRegular.ttf", 25));
     game->setGunIndex(17);
     pf->setMap(myMap);
-    Node start = { { 1, 1 } };
-    Node end = { { 3, 6 } };
-    auto test = pf->aStar(start, end);
-    for (Node node : test) {
-        std::cout << node.pos.x << " " << node.pos.y << std::endl;
-    }
     game->gameplayLoop(playLoop);	
     TTF_Quit();
     FOX_CloseFont(game->getFont());

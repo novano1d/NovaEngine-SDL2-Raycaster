@@ -256,48 +256,43 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
 
 
 
-//returns the ID of the entity hit
-int GridGame::shoot(Point p, double a)
-{
+int GridGame::shoot(Point p, double a) {
     CollisionEvent e = ddaRaycast(p, a);
-    std::vector<std::pair<int, int>> distIndexVec;
+    std::vector<std::pair<double, int>> distIndexVec;
+
     a = fmod(a, 360);
-    a *= M_PI/180;
-    double xcom = cos(a) * 0.01; //change so we increment
+    a *= M_PI / 180;
+    double xcom = cos(a) * 0.01;
     double ycom = sin(a) * 0.01;
-    //auto sprites = map->getSprites();
+
     auto entities = map->getEntities()->getEntityVec();
     double RANGE = 1000;
-    int index = 0;
-    Point check = p;
-    [&] { //lambda to avoid goto statement
-        for (int t = 0; t < entities.size(); t++)
-        {
-            Entity *e = entities[t]; //modify so looping through entities, not all sprites
-            check = p;
-            double d = 0;
-            for (int i = 0; i < RANGE; i++)
-            {
-                if (nva::checkCirc((*e).pos.x, (*e).pos.y, (*e).radius, check.x, check.y))
-                {
-                    distIndexVec.push_back(std::make_pair(d, (*e).ID));
-                    return;
-                }
-                check.x += xcom;
-                check.y += ycom;
-                d += hypot(xcom, ycom);
+    Point check;
+
+    for (Entity* entity : entities) {
+        check = p;
+        double d = 0;
+        for (int i = 0; i < RANGE; ++i) {
+            if (nva::checkCirc(entity->pos.x, entity->pos.y, entity->radius, check.x, check.y)) {
+                distIndexVec.push_back(std::make_pair(d, entity->ID));
+                break;
             }
+            check.x += xcom;
+            check.y += ycom;
+            d += hypot(xcom, ycom);
         }
-    }();
-    std::sort(distIndexVec.begin(), distIndexVec.end(), 
-    [](const std::pair<int, int> &a, const std::pair<int, int> &b) {
-        return a.first > b.first;
-    });
-    if (distIndexVec.size() == 0) return -1;
-    if (distIndexVec.at(0).first < e.perpWallDist) //if the bullet is occluded we don't want to reg a hit
-        return distIndexVec.at(0).second;
+    }
+
+    if (distIndexVec.empty()) return -1;
+
+    std::sort(distIndexVec.begin(), distIndexVec.end());
+    
+    if (distIndexVec.front().first < e.perpWallDist)
+        return distIndexVec.front().second;
+
     return -1;
 }
+
 
 //speed could almost certainly be improved with multithreading or decreasing # of raycasts
 void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
@@ -705,8 +700,8 @@ double scanDir = atan(opp / adj); // Updated scanDir
     SDL_FreeSurface(cachedGunSurface);
     SDL_DestroyTexture(cachedGunTex);
 
-    // SDL_Point point = {0, 0};
-    // FOX_RenderText(font, (const Uint8*)"Health: 100", &point);
+    SDL_Point point = {0, 0};
+    FOX_RenderText(font, (const Uint8*)"Health: 100", &point);
 
     // Present the rendered frame
     SDL_RenderPresent(renderer);
