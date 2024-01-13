@@ -25,6 +25,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 #include "Pathfinding.hpp"
 /*          TODO LIST
     *ui
+    *timer factory
     *Pathfinding (A*)
         -AI
     *menu
@@ -152,7 +153,7 @@ void handleInput()
             auto test = pf->aStar(start, end);
             std::vector<Node> path;
             for (Node node : test) {
-                std::cout << node.pos.x << " " << node.pos.y << std::endl;
+                //std::cout << node.pos.x << " " << node.pos.y << std::endl;
                 path.push_back(node);
             }
             if (path.empty()) return;
@@ -182,7 +183,6 @@ void handleInput()
         {
             std::cout << "error\n";
         }
-        
     }
 }       
 
@@ -219,7 +219,6 @@ int main(int argc, char** argv)
     //     {64, 3, 64, 2}
     //     }};
     // myMap->addSprite(&animSides);
-
     //need to create an object for the game that handles the sprites for all the entities
     // myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0});
     // mapEntities->addEntity({{4.5, 4.5}, 0.2, "TEST"});

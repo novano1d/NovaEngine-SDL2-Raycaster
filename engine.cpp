@@ -220,7 +220,7 @@ void GridGame::setPlayerPos(Point p)
             playerPos.x = p.x;
         if ((!stuckOnHorizontalWall && !stuckOnHorizontalDoor) || (stuckOnHorizontalWall && ((p.y < playerPos.y && !map->getTileAt(p.x, p.y - WALL_CLOSENESS)) || (p.y > playerPos.y && !map->getTileAt(p.x, p.y + WALL_CLOSENESS)))) || (stuckOnHorizontalDoor && ((p.y < playerPos.y && !(map->getDoorTileAt(p.x, p.y - WALL_CLOSENESS).doorState == true)) || (p.y > playerPos.y && !(map->getDoorTileAt(p.x, p.y + WALL_CLOSENESS).doorState == true)))))
             playerPos.y = p.y;
-        std::cout << "at: " << playerPos.x << " " << playerPos.y << " " << getAngle() << std::endl;
+        //std::cout << "at: " << playerPos.x << " " << playerPos.y << " " << getAngle() << std::endl;
         
     }
 }
@@ -269,11 +269,14 @@ int GridGame::shoot(Point p, double a) {
     double RANGE = 1000;
     Point check;
 
-    for (Entity* entity : entities) {
+    for (Entity* entity : entities) 
+    {
         check = p;
         double d = 0;
-        for (int i = 0; i < RANGE; ++i) {
-            if (nva::checkCirc(entity->pos.x, entity->pos.y, entity->radius, check.x, check.y)) {
+        for (int i = 0; i < RANGE; ++i) 
+        {
+            if (nva::checkCirc(entity->pos.x, entity->pos.y, entity->radius, check.x, check.y)) 
+            {
                 distIndexVec.push_back(std::make_pair(d, entity->ID));
                 break;
             }
@@ -282,11 +285,8 @@ int GridGame::shoot(Point p, double a) {
             d += hypot(xcom, ycom);
         }
     }
-
     if (distIndexVec.empty()) return -1;
-
     std::sort(distIndexVec.begin(), distIndexVec.end());
-    
     if (distIndexVec.front().first < e.perpWallDist)
         return distIndexVec.front().second;
 
@@ -491,7 +491,7 @@ double scanDir = atan(opp / adj); // Updated scanDir
             where does the 0.7777... come from? experimenting
             But it might be 1 - aspect_ratio
         */
-        double correctionFactor = (0.7777 * (52.5 / FOV)) / cos(relativeAngle * M_PI / 180); //Correction factor constant will need to change with FOV changes (FOV 105 when testing)
+        double correctionFactor = ((aspect_ratio - 1.0) * (52.5 / FOV)) / cos(relativeAngle * M_PI / 180); //Correction factor constant will need to change with FOV changes (FOV 105 when testing)
         double correctedDistance = distanceToProjectionPlane * correctionFactor;
         double spriteScreenX = round((correctedDistance * tan(relativeAngle * M_PI / 180)) + (renderWidth / 2.0));
         

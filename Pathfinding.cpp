@@ -27,17 +27,17 @@ void Pathfinder::setMap(Map* m) { map = m; xmax = map->xSize(); ymax = map->ySiz
 
 std::vector<Node> Pathfinder::makePath(std::vector<std::vector<Node>> map, Node dest) {
     try {
-        std::cout << "Found a path" << std::endl;
+        //std::cout << "Found a path" << std::endl;
         int x = dest.pos.x;
         int y = dest.pos.y;
         std::stack<Node> path;
         std::vector<Node> usablePath;
-        std::cout << "before map check" << std::endl;
+        //std::cout << "before map check" << std::endl;
         while (!(map[x][y].parent.x == x && map[x][y].parent.y == y)
             && map[x][y].pos.x != -1 && map[x][y].pos.y != -1) 
         {
             path.push(map[x][y]);
-            std::cout << "after map check" << std::endl;
+            //std::cout << "after map check" << std::endl;
             int tempX = map[x][y].parent.x;
             int tempY = map[x][y].parent.y;
             x = tempX;
@@ -84,12 +84,12 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
 {
     std::vector<Node> empty;
     if (isValid(dest.pos.x, dest.pos.y) == false) {
-        std::cout << "Destination is an obstacle" << std::endl;
+        //std::cout << "Destination is an obstacle" << std::endl;
         return empty;
         //Destination is invalid
     }
     if (isDest(player.pos.x, player.pos.y, dest)) {
-        std::cout << "You are the destination" << std::endl;
+        //std::cout << "You are the destination" << std::endl;
         return empty;
         //You clicked on yourself
     }
@@ -179,7 +179,7 @@ std::vector<Node> Pathfinder::aStar(Node player, Node dest)
         }
         }
         if (destinationFound == false) {
-            std::cout << "Destination not found" << std::endl;
+            //std::cout << "Destination not found" << std::endl;
             return empty;
     }
 }
