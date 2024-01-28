@@ -255,7 +255,7 @@ private:
     std::vector<std::vector<int>> floorMap;
     std::vector<std::vector<int>> ceilingMap;
     std::vector<std::vector<Door>> doorMap;
-    //lightmap values may need to be prebaked to improve performance (division x amount of times per frame adds up)
+    //lightmap values may need to be prebaked to improve performance
     std::vector<std::vector<double>> lightMap;
     std::vector<Sprite*> sprites;
     EntityHandler* entitiesOnMap = nullptr;
