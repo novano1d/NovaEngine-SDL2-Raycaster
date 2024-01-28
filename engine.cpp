@@ -351,7 +351,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
             texX = nva::clamp<int>(texX, 0, currentTextureSet->widthHeightAt(textureToRender - 1).first);
         }
         
-        double lightVal = nva::BRIGHTNESS - map->getLightTileAt(collision.intersect.x + 0.001, collision.intersect.y + 0.001) * nva::BRIGHTNESS;
+        double lightVal = nva::BRIGHTNESS - map->getLightTileAt(collision.intersect.x + 0.0001, collision.intersect.y + 0.0001) * nva::BRIGHTNESS;
         if (lightVal == 0) lightVal = 1;
         if (textureToRender)
         {
@@ -491,7 +491,7 @@ double scanDir = atan(opp / adj); // Updated scanDir
             where does the 0.7777... come from? experimenting
             But it might be 1 - aspect_ratio
         */
-        double correctionFactor = ((aspect_ratio - 1.0) * (52.5 / FOV)) / cos(relativeAngle * M_PI / 180); //Correction factor constant will need to change with FOV changes (FOV 105 when testing)
+        double correctionFactor = ((0.7777777) * (52.5 / FOV)) / cos(relativeAngle * M_PI / 180); //Correction factor constant will need to change with FOV changes (FOV 105 when testing)
         double correctedDistance = distanceToProjectionPlane * correctionFactor;
         double spriteScreenX = round((correctedDistance * tan(relativeAngle * M_PI / 180)) + (renderWidth / 2.0));
         

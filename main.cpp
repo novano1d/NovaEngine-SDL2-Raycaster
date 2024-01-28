@@ -136,7 +136,7 @@ void handleInput()
         canShoot = false;
         int shot = game->shoot(game->getPlayerPos(), game->getAngle());
         if (shot != -1) entCon->removeEntityAndSpriteByID(shot);
-        timerID = SDL_AddTimer(750, resetGun, const_cast<char*>("SDL"));
+        timerID = SDL_AddTimer(200, resetGun, const_cast<char*>("SDL"));
         static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
         static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
         entCon->createEntityAndSpriteAt(&e, &s, game->getPlayerPos(), 0.2);
@@ -161,7 +161,6 @@ void handleInput()
             {
                 if (path.size() < 2) return;
                 Node nextNode = path.at(1);
-                //end = { { nextNode.pos.x, nextNode.pos.y } };
                 Point endp = {((int)nextNode.pos.x) + 0.5, ((int)nextNode.pos.y) + 0.5};
                 double angle = Pathfinder::calcAngle(location, endp) * (M_PI / 180.0);
                 double xcom, ycom;
@@ -169,15 +168,6 @@ void handleInput()
                 xcom = speed * cos(angle), ycom = speed * sin(angle); 
                 entCon->updateEntityRelPos(0, xcom * ticktime, ycom * ticktime);
             }
-            // Node nextNode;
-            // if (test.size() >= 1) nextNode = test.at(0);
-            // else nextNode = end;
-            // end = { { nextNode.pos.x, nextNode.pos.y } };
-            // Point endp = {(int)end.pos.x + 0.5, (int)end.pos.y + 0.5};
-            // double angle = Pathfinder::calcAngle(location, endp) * (M_PI / 180.0);
-            // double xcom, ycom;
-            // xcom = 0.1 * cos(angle), ycom = 0.1 * sin(angle); 
-            // entCon->updateEntityRelPos(0, xcom * ticktime, ycom * ticktime);
         }
         catch(const std::exception& e)
         {
