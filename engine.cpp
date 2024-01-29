@@ -127,9 +127,12 @@ void GridGame::mapGrid(rgba c)
 //Simple DDA
 inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
 {
+    const double EPSILON = 0.0001;
     double angleRadians = angle * M_PI / 180.0;
     //using point as 2d vector to keep clean
     Point rayDir = { cos(angleRadians), sin(angleRadians) };
+    if (fabs(rayDir.x) < EPSILON) rayDir.x = copysign(EPSILON, rayDir.x);
+    if (fabs(rayDir.y) < EPSILON) rayDir.y = copysign(EPSILON, rayDir.y);
     Point rayUnitStepSize = { sqrt( 1 + (rayDir.y / rayDir.x) * (rayDir.y / rayDir.x)), sqrt( 1 + (rayDir.x / rayDir.y) * (rayDir.x / rayDir.y)) };
     Point mapCheck = { floor(start.x), floor(start.y) };
     Point rayLength;
@@ -156,8 +159,10 @@ inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
     }
     bool tileFound = false;
     int maxDistance = (map->xSize() > map->ySize()) ? map->xSize() : map->ySize();
+    maxDistance *= sqrt(2);
     double distance = 0;
     int side;
+    //add one to max distance so we don't have unexpected behavior
     while (!tileFound && distance < maxDistance)
     {
         if (rayLength.x < rayLength.y)
@@ -259,16 +264,14 @@ void GridGame::pseudo3dRender(int FOV, double wallheight)
 int GridGame::shoot(Point p, double a) {
     CollisionEvent e = ddaRaycast(p, a);
     std::vector<std::pair<double, int>> distIndexVec;
-
     a = fmod(a, 360);
     a *= M_PI / 180;
     double xcom = cos(a) * 0.01;
     double ycom = sin(a) * 0.01;
-
+    if (map->getEntities() == nullptr) return -1;
     auto entities = map->getEntities()->getEntityVec();
     double RANGE = 1000;
     Point check;
-
     for (Entity* entity : entities) 
     {
         check = p;

@@ -23,6 +23,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 #include "engine.hpp"
 #include "Pathfinding.hpp"
+#include "levelGen.hpp"
 /*          TODO LIST
     *ui
     *timer factory
@@ -88,8 +89,10 @@ std::vector<std::vector<double>> lightMap = {{.1, .1, .1, .1, .1, .1, 1, 1},
                                              {1, 0.6, 0.9, .9, 1, 1, 1, 1}};
 
 
+
 EntityHandler *mapEntities = new EntityHandler();
 EntityController *entCon = new EntityController(myMap, mapEntities);
+//this should be simplified if i have time bc wtf?
 
 const int FOV = 105; 
  
@@ -141,7 +144,7 @@ void handleInput()
         static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
         entCon->createEntityAndSpriteAt(&e, &s, game->getPlayerPos(), 0.2);
         if (game->getCurMap()->isDoorNeighbor(game->getPlayerPos()))
-            game->getCurMap()->toggleDoorByID(1);
+           game->getCurMap()->toggleDoorByID(1);
     }
     if (keyhandler->isKeyDown(SDLK_RCTRL)) 
     {
@@ -196,8 +199,24 @@ void eventHandler(SDL_Event event)
     }
 }
 
+void print2DVector(const std::vector<std::vector<int>>& vec) {
+    for (const auto& row : vec) {
+        for (int elem : row) {
+            std::cout << elem << " ";
+        }
+        std::cout << std::endl; // New line at the end of each row
+    }
+}
+
 int main(int argc, char** argv)
 { 
+    levelGen *generator = new levelGen();
+    print2DVector(generator->getMap());
+    myMap->setMap(generator->getMap());
+    myMap->setFloorMap(generator->getFloorMap());
+    myMap->setCeilingMap(generator->getCeilMap());
+    myMap->setDoorMap(generator->getDoorMap());
+    myMap->setLightMap(generator->getLightMap());
     // Sprite animSides = {2, 2, 0, 0, true, {}, true, {}, {
     //     {64, 0, 64, 1},
     //     {64, 3, 64, 2},
@@ -212,19 +231,25 @@ int main(int argc, char** argv)
     //need to create an object for the game that handles the sprites for all the entities
     // myMap->addSprite({4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0});
     // mapEntities->addEntity({{4.5, 4.5}, 0.2, "TEST"});
-    myMap->setEntityHandler(mapEntities);
-    static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
-    static Entity e = {{4.5, 4.5}, 0.1, "TEST"};
-    static Sprite s2 = {4.5, 4.5, 4, 45, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
-    static Entity e2 = {{4.5, 4.5}, 0.1, "TEST"};
-    entCon->createEntityAndSpriteAt(&e, &s, {2, 2}, 0.2);
-    entCon->createEntityAndSpriteAt(&e2, &s2, {2.5, 2.5}, 0.2);
+
+
+
+    // myMap->setEntityHandler(mapEntities);
+    // static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
+    // static Entity e = {{4.5, 4.5}, 0.1, "TEST"};
+    // static Sprite s2 = {4.5, 4.5, 4, 45, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
+    // static Entity e2 = {{4.5, 4.5}, 0.1, "TEST"};
+    // entCon->createEntityAndSpriteAt(&e, &s, {2, 2}, 0.2);
+    // entCon->createEntityAndSpriteAt(&e2, &s2, {2.5, 2.5}, 0.2);
+
+
+
     //myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
     //myMap->addSprite({2, 2, 3, 0, true, {32, 13, 32, 14, 32, 15, 160, 5}});
-    myMap->setFloorMap(floormap);
-    myMap->setCeilingMap(ceilmap);
-    myMap->setDoorMap(doorMap);
-    myMap->setLightMap(lightMap);
+    //myMap->setFloorMap(floormap);
+    //myMap->setCeilingMap(ceilmap);
+    //myMap->setDoorMap(doorMap);
+    //myMap->setLightMap(lightMap);
     myMap->setSkyTexture(3);
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     TTF_Init();

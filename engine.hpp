@@ -227,6 +227,7 @@ public:
     int getTileAt(int x, int y) { return map[y][x]; };
     int ySize() { return map[0].size(); };
     int xSize() { return map.size(); };
+    void setMap(std::vector<std::vector<int>> m) { map = m; };
     std::vector<Sprite*> getSprites() { return sprites; };
     void setFloorMap(std::vector<std::vector<int>> m) { floorMap = m; };
     int getFloorTileAt(int x, int y) { return floorMap[y][x]; };

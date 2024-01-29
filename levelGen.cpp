@@ -24,5 +24,41 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 void levelGen::generateMap()
 {
-    
+   //Main Level Init (hollow square)
+   for (int i = 0; i < SIZE; i++)
+   {
+      map.push_back(std::vector<int>(SIZE, 0));
+   }
+   for (int i = 0; i < SIZE; ++i) 
+   {
+       map[0][i] = 1; // Top edge
+       map[SIZE - 1][i] = 1; // Bottom edge
+   }
+   for (int i = 0; i < SIZE; ++i) 
+   {
+       map[i][0] = 1; // Left edge
+       map[i][SIZE - 1] = 1; // Right edge
+   }
+
+
+   //floor map
+   for (int i = 0; i < SIZE; i++)
+   {
+      floorMap.push_back(std::vector<int>(SIZE, 1));
+   }
+   //ceil map
+   for (int i = 0; i < SIZE; i++)
+   {
+      ceilingMap.push_back(std::vector<int>(SIZE, 1));
+   }
+   //door map
+   for (int i = 0; i < SIZE; i++)
+   {
+      doorMap.push_back(std::vector<Door>(SIZE, {0}));
+   }
+   //light map
+   for (int i = 0; i < SIZE; i++)
+   {
+      lightMap.push_back(std::vector<double>(SIZE, 1));
+   }
 }

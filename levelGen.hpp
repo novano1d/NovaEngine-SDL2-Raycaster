@@ -26,18 +26,19 @@ https://creativecommons.org/licenses/by-sa/4.0/
 class levelGen
 {
 public:
-    levelGen() = delete; //non constructable class
-    static void generateMap();
+    levelGen() { generateMap(); };
+    void generateMap();
     // Getters for the maps
-    static std::vector<std::vector<int>> getMap() { return map; }
-    static std::vector<std::vector<int>> getFloorMap() { return floorMap; }
-    static std::vector<std::vector<int>> getCeilMap() { return ceilingMap; }
-    static std::vector<std::vector<Door>> getDoorMap() { return doorMap; }
-    static std::vector<std::vector<double>> getLightMap() { return lightMap; }
+    std::vector<std::vector<int>> getMap() { return map; }
+    std::vector<std::vector<int>> getFloorMap() { return floorMap; }
+    std::vector<std::vector<int>> getCeilMap() { return ceilingMap; }
+    std::vector<std::vector<Door>> getDoorMap() { return doorMap; }
+    std::vector<std::vector<double>> getLightMap() { return lightMap; }
 private:
-    static std::vector<std::vector<int>> map;
-    static std::vector<std::vector<int>> floorMap;
-    static std::vector<std::vector<int>> ceilingMap;
-    static std::vector<std::vector<Door>> doorMap;
-    static std::vector<std::vector<double>> lightMap;
+    static const int SIZE = 30; //base size of the map array init (x by x)
+    std::vector<std::vector<int>> map;
+    std::vector<std::vector<int>> floorMap;
+    std::vector<std::vector<int>> ceilingMap;
+    std::vector<std::vector<Door>> doorMap;
+    std::vector<std::vector<double>> lightMap;
 };
