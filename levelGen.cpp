@@ -21,13 +21,17 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 */
 #include "levelGen.hpp"
-
+#include <stack>
+#include <utility>
+#include <cstdlib>
+#include <ctime>
 void levelGen::generateMap()
 {
+   srand(time(nullptr));
    //Main Level Init (hollow square)
    for (int i = 0; i < SIZE; i++)
    {
-      map.push_back(std::vector<int>(SIZE, 0));
+      map.push_back(std::vector<int>(SIZE, 1));
    }
    for (int i = 0; i < SIZE; ++i) 
    {
@@ -39,8 +43,34 @@ void levelGen::generateMap()
        map[i][0] = 1; // Left edge
        map[i][SIZE - 1] = 1; // Right edge
    }
+   std::stack<std::pair<int, int>> stack;
+   // Choose a random starting cell that is not on the border
+   int x = 1;
+   int y = 1;
+   map[x][y] = 0;
+   stack.push({x, y});
 
-
+   while (!stack.empty())
+   {
+      auto [cx, cy] = stack.top();
+      stack.pop();
+      // Directions: up, right, down, left
+      std::vector<std::pair<int, int>> directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+      std::random_shuffle(directions.begin(), directions.end());
+      for (auto& [dx, dy] : directions)
+      {
+         int nx = cx + dx * 2;
+         int ny = cy + dy * 2;
+         // Check if the new cell is within the map and not on the border
+         if (nx > 0 && ny > 0 && nx < SIZE - 1 && ny < SIZE - 1 && map[nx][ny] == 1)
+         {
+            map[nx][ny] = 0;
+            map[cx + dx][cy + dy] = 0; // Remove wall between cells
+            stack.push({nx, ny});
+            break;
+         }
+      }
+   }
    //floor map
    for (int i = 0; i < SIZE; i++)
    {

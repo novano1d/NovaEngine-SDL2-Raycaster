@@ -35,7 +35,7 @@ public:
     std::vector<std::vector<Door>> getDoorMap() { return doorMap; }
     std::vector<std::vector<double>> getLightMap() { return lightMap; }
 private:
-    static const int SIZE = 30; //base size of the map array init (x by x)
+    static const int SIZE = 20; //base size of the map array init (x by x)
     std::vector<std::vector<int>> map;
     std::vector<std::vector<int>> floorMap;
     std::vector<std::vector<int>> ceilingMap;
