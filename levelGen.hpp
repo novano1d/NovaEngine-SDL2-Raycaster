@@ -20,8 +20,106 @@ https://creativecommons.org/licenses/by-sa/4.0/
     ShareAlike - If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original. 
 
 */
-#include <vector>
+#ifndef LEVELGEN_HPP
+#define LEVELGEN_HPP
 #include "engine.hpp"
+#include <vector>
+#include <stack>
+#include <utility>
+#include <cstdlib>
+#include <ctime>
+// Implementation of this example
+// https://www.roguebasin.com/index.php/Basic_BSP_Dungeon_generation
+
+struct Room
+{
+    Point TLcorner; //top left corner of room
+    int xS, yS; //xy sizes
+
+    //for use of tree
+    Room* left = nullptr;
+    Room* right = nullptr;
+
+
+    static void splitRoom(Room* room)
+    {
+        std::cout << room->TLcorner.x << " " << room->TLcorner.y << " " << room->xS << " " << room->yS << std::endl; //debug
+        Room* left = new Room();
+        Room* right = new Room();
+        const int idealRoomSize = 5;
+        //base case (change for room variation)
+        if ((room->xS - 2) <= idealRoomSize || (room->yS - 2) <= idealRoomSize) return;
+        bool hv = (rand() % 2) ? true : false;
+        double splitPos;
+        if (hv) 
+        {
+            // Horizontal split
+            int minHeight = room->yS * 0.3; // 30% of the room height
+            int maxHeight = room->yS * 0.7; // 70% of the room height
+            splitPos = room->TLcorner.y + minHeight + rand() % (maxHeight - minHeight);
+            // Left room (above split)
+            left->TLcorner = room->TLcorner;
+            left->xS = room->xS;
+            left->yS = splitPos - room->TLcorner.y; 
+            // Right room (below split)
+            right->TLcorner = {room->TLcorner.x, splitPos};
+            right->xS = room->xS;
+            right->yS = room->TLcorner.y + room->yS - splitPos;
+        } 
+        else 
+        {
+            // Vertical split
+            int minWidth = room->xS * 0.3; // 30% of the room width
+            int maxWidth = room->xS * 0.7; // 70% of the room width
+            splitPos = room->TLcorner.x + minWidth + rand() % (maxWidth - minWidth);
+            // Left room (left of split)
+            left->TLcorner = room->TLcorner;
+            left->xS = splitPos - room->TLcorner.x;
+            left->yS = room->yS;    
+            // Right room (right of split)
+            right->TLcorner = {splitPos, room->TLcorner.y};
+            right->xS = room->TLcorner.x + room->xS - splitPos;
+            right->yS = room->yS;
+        }
+        // Assign the new rooms to the left and right pointers of the current room
+        room->left = left;
+        room->right = right;
+        splitRoom(left);
+        splitRoom(right);
+    }
+    static void generateRooms(Room* node, std::vector<std::vector<int>>& map)
+    {
+        // Base case: if node is nullptr, return
+        if (node == nullptr) 
+        {
+            return;
+        }
+
+        // If this is a leaf node (no children), generate a room
+        if (node->left == nullptr && node->right == nullptr) 
+        {
+            for (int y = node->TLcorner.y; y < node->TLcorner.y + node->yS; ++y) {
+                for (int x = node->TLcorner.x; x < node->TLcorner.x + node->xS; ++x) {
+                    if (y < map.size() && x < map[y].size()) {
+                        // Check if the current cell is on the boundary of the room
+                        if (y == node->TLcorner.y || y == node->TLcorner.y + node->yS - 1 ||
+                            x == node->TLcorner.x || x == node->TLcorner.x + node->xS - 1) {
+                            map[y][x] = 1; // Set boundary cells to 1 (wall)
+                        } else {
+                            map[y][x] = 0; // Set inner cells to 0 (empty space)
+                        }
+                    }
+                }
+            }
+        } 
+        else 
+        {
+            // If not a leaf, recursively visit children
+            generateRooms(node->left, map);
+            generateRooms(node->right, map);
+        }
+    }
+};
 
 class levelGen
 {
@@ -41,4 +139,6 @@ private:
     std::vector<std::vector<int>> ceilingMap;
     std::vector<std::vector<Door>> doorMap;
     std::vector<std::vector<double>> lightMap;
+
 };
+#endif

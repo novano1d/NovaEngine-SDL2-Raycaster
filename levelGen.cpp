@@ -21,18 +21,24 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 */
 #include "levelGen.hpp"
-#include <stack>
-#include <utility>
-#include <cstdlib>
-#include <ctime>
+
 void levelGen::generateMap()
 {
    srand(time(nullptr));
+   Room* root = new Room();
+   root->TLcorner = {0, 0};
+   root->xS = SIZE;
+   root->yS = SIZE;
+   Room::splitRoom(root);
    //Main Level Init (hollow square)
    for (int i = 0; i < SIZE; i++)
    {
       map.push_back(std::vector<int>(SIZE, 1));
    }
+   Room::generateRooms(root, map);
+
+
+   /*
    for (int i = 0; i < SIZE; ++i) 
    {
        map[0][i] = 1; // Top edge
@@ -43,6 +49,11 @@ void levelGen::generateMap()
        map[i][0] = 1; // Left edge
        map[i][SIZE - 1] = 1; // Right edge
    }
+   */
+
+
+   /*
+   //Maze Test
    std::stack<std::pair<int, int>> stack;
    // Choose a random starting cell that is not on the border
    int x = 1;
@@ -55,7 +66,7 @@ void levelGen::generateMap()
       auto [cx, cy] = stack.top();
       stack.pop();
       // Directions: up, right, down, left
-      std::vector<std::pair<int, int>> directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+      std::vector<std::pair<int, int>> directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}, {0, -1}};
       std::random_shuffle(directions.begin(), directions.end());
       for (auto& [dx, dy] : directions)
       {
@@ -71,6 +82,7 @@ void levelGen::generateMap()
          }
       }
    }
+   */
    //floor map
    for (int i = 0; i < SIZE; i++)
    {
