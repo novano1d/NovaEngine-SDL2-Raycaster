@@ -35,8 +35,28 @@ void levelGen::generateMap()
    {
       map.push_back(std::vector<int>(SIZE, 1));
    }
-   Room::generateRooms(root, map);
-
+   //floor map
+   for (int i = 0; i < SIZE; i++)
+   {
+      floorMap.push_back(std::vector<int>(SIZE, 1));
+   }
+   //ceil map
+   for (int i = 0; i < SIZE; i++)
+   {
+      ceilingMap.push_back(std::vector<int>(SIZE, 1));
+   }
+   //door map
+   for (int i = 0; i < SIZE; i++)
+   {
+      doorMap.push_back(std::vector<Door>(SIZE, {0}));
+   }
+   //light map
+   for (int i = 0; i < SIZE; i++)
+   {
+      lightMap.push_back(std::vector<double>(SIZE, 1));
+   }
+   Room::generateRooms(root, map, doorMap);
+   Room::connectRooms(root, map);
 
    /*
    for (int i = 0; i < SIZE; ++i) 
@@ -83,24 +103,4 @@ void levelGen::generateMap()
       }
    }
    */
-   //floor map
-   for (int i = 0; i < SIZE; i++)
-   {
-      floorMap.push_back(std::vector<int>(SIZE, 1));
-   }
-   //ceil map
-   for (int i = 0; i < SIZE; i++)
-   {
-      ceilingMap.push_back(std::vector<int>(SIZE, 1));
-   }
-   //door map
-   for (int i = 0; i < SIZE; i++)
-   {
-      doorMap.push_back(std::vector<Door>(SIZE, {0}));
-   }
-   //light map
-   for (int i = 0; i < SIZE; i++)
-   {
-      lightMap.push_back(std::vector<double>(SIZE, 1));
-   }
 }

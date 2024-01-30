@@ -143,8 +143,7 @@ void handleInput()
         static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
         static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
         entCon->createEntityAndSpriteAt(&e, &s, game->getPlayerPos(), 0.2);
-        if (game->getCurMap()->isDoorNeighbor(game->getPlayerPos()))
-           game->getCurMap()->toggleDoorByID(1);
+        game->getCurMap()->toggleDoorByID(1);
     }
     if (keyhandler->isKeyDown(SDLK_RCTRL)) 
     {

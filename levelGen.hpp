@@ -31,6 +31,27 @@ https://creativecommons.org/licenses/by-sa/4.0/
 // Implementation of this example
 // https://www.roguebasin.com/index.php/Basic_BSP_Dungeon_generation
 
+class levelGen
+{
+public:
+    levelGen() { generateMap(); };
+    void generateMap();
+    // Getters for the maps
+    std::vector<std::vector<int>> getMap() { return map; }
+    std::vector<std::vector<int>> getFloorMap() { return floorMap; }
+    std::vector<std::vector<int>> getCeilMap() { return ceilingMap; }
+    std::vector<std::vector<Door>> getDoorMap() { return doorMap; }
+    std::vector<std::vector<double>> getLightMap() { return lightMap; }
+    static const int SIZE = 30; //base size of the map array init (x by x)
+private:
+    std::vector<std::vector<int>> map;
+    std::vector<std::vector<int>> floorMap;
+    std::vector<std::vector<int>> ceilingMap;
+    std::vector<std::vector<Door>> doorMap;
+    std::vector<std::vector<double>> lightMap;
+};
+
+//probably move to cpp but im lazy?
 struct Room
 {
     Point TLcorner; //top left corner of room
@@ -46,7 +67,7 @@ struct Room
         std::cout << room->TLcorner.x << " " << room->TLcorner.y << " " << room->xS << " " << room->yS << std::endl; //debug
         Room* left = new Room();
         Room* right = new Room();
-        const int idealRoomSize = 5;
+        const int idealRoomSize = 7;
         //base case (change for room variation)
         if ((room->xS - 2) <= idealRoomSize || (room->yS - 2) <= idealRoomSize) return;
         bool hv = (rand() % 2) ? true : false;
@@ -87,7 +108,7 @@ struct Room
         splitRoom(left);
         splitRoom(right);
     }
-    static void generateRooms(Room* node, std::vector<std::vector<int>>& map)
+    static void generateRooms(Room* node, std::vector<std::vector<int>>& map, std::vector<std::vector<Door>>& doorMap)
     {
         // Base case: if node is nullptr, return
         if (node == nullptr) 
@@ -98,14 +119,20 @@ struct Room
         // If this is a leaf node (no children), generate a room
         if (node->left == nullptr && node->right == nullptr) 
         {
-            for (int y = node->TLcorner.y; y < node->TLcorner.y + node->yS; ++y) {
-                for (int x = node->TLcorner.x; x < node->TLcorner.x + node->xS; ++x) {
-                    if (y < map.size() && x < map[y].size()) {
+            for (int y = node->TLcorner.y; y < node->TLcorner.y + node->yS; ++y) 
+            {
+                for (int x = node->TLcorner.x; x < node->TLcorner.x + node->xS; ++x) 
+                {
+                    if (y < map.size() && x < map[y].size()) 
+                    {
                         // Check if the current cell is on the boundary of the room
                         if (y == node->TLcorner.y || y == node->TLcorner.y + node->yS - 1 ||
-                            x == node->TLcorner.x || x == node->TLcorner.x + node->xS - 1) {
+                            x == node->TLcorner.x || x == node->TLcorner.x + node->xS - 1) 
+                        {
                             map[y][x] = 1; // Set boundary cells to 1 (wall)
-                        } else {
+                        } 
+                        else 
+                        {
                             map[y][x] = 0; // Set inner cells to 0 (empty space)
                         }
                     }
@@ -115,30 +142,34 @@ struct Room
         else 
         {
             // If not a leaf, recursively visit children
-            generateRooms(node->left, map);
-            generateRooms(node->right, map);
+            generateRooms(node->left, map, doorMap);
+            generateRooms(node->right, map, doorMap);
         }
     }
-};
 
-class levelGen
-{
-public:
-    levelGen() { generateMap(); };
-    void generateMap();
-    // Getters for the maps
-    std::vector<std::vector<int>> getMap() { return map; }
-    std::vector<std::vector<int>> getFloorMap() { return floorMap; }
-    std::vector<std::vector<int>> getCeilMap() { return ceilingMap; }
-    std::vector<std::vector<Door>> getDoorMap() { return doorMap; }
-    std::vector<std::vector<double>> getLightMap() { return lightMap; }
-private:
-    static const int SIZE = 20; //base size of the map array init (x by x)
-    std::vector<std::vector<int>> map;
-    std::vector<std::vector<int>> floorMap;
-    std::vector<std::vector<int>> ceilingMap;
-    std::vector<std::vector<Door>> doorMap;
-    std::vector<std::vector<double>> lightMap;
+    static void connectRooms(Room* parent, std::vector<std::vector<int>>& map)
+    {
+        if (parent == nullptr || parent->left == nullptr || parent->right == nullptr) {
+            return;
+        }
+    
+        // Find the center points of the left and right rooms
+        Point centerLeft = {parent->left->TLcorner.x + parent->left->xS / 2, parent->left->TLcorner.y + parent->left->yS / 2};
+        Point centerRight = {parent->right->TLcorner.x + parent->right->xS / 2, parent->right->TLcorner.y + parent->right->yS / 2};
+    
+        // Draw a corridor connecting these points
+        // You can choose to draw a straight line or an L-shaped corridor
+        // For simplicity, here's an example of a straight line
+        for (int y = std::min(centerLeft.y, centerRight.y); y <= std::max(centerLeft.y, centerRight.y); ++y) {
+            for (int x = std::min(centerLeft.x, centerRight.x); x <= std::max(centerLeft.x, centerRight.x); ++x) {
+                map[y][x] = 0; // Set to 0 to represent an empty space (corridor)
+            }
+        }
+    
+        // Recursively connect child rooms
+        connectRooms(parent->left, map);
+        connectRooms(parent->right, map);
+    }
 
 };
 #endif
