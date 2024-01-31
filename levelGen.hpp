@@ -27,6 +27,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 #include <stack>
 #include <utility>
 #include <cstdlib>
+#include <random>
 #include <ctime>
 // Implementation of this example
 // https://www.roguebasin.com/index.php/Basic_BSP_Dungeon_generation
@@ -61,15 +62,30 @@ struct Room
     Room* left = nullptr;
     Room* right = nullptr;
 
+    static float getRandomFloat(float min, float max) {
+        // Random engine and distribution
+        std::random_device rd;  // Obtain a random number from hardware
+        std::mt19937 eng(rd()); // Seed the generator
+        std::uniform_real_distribution<> distr(min, max); // Define the range
+        //return 2.0f;
+        return distr(eng);
+    }
 
-    static void splitRoom(Room* room)
+    static void splitRoom(Room* room, int depth=0)
     {
+        const int MAX_DEPTH = 3;
         std::cout << room->TLcorner.x << " " << room->TLcorner.y << " " << room->xS << " " << room->yS << std::endl; //debug
         Room* left = new Room();
         Room* right = new Room();
-        const int idealRoomSize = 7;
+        //float idealRoomDiag = 7.0 - 2*sqrt(2);
+        int maxRoomWidth = 5; // Minimum room width
+        int maxRoomHeight = 5; // Minimum room height
+        //float diagonal = hypot((float)room->xS, (float)room->yS);
         //base case (change for room variation)
-        if ((room->xS - 2) <= idealRoomSize || (room->yS - 2) <= idealRoomSize) return;
+        //(room->xS - 2) <= idealRoomSize || (room->yS - 2) <= idealRoomSize
+        if (room->xS <= maxRoomWidth || room->yS <= maxRoomHeight) return;
+        if (depth > MAX_DEPTH) return;
+        //if (diagonal <= idealRoomDiag || room->xS <= minRoomWidth || room->yS <= minRoomHeight) return;
         bool hv = (rand() % 2) ? true : false;
         double splitPos;
         if (hv) 
@@ -105,8 +121,8 @@ struct Room
         // Assign the new rooms to the left and right pointers of the current room
         room->left = left;
         room->right = right;
-        splitRoom(left);
-        splitRoom(right);
+        splitRoom(left, (depth + 1));
+        splitRoom(right, (depth + 1));
     }
     static void generateRooms(Room* node, std::vector<std::vector<int>>& map, std::vector<std::vector<Door>>& doorMap)
     {
@@ -152,11 +168,12 @@ struct Room
         if (parent == nullptr || parent->left == nullptr || parent->right == nullptr) {
             return;
         }
-    
+
         // Find the center points of the left and right rooms
-        Point centerLeft = {parent->left->TLcorner.x + parent->left->xS / 2, parent->left->TLcorner.y + parent->left->yS / 2};
-        Point centerRight = {parent->right->TLcorner.x + parent->right->xS / 2, parent->right->TLcorner.y + parent->right->yS / 2};
-    
+        float randomFloat = getRandomFloat(1.2f, 2.8f);
+        Point centerLeft = {parent->left->TLcorner.x + parent->left->xS / randomFloat, parent->left->TLcorner.y + parent->left->yS / randomFloat};
+        Point centerRight = {parent->right->TLcorner.x + parent->right->xS / randomFloat, parent->right->TLcorner.y + parent->right->yS / randomFloat};
+
         // Draw a corridor connecting these points
         // You can choose to draw a straight line or an L-shaped corridor
         // For simplicity, here's an example of a straight line
@@ -165,7 +182,7 @@ struct Room
                 map[y][x] = 0; // Set to 0 to represent an empty space (corridor)
             }
         }
-    
+
         // Recursively connect child rooms
         connectRooms(parent->left, map);
         connectRooms(parent->right, map);

@@ -192,14 +192,14 @@ inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
                 Point intersection = start + rayDir * distance;
                 if (map->getDoorTileAt(mapCheck.x, mapCheck.y).orientation) //horiz
                 {
-                    if (intersection.x >= mapCheck.x + 0.0001 && intersection.x <= mapCheck.x - 0.0001 + doorProgress) //rounding error sigh
+                    if (intersection.x >= mapCheck.x + EPSILON && intersection.x <= mapCheck.x - EPSILON + doorProgress) //rounding error sigh
                     {
                         return {2, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex, map->getDoorTileAt(mapCheck.x, mapCheck.y).doorProgress}; 
                     }
                 }
                 else //vert
                 {
-                    if (intersection.y >= mapCheck.y + 0.0001 && intersection.y <= mapCheck.y - 0.0001 + doorProgress)
+                    if (intersection.y >= mapCheck.y + EPSILON && intersection.y <= mapCheck.y - EPSILON + doorProgress)
                     {
                         return {2, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex, map->getDoorTileAt(mapCheck.x, mapCheck.y).doorProgress}; 
                     }

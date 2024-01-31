@@ -58,7 +58,7 @@ void levelGen::generateMap()
    Room::generateRooms(root, map, doorMap);
    Room::connectRooms(root, map);
 
-   /*
+   //fill any empty edges
    for (int i = 0; i < SIZE; ++i) 
    {
        map[0][i] = 1; // Top edge
@@ -69,7 +69,7 @@ void levelGen::generateMap()
        map[i][0] = 1; // Left edge
        map[i][SIZE - 1] = 1; // Right edge
    }
-   */
+   
 
 
    /*
