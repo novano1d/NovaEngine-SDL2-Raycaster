@@ -43,7 +43,7 @@ void levelGen::generateMap()
    //ceil map
    for (int i = 0; i < SIZE; i++)
    {
-      ceilingMap.push_back(std::vector<int>(SIZE, 1));
+      ceilingMap.push_back(std::vector<int>(SIZE, SKY));
    }
    //door map
    for (int i = 0; i < SIZE; i++)

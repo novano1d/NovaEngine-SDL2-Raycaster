@@ -43,7 +43,7 @@ public:
     std::vector<std::vector<int>> getCeilMap() { return ceilingMap; }
     std::vector<std::vector<Door>> getDoorMap() { return doorMap; }
     std::vector<std::vector<double>> getLightMap() { return lightMap; }
-    static const int SIZE = 30; //base size of the map array init (x by x)
+    static const int SIZE = 40; //base size of the map array init (x by x)
 private:
     std::vector<std::vector<int>> map;
     std::vector<std::vector<int>> floorMap;
@@ -73,7 +73,7 @@ struct Room
 
     static void splitRoom(Room* room, int depth=0)
     {
-        const int MAX_DEPTH = 3;
+        const int MAX_DEPTH = 4;
         std::cout << room->TLcorner.x << " " << room->TLcorner.y << " " << room->xS << " " << room->yS << std::endl; //debug
         Room* left = new Room();
         Room* right = new Room();
