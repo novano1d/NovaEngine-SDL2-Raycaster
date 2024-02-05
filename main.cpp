@@ -209,13 +209,7 @@ void print2DVector(const std::vector<std::vector<int>>& vec) {
 
 int main(int argc, char** argv)
 { 
-    levelGen *generator = new levelGen();
-    print2DVector(generator->getMap());
-    myMap->setMap(generator->getMap());
-    myMap->setFloorMap(generator->getFloorMap());
-    myMap->setCeilingMap(generator->getCeilMap());
-    myMap->setDoorMap(generator->getDoorMap());
-    myMap->setLightMap(generator->getLightMap());
+    
     // Sprite animSides = {2, 2, 0, 0, true, {}, true, {}, {
     //     {64, 0, 64, 1},
     //     {64, 3, 64, 2},
@@ -259,6 +253,13 @@ int main(int argc, char** argv)
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); // for resolution scaling
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
     TextureHandler *myTexture = new TextureHandler(renderer, {"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif", "DESuperShotgun_f02.png", "DESuperShotgun_f03.png"});
+    levelGen *generator = new levelGen();
+    print2DVector(generator->getMap());
+    myMap->setMap(generator->getMap());
+    myMap->setFloorMap(generator->getFloorMap());
+    myMap->setCeilingMap(generator->getCeilMap());
+    myMap->setDoorMap(generator->getDoorMap());
+    myMap->setLightMap(generator->getLightMap());
     game->setTextureSet(myTexture);
     game->setAngle(0);
     game->setMap(myMap);

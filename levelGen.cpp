@@ -24,6 +24,12 @@ https://creativecommons.org/licenses/by-sa/4.0/
 
 void levelGen::generateMap()
 {
+start:
+   map.clear();
+   floorMap.clear();
+   ceilingMap.clear();
+   doorMap.clear();
+   lightMap.clear();
    srand(time(nullptr));
    Room* root = new Room();
    root->TLcorner = {0, 0};
@@ -43,7 +49,7 @@ void levelGen::generateMap()
    //ceil map
    for (int i = 0; i < SIZE; i++)
    {
-      ceilingMap.push_back(std::vector<int>(SIZE, 1));
+      ceilingMap.push_back(std::vector<int>(SIZE, SKY));
    }
    //door map
    for (int i = 0; i < SIZE; i++)
@@ -57,7 +63,7 @@ void levelGen::generateMap()
    }
    Room::generateRooms(root, map, doorMap);
    Room::connectRooms(root, map);
-
+   if (map[1][1]) goto start;
    //fill any empty edges
    for (int i = 0; i < SIZE; ++i) 
    {

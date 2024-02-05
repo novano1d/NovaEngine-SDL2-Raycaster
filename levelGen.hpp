@@ -67,14 +67,14 @@ struct Room
         std::random_device rd;  // Obtain a random number from hardware
         std::mt19937 eng(rd()); // Seed the generator
         std::uniform_real_distribution<> distr(min, max); // Define the range
-        //return 2.0f;
+        return 2.0f;
         return distr(eng);
     }
 
     static void splitRoom(Room* room, int depth=0)
     {
         const int MAX_DEPTH = 4;
-        std::cout << room->TLcorner.x << " " << room->TLcorner.y << " " << room->xS << " " << room->yS << std::endl; //debug
+        //std::cout << room->TLcorner.x << " " << room->TLcorner.y << " " << room->xS << " " << room->yS << std::endl; //debug
         Room* left = new Room();
         Room* right = new Room();
         //float idealRoomDiag = 7.0 - 2*sqrt(2);
@@ -175,11 +175,9 @@ struct Room
         Point centerRight = {parent->right->TLcorner.x + parent->right->xS / randomFloat, parent->right->TLcorner.y + parent->right->yS / randomFloat};
 
         // Draw a corridor connecting these points
-        // You can choose to draw a straight line or an L-shaped corridor
-        // For simplicity, here's an example of a straight line
         for (int y = std::min(centerLeft.y, centerRight.y); y <= std::max(centerLeft.y, centerRight.y); ++y) {
             for (int x = std::min(centerLeft.x, centerRight.x); x <= std::max(centerLeft.x, centerRight.x); ++x) {
-                map[y][x] = 0; // Set to 0 to represent an empty space (corridor)
+                if (map[y][x]) map[y][x] = 0; // Set to 0 to represent an empty space (corridor)
             }
         }
 

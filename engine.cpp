@@ -751,7 +751,7 @@ TextureHandler::TextureHandler(SDL_Renderer* renderer, std::vector<std::string> 
         SDL_RenderClear(renderer);
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderFillRect(renderer, &progressBar);
-        std::string percentage = std::to_string((progress / (float)in.size()) * 100) + "%";
+        std::string percentage = (std::to_string((progress / (float)in.size()) * 100)).substr(0, 5) + "%";
         SDL_Color color = { 255, 255, 255 };  // white color_
         auto font = TTF_OpenFont("./fonts/SuboleyaRegular.ttf", 25);
         if (font == nullptr) {
