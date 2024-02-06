@@ -20,11 +20,47 @@ https://creativecommons.org/licenses/by-sa/4.0/
     ShareAlike - If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original. 
 
 */
+#define SKY 0xFFFFF
 #include "levelGen.hpp"
+
+Room* Room::generateBasicRoom()
+{
+   Room* out = new Room();
+   const int SIZE = 10;
+   for (int i = 0; i < SIZE; i++)
+   {
+       out->map.push_back(std::vector<int>(SIZE, 0));
+   }
+   //floor map
+   for (int i = 0; i < SIZE; i++)
+   {
+       out->floorMap.push_back(std::vector<int>(SIZE, 1));
+   }
+   //ceil map
+   for (int i = 0; i < SIZE; i++)
+   {
+       out->ceilingMap.push_back(std::vector<int>(SIZE, 1));
+   }
+   //door map
+   for (int i = 0; i < SIZE; i++)
+   {
+       out->doorMap.push_back(std::vector<Door>(SIZE, {0}));
+   }
+   //light map
+   for (int i = 0; i < SIZE; i++)
+   {
+      //double tem = ((int)((getRandomFloat(0.1f, 1.0f)) * 10) % 10 * 0.1); //light value sensitive to weird floating point values above 0.9
+      out->lightMap.push_back(std::vector<double>(SIZE, 1));
+      //std::cout << tem << std::endl;
+   }
+   out->xS = SIZE;
+   out->yS = SIZE;
+   return out;
+}
 
 void levelGen::generateMap()
 {
-start:
+//start:
    map.clear();
    floorMap.clear();
    ceilingMap.clear();
@@ -32,10 +68,9 @@ start:
    lightMap.clear();
    srand(time(nullptr));
    Room* root = new Room();
-   root->TLcorner = {0, 0};
    root->xS = SIZE;
    root->yS = SIZE;
-   Room::splitRoom(root);
+   //Room::splitRoom(root);
    //Main Level Init (hollow square)
    for (int i = 0; i < SIZE; i++)
    {
@@ -61,9 +96,8 @@ start:
    {
       lightMap.push_back(std::vector<double>(SIZE, 1));
    }
-   Room::generateRooms(root, map, doorMap);
-   Room::connectRooms(root, map);
-   if (map[1][1]) goto start;
+   Room::generateRooms(map, ceilingMap, floorMap, doorMap, lightMap);
+   //if (map[1][1]) goto start;
    //fill any empty edges
    for (int i = 0; i < SIZE; ++i) 
    {

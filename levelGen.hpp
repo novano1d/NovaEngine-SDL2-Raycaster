@@ -29,8 +29,6 @@ https://creativecommons.org/licenses/by-sa/4.0/
 #include <cstdlib>
 #include <random>
 #include <ctime>
-// Implementation of this example
-// https://www.roguebasin.com/index.php/Basic_BSP_Dungeon_generation
 
 class levelGen
 {
@@ -52,139 +50,64 @@ private:
     std::vector<std::vector<double>> lightMap;
 };
 
-//probably move to cpp but im lazy?
 struct Room
 {
-    Point TLcorner; //top left corner of room
+    std::vector<std::vector<int>> map;
+    std::vector<std::vector<int>> floorMap;
+    std::vector<std::vector<int>> ceilingMap;
+    std::vector<std::vector<Door>> doorMap;
+    std::vector<std::vector<double>> lightMap;
     int xS, yS; //xy sizes
 
     //for use of tree
     Room* left = nullptr;
     Room* right = nullptr;
+    //could have a hidden node for secrets maybe
 
     static float getRandomFloat(float min, float max) {
         // Random engine and distribution
         std::random_device rd;  // Obtain a random number from hardware
         std::mt19937 eng(rd()); // Seed the generator
         std::uniform_real_distribution<> distr(min, max); // Define the range
-        return 2.0f;
         return distr(eng);
     }
 
-    static void splitRoom(Room* room, int depth=0)
-    {
-        const int MAX_DEPTH = 4;
-        //std::cout << room->TLcorner.x << " " << room->TLcorner.y << " " << room->xS << " " << room->yS << std::endl; //debug
-        Room* left = new Room();
-        Room* right = new Room();
-        //float idealRoomDiag = 7.0 - 2*sqrt(2);
-        int maxRoomWidth = 5; // Minimum room width
-        int maxRoomHeight = 5; // Minimum room height
-        //float diagonal = hypot((float)room->xS, (float)room->yS);
-        //base case (change for room variation)
-        //(room->xS - 2) <= idealRoomSize || (room->yS - 2) <= idealRoomSize
-        if (room->xS <= maxRoomWidth || room->yS <= maxRoomHeight) return;
-        if (depth > MAX_DEPTH) return;
-        //if (diagonal <= idealRoomDiag || room->xS <= minRoomWidth || room->yS <= minRoomHeight) return;
-        bool hv = (rand() % 2) ? true : false;
-        double splitPos;
-        if (hv) 
-        {
-            // Horizontal split
-            int minHeight = room->yS * 0.3; // 30% of the room height
-            int maxHeight = room->yS * 0.7; // 70% of the room height
-            splitPos = room->TLcorner.y + minHeight + rand() % (maxHeight - minHeight);
-            // Left room (above split)
-            left->TLcorner = room->TLcorner;
-            left->xS = room->xS;
-            left->yS = splitPos - room->TLcorner.y; 
-            // Right room (below split)
-            right->TLcorner = {room->TLcorner.x, splitPos};
-            right->xS = room->xS;
-            right->yS = room->TLcorner.y + room->yS - splitPos;
-        } 
-        else 
-        {
-            // Vertical split
-            int minWidth = room->xS * 0.3; // 30% of the room width
-            int maxWidth = room->xS * 0.7; // 70% of the room width
-            splitPos = room->TLcorner.x + minWidth + rand() % (maxWidth - minWidth);
-            // Left room (left of split)
-            left->TLcorner = room->TLcorner;
-            left->xS = splitPos - room->TLcorner.x;
-            left->yS = room->yS;    
-            // Right room (right of split)
-            right->TLcorner = {splitPos, room->TLcorner.y};
-            right->xS = room->TLcorner.x + room->xS - splitPos;
-            right->yS = room->yS;
-        }
-        // Assign the new rooms to the left and right pointers of the current room
-        room->left = left;
-        room->right = right;
-        splitRoom(left, (depth + 1));
-        splitRoom(right, (depth + 1));
-    }
-    static void generateRooms(Room* node, std::vector<std::vector<int>>& map, std::vector<std::vector<Door>>& doorMap)
-    {
-        // Base case: if node is nullptr, return
-        if (node == nullptr) 
-        {
-            return;
-        }
+    static Room* generateBasicRoom();
 
-        // If this is a leaf node (no children), generate a room
-        if (node->left == nullptr && node->right == nullptr) 
+    static void generateCorridor(std::vector<std::vector<int>>& map, Point& curpos, int lastDirection = -1) 
+    {
+        
+        std::vector<Point> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    }
+
+
+    static void generateRooms(std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& floorMap, std::vector<std::vector<int>>& ceilingMap, std::vector<std::vector<Door>>& doorMap, std::vector<std::vector<double>>& lightMap)
+    {
+        //populate stack with rooms randomly and create a tree... tree traversal will be used to assing rooms (halls between all rooms from random walk)
+        std::stack<Room*> rooms;
+        Point curpos = {1, 1};
+        rooms.push(generateBasicRoom());
+        Room* test = rooms.top();
+        while (!rooms.empty())
         {
-            for (int y = node->TLcorner.y; y < node->TLcorner.y + node->yS; ++y) 
+            //place room
+            for (int x = 0; x < test->xS; x++)
             {
-                for (int x = node->TLcorner.x; x < node->TLcorner.x + node->xS; ++x) 
+                for (int y = 0; y < test->yS; y++)
                 {
-                    if (y < map.size() && x < map[y].size()) 
-                    {
-                        // Check if the current cell is on the boundary of the room
-                        if (y == node->TLcorner.y || y == node->TLcorner.y + node->yS - 1 ||
-                            x == node->TLcorner.x || x == node->TLcorner.x + node->xS - 1) 
-                        {
-                            map[y][x] = 1; // Set boundary cells to 1 (wall)
-                        } 
-                        else 
-                        {
-                            map[y][x] = 0; // Set inner cells to 0 (empty space)
-                        }
-                    }
+                    map[curpos.y + y][curpos.x + x] = test->map[y][x];
+                    floorMap[curpos.y + y][curpos.x + x] = test->floorMap[y][x];
+                    ceilingMap[curpos.y + y][curpos.x + x] = test->ceilingMap[y][x];
+                    doorMap[curpos.y + y][curpos.x + x] = test->doorMap[y][x];
+                    lightMap[curpos.y + y][curpos.x + x] = test->lightMap[y][x];
                 }
             }
-        } 
-        else 
-        {
-            // If not a leaf, recursively visit children
-            generateRooms(node->left, map, doorMap);
-            generateRooms(node->right, map, doorMap);
+            curpos.x += test->xS;
+            curpos.y += test->yS/2;
+            rooms.pop();
+            //create corridor
+            generateCorridor(map, curpos);
         }
     }
-
-    static void connectRooms(Room* parent, std::vector<std::vector<int>>& map)
-    {
-        if (parent == nullptr || parent->left == nullptr || parent->right == nullptr) {
-            return;
-        }
-
-        // Find the center points of the left and right rooms
-        float randomFloat = getRandomFloat(1.2f, 2.8f);
-        Point centerLeft = {parent->left->TLcorner.x + parent->left->xS / randomFloat, parent->left->TLcorner.y + parent->left->yS / randomFloat};
-        Point centerRight = {parent->right->TLcorner.x + parent->right->xS / randomFloat, parent->right->TLcorner.y + parent->right->yS / randomFloat};
-
-        // Draw a corridor connecting these points
-        for (int y = std::min(centerLeft.y, centerRight.y); y <= std::max(centerLeft.y, centerRight.y); ++y) {
-            for (int x = std::min(centerLeft.x, centerRight.x); x <= std::max(centerLeft.x, centerRight.x); ++x) {
-                if (map[y][x]) map[y][x] = 0; // Set to 0 to represent an empty space (corridor)
-            }
-        }
-
-        // Recursively connect child rooms
-        connectRooms(parent->left, map);
-        connectRooms(parent->right, map);
-    }
-
 };
 #endif
