@@ -44,12 +44,12 @@ SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
 Pathfinder *pf = new Pathfinder();
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
-                      {1, 0, 0, 0, 1, 0, 0, 1},
-                      {1, 0, 0, 0, 1, 0, 0, 1},
-                      {1, 0, 1, 0, 1, 0, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
-                      {1, 0, 1, 1, 1, 0, 0, 1},
-                      {1, 0, 0, 0, 1, 0, 0, 1},
+                      {1, 0, 0, 0, 0, 0, 0, 1},
+                      {1, 0, 0, 0, 0, 0, 0, 1},
+                      {1, 0, 0, 0, 0, 0, 0, 1},
+                      {1, 0, 0, 0, 0, 0, 0, 1},
+                      {1, 0, 0, 0, 0, 0, 0, 1},
                       {1, 1, 1, 1, 1, 1, 1, 1}});
 
 std::vector<std::vector<int>> floormap = {{1, 1, 1, 1, 1, 1, 1, 1},
@@ -73,8 +73,8 @@ std::vector<std::vector<int>> ceilmap  = {{1, 1, 1, 1, 1, 1, 1, 1},
 std::vector<std::vector<Door>> doorMap  = {{{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
-                                           {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
-                                           {{0}, {0}, {0}, {0}, {1, 17, true, 1, 0, 1, 2, DOOR_CLOSED}, {0}, {0}, {0}},
+                                           {{0}, {0}, {1, 17, true, 1, 1, 1, 2, DOOR_CLOSED}, {0}, {0}, {0}, {0}, {0}},
+                                           {{0}, {0}, {0}, {0}, {1, 17, true, 1, 0, 2, 2, DOOR_CLOSED}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}},
                                            {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}}};
@@ -143,9 +143,9 @@ void handleInput()
         static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
         static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
         entCon->createEntityAndSpriteAt(&e, &s, game->getPlayerPos(), 0.2);
-        game->getCurMap()->toggleDoorByID(1);
+        game->getCurMap()->toggleDoorByID(rand() % 2 + 1);
     }
-    if (keyhandler->isKeyDown(SDLK_RCTRL)) 
+    if (keyhandler->isKeyDown(SDLK_RCTRL))
     {
         try
         {
@@ -237,12 +237,10 @@ int main(int argc, char** argv)
 
 
 
-    //myMap->addSprite({3.5, 3.5, 4, 90, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}});
-    //myMap->addSprite({2, 2, 3, 0, true, {32, 13, 32, 14, 32, 15, 160, 5}});
-    //myMap->setFloorMap(floormap);
-    //myMap->setCeilingMap(ceilmap);
-    //myMap->setDoorMap(doorMap);
-    //myMap->setLightMap(lightMap);
+    myMap->setFloorMap(floormap);
+    myMap->setCeilingMap(ceilmap);
+    myMap->setDoorMap(doorMap);
+    myMap->setLightMap(lightMap);
     myMap->setSkyTexture(3);
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     TTF_Init();
@@ -254,12 +252,16 @@ int main(int argc, char** argv)
     game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
     TextureHandler *myTexture = new TextureHandler(renderer, {"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif", "DESuperShotgun_f02.png", "DESuperShotgun_f03.png"});
     levelGen *generator = new levelGen();
-    print2DVector(generator->getMap());
-    myMap->setMap(generator->getMap());
-    myMap->setFloorMap(generator->getFloorMap());
-    myMap->setCeilingMap(generator->getCeilMap());
-    myMap->setDoorMap(generator->getDoorMap());
-    myMap->setLightMap(generator->getLightMap());
+
+    //map gen
+    // print2DVector(generator->getMap());
+    // myMap->setMap(generator->getMap());
+    // myMap->setFloorMap(generator->getFloorMap());
+    // myMap->setCeilingMap(generator->getCeilMap());
+    // myMap->setDoorMap(generator->getDoorMap());
+    // myMap->setLightMap(generator->getLightMap());
+
+
     game->setTextureSet(myTexture);
     game->setAngle(0);
     game->setMap(myMap);

@@ -127,7 +127,7 @@ void GridGame::mapGrid(rgba c)
 //Simple DDA
 inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
 {
-    const double EPSILON = 0.0001;
+    const double EPSILON = 1e-20;
     double angleRadians = angle * M_PI / 180.0;
     //using point as 2d vector to keep clean
     Point rayDir = { cos(angleRadians), sin(angleRadians) };
@@ -165,6 +165,7 @@ inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
     //add one to max distance so we don't have unexpected behavior
     while (!tileFound && distance < maxDistance)
     {
+        start:
         if (rayLength.x < rayLength.y)
         {
             mapCheck.x += step.x;
@@ -189,17 +190,18 @@ inline CollisionEvent GridGame::ddaRaycast(Point start, double angle)
             {
                 //if it's a door we need to register a hit at a different point to render a thin wall and provide animation
                 double doorProgress = map->getDoorTileAt(mapCheck.x, mapCheck.y).doorProgress;
+                if (doorProgress == 0) goto start;
                 Point intersection = start + rayDir * distance;
                 if (map->getDoorTileAt(mapCheck.x, mapCheck.y).orientation) //horiz
                 {
-                    if (intersection.x >= mapCheck.x + EPSILON && intersection.x <= mapCheck.x - EPSILON + doorProgress) //rounding error sigh
+                    if (intersection.x >= mapCheck.x && intersection.x <= mapCheck.x + doorProgress) //rounding error sigh
                     {
                         return {2, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex, map->getDoorTileAt(mapCheck.x, mapCheck.y).doorProgress}; 
                     }
                 }
                 else //vert
                 {
-                    if (intersection.y >= mapCheck.y + EPSILON && intersection.y <= mapCheck.y - EPSILON + doorProgress)
+                    if (intersection.y >= mapCheck.y && intersection.y <= mapCheck.y + doorProgress)
                     {
                         return {2, start + rayDir * distance, side, distance * cos(angleRadians - getAngle()*M_PI/180), map->getDoorTileAt(mapCheck.x, mapCheck.y).texIndex, map->getDoorTileAt(mapCheck.x, mapCheck.y).doorProgress}; 
                     }

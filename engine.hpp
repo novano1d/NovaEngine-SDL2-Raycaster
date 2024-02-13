@@ -54,14 +54,18 @@ enum DoorState { DOOR_CLOSED, DOOR_OPEN, DOOR_OPENING, DOOR_CLOSING };
 //Point structure that acts as a point and doubles as a 2d vector structure
 struct Point
 {
-    double x,y;
-    Point operator*(const double& a) const
+    long double x,y;
+    Point operator*(const long double& a) const
     {
         return {a*x, a*y};
     }
-    Point operator+(const double& a) const
+    Point operator+(const long double& a) const
     {
         return {a+x, a+y};
+    }
+    Point operator-(const long double& a) const
+    {
+        return {x-a, y-a};
     }
     Point operator+(const Point& a) const
     {

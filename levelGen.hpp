@@ -58,7 +58,7 @@ struct Room
     std::vector<std::vector<Door>> doorMap;
     std::vector<std::vector<double>> lightMap;
     int xS, yS; //xy sizes
-
+    Point TLcorner;
     //for use of tree
     Room* left = nullptr;
     Room* right = nullptr;
@@ -74,11 +74,45 @@ struct Room
 
     static Room* generateBasicRoom();
 
-    static void generateCorridor(std::vector<std::vector<int>>& map, Point& curpos, int lastDirection = -1) 
+    static void generateCorridor(std::vector<std::vector<int>>& map, std::vector<std::vector<Door>>& doorMap, Point curpos, Room* curRoom, int curdirection = -1) 
     {
-        
         std::vector<Point> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        if (curdirection == -1) curdirection = rand() % 4; // Choose a random direction if none specified
+        Point dir = directions[curdirection];
+        int walkLength = 5; // Length of the corridor
+        bool hv;
+        // Calculate the starting position of the corridor based on the direction
+        if (curdirection == 0 || curdirection == 1) // Right or Left
+        {
+            curpos.y -= curRoom->yS / 2; // Start from the vertical center
+            hv = 0; // false for horizontal
+        }
+        else if (curdirection == 2 || curdirection == 3) // Down or Up
+        {
+            curpos.x -= curRoom->xS / 2; // Start from the horizontal center
+            hv = 1; // true for vertical
+        }
+
+        for (int i = 0; i < walkLength; i++)
+        {
+            // Make sure we are within the bounds of the map
+            int newY = curpos.y + dir.y * i;
+            int newX = curpos.x + dir.x * i;
+            if (newY >= 0 && newY < map.size() && newX >= 0 && newX < map[0].size())
+            {
+                if (i == 0 || i == walkLength-1)
+                {
+                    doorMap[newY][newX] = {1, 17, true, 1, hv, 1, 2, DOOR_CLOSED};
+                }
+                map[newY][newX] = 0; // Carve path
+            }
+        }
+
+        // Update curpos to the end of the corridor
+        curpos.x += dir.x * walkLength;
+        curpos.y += dir.y * walkLength;
     }
+
 
 
     static void generateRooms(std::vector<std::vector<int>>& map, std::vector<std::vector<int>>& floorMap, std::vector<std::vector<int>>& ceilingMap, std::vector<std::vector<Door>>& doorMap, std::vector<std::vector<double>>& lightMap)
@@ -90,6 +124,7 @@ struct Room
         Room* test = rooms.top();
         while (!rooms.empty())
         {
+            test->TLcorner = curpos;
             //place room
             for (int x = 0; x < test->xS; x++)
             {
@@ -103,10 +138,12 @@ struct Room
                 }
             }
             curpos.x += test->xS;
-            curpos.y += test->yS/2;
+            curpos.y += test->yS;
             rooms.pop();
             //create corridor
-            generateCorridor(map, curpos);
+            const Point rCurPos = curpos;
+            generateCorridor(map, doorMap, rCurPos, test, 2);
+            generateCorridor(map, doorMap, rCurPos, test, 0);
         }
     }
 };
