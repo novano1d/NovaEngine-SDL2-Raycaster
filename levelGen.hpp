@@ -42,6 +42,7 @@ public:
     std::vector<std::vector<Door>> getDoorMap() { return doorMap; }
     std::vector<std::vector<double>> getLightMap() { return lightMap; }
     static const int SIZE = 40; //base size of the map array init (x by x)
+    inline static int curRoom = 1;
 private:
     std::vector<std::vector<int>> map;
     std::vector<std::vector<int>> floorMap;
@@ -102,7 +103,7 @@ struct Room
             {
                 if (i == 0 || i == walkLength-1)
                 {
-                    doorMap[newY][newX] = {1, 17, true, 1, hv, 1, 2, DOOR_CLOSED};
+                    doorMap[newY][newX] = {1, 17, true, 1, hv, levelGen::curRoom++, 2, DOOR_CLOSED};
                 }
                 map[newY][newX] = 0; // Carve path
             }
