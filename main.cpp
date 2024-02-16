@@ -43,6 +43,7 @@ GridGame* game;
 SDL_Renderer* renderer = nullptr;
 SDL_Window* window = nullptr;
 Pathfinder *pf = new Pathfinder();
+int temp = -1;
 Map* myMap = new Map({{1, 1, 1, 1, 1, 1, 1, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
                       {1, 0, 0, 0, 0, 0, 0, 1},
@@ -142,7 +143,8 @@ void handleInput()
         timerID = SDL_AddTimer(200, resetGun, const_cast<char*>("SDL"));
         static Sprite s = {4.5, 4.5, 4, 0, false, {}, true, {5, 12, 11, 10, 9, 8, 7, 6}, {}, 0, 0};
         static Entity e = {{4.5, 4.5}, 0.2, "TEST"};
-        entCon->createEntityAndSpriteAt(&e, &s, game->getPlayerPos(), 0.2);
+        if (temp != -1) entCon->removeEntityAndSpriteByID(temp);
+        temp = entCon->createEntityAndSpriteAt(&e, &s, game->getPlayerPos(), 0.2);
         game->getCurMap()->toggleDoorByID(rand() % 4 + 1);
     }
     if (keyhandler->isKeyDown(SDLK_RCTRL))

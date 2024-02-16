@@ -352,7 +352,7 @@ private:
 public:
     EntityController(Map* im, EntityHandler* em) : m(im), eh(em) {};
     Point getPosByID(int id);
-    void createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, double radius, std::string type="NULL");
+    int createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, double radius, std::string type="NULL");
     void removeEntityAndSpriteByID(int id);
     void updateEntityRelPos(int ID, double x, double y);
 };

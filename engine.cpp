@@ -453,8 +453,13 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
     
         SPRITES RENDERING
 
+    Note:
+        Must update sprite rendering to clean up unused sprites
+
+
     */
     std::vector<Sprite*> temp = (map->getSprites()); //pointer so we don't sort each time :)
+    std::cout << "size = " << temp.size() << std::endl;
     //sort sprites by distance from player
     //std::vector<double> distance; //parallel distance vector
     // std::transform(temp.begin(), temp.end(), distance.begin(), [this](Sprite s){ return hypot(s.x - getPlayerPos().x, s.y - getPlayerPos().y); });
@@ -476,31 +481,24 @@ double scanDir = atan(opp / adj); // Updated scanDir
     double planeY = cos(angle * M_PI / 180) * planeLength;
     for (auto it = temp.begin(); it != temp.end(); it++)
     {
+        // Pre-compute trigonometric values
+        double radAngle = angle * M_PI / 180;
+        double sinAngle = sin(radAngle);
+        double cosAngle = cos(radAngle);    
         double spriteX = (*it)->x - getPlayerPos().x;
-        double spriteY = (*it)->y - getPlayerPos().y;
-        double invDet = 1.0 / (planeX * sin(angle * M_PI / 180) - cos(angle * M_PI / 180) * planeY);
-        //double transformX = invDet * (sin(angle * M_PI / 180) * spriteX - cos(angle * M_PI / 180) * spriteY);
-        double transformY = invDet * (-planeY * spriteX + planeX * spriteY);
-        //int spriteScreenX = int((static_cast<double>(renderWidth) / 2.0) * (1.0 + transformX / transformY));
-        // double spriteDir = atan2(spriteY, spriteX);
-        double aspect_ratio = static_cast<double>(renderWidth) / static_cast<double>(renderHeight);
-        // //int spriteScreenX = std::round(renderWidth / 2.0 + renderWidth * tan((spriteDir * 180 / M_PI - angle) * M_PI / 180) / (tan(FOV * M_PI / 180)));
-        // int spriteScreenX = std::round(renderWidth / aspect_ratio + (renderWidth) * tan((spriteDir * 180 / M_PI - (angle)) * M_PI / 180) / (tan(FOV * M_PI / 180)));
+        double spriteY = (*it)->y - getPlayerPos().y;   
+        double invDet = 1.0 / (planeX * sinAngle - cosAngle * planeY);  
+        // Use pre-computed trigonometric values
+        double transformY = invDet * (-planeY * spriteX + planeX * spriteY);    
+        double aspect_ratio = static_cast<double>(renderWidth) / static_cast<double>(renderHeight); 
         double spriteDir = atan2(spriteY, spriteX) * 180.0 / M_PI;
-        double relativeAngle = ((spriteDir) - angle);
-        
-        // Ensure the sprite is within the FOV range
-        //std::cout << relativeAngle << std::endl;
-        double distanceToProjectionPlane = (renderWidth / 2.0) / tan(FOV / 2.0 * M_PI / 180);
-        // Apply a fish-eye correction to the sprite positions
-        /*
-            The correction factor is arbitrary. Just did a lot of experimenting and found that it works well.
-            where does the 0.7777... come from? experimenting
-            But it might be 1 - aspect_ratio
-        */
-        double correctionFactor = ((0.7777777) * (52.5 / FOV)) / cos(relativeAngle * M_PI / 180); //Correction factor constant will need to change with FOV changes (FOV 105 when testing)
+        double relativeAngle = spriteDir - angle;   
+        double distanceToProjectionPlane = (renderWidth / 2.0) / tan(FOV / 2.0 * M_PI / 180);   
+        // Simplify correction factor calculation if possible or pre-compute constants
+        double correctionFactor = ((0.7777777) * (52.5 / FOV)) / cos(relativeAngle * M_PI / 180);   
         double correctedDistance = distanceToProjectionPlane * correctionFactor;
         double spriteScreenX = round((correctedDistance * tan(relativeAngle * M_PI / 180)) + (renderWidth / 2.0));
+
         
         //std::cout << spriteDir << std::endl;
         // Correct spriteScreenX for spherical distortion
@@ -796,7 +794,7 @@ inline rgba TextureHandler::colorAt(int textureIndex, int x, int y)
     return { r, g, b, a };
 }
 
-void EntityController::createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, double radius, std::string type)
+int EntityController::createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, double radius, std::string type)
 {
     e->pos = pos;
     s->x = pos.x;
@@ -804,6 +802,7 @@ void EntityController::createEntityAndSpriteAt(Entity *e, Sprite *s, Point pos, 
     int ID = eh->addEntity(e);
     IDtoIndex[ID] = eh->getEntityVec().size() - 1;
     m->addSprite(s);
+    return ID;
 }
 
 /// @brief Removes entity and sprite by ID.
