@@ -459,7 +459,7 @@ void GridGame::pseudo3dRenderTextured(int FOV, double wallheight)
 
     */
     std::vector<Sprite*> temp = (map->getSprites()); //pointer so we don't sort each time :)
-    std::cout << "size = " << temp.size() << std::endl;
+    //std::cout << "size = " << temp.size() << std::endl;
     //sort sprites by distance from player
     //std::vector<double> distance; //parallel distance vector
     // std::transform(temp.begin(), temp.end(), distance.begin(), [this](Sprite s){ return hypot(s.x - getPlayerPos().x, s.y - getPlayerPos().y); });

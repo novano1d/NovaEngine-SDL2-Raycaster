@@ -64,6 +64,8 @@ struct Room
     Room* left = nullptr;
     Room* right = nullptr;
     //could have a hidden node for secrets maybe
+    inline static const int cordorSz = 5;
+
 
     static float getRandomFloat(float min, float max) {
         // Random engine and distribution
@@ -80,7 +82,7 @@ struct Room
         std::vector<Point> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
         if (curdirection == -1) curdirection = rand() % 4; // Choose a random direction if none specified
         Point dir = directions[curdirection];
-        int walkLength = 5; // Length of the corridor
+        int walkLength = cordorSz; // Length of the corridor
         bool hv;
         // Calculate the starting position of the corridor based on the direction
         if (curdirection == 0 || curdirection == 1) // Right or Left
@@ -122,29 +124,36 @@ struct Room
         std::stack<Room*> rooms;
         Point curpos = {1, 1};
         rooms.push(generateBasicRoom());
-        Room* test = rooms.top();
+        rooms.push(generateBasicRoom());
+        Room* temp = rooms.top();
         while (!rooms.empty())
         {
-            test->TLcorner = curpos;
+            temp->TLcorner = curpos;
             //place room
-            for (int x = 0; x < test->xS; x++)
+            for (int x = 0; x < temp->xS; x++)
             {
-                for (int y = 0; y < test->yS; y++)
+                for (int y = 0; y < temp->yS; y++)
                 {
-                    map[curpos.y + y][curpos.x + x] = test->map[y][x];
-                    floorMap[curpos.y + y][curpos.x + x] = test->floorMap[y][x];
-                    ceilingMap[curpos.y + y][curpos.x + x] = test->ceilingMap[y][x];
-                    doorMap[curpos.y + y][curpos.x + x] = test->doorMap[y][x];
-                    lightMap[curpos.y + y][curpos.x + x] = test->lightMap[y][x];
+                    map[curpos.y + y][curpos.x + x] = temp->map[y][x];
+                    floorMap[curpos.y + y][curpos.x + x] = temp->floorMap[y][x];
+                    ceilingMap[curpos.y + y][curpos.x + x] = temp->ceilingMap[y][x];
+                    doorMap[curpos.y + y][curpos.x + x] = temp->doorMap[y][x];
+                    lightMap[curpos.y + y][curpos.x + x] = temp->lightMap[y][x];
                 }
             }
-            curpos.x += test->xS;
-            curpos.y += test->yS;
+            curpos.x += temp->xS;
+            curpos.y += temp->yS;
             rooms.pop();
             //create corridor
-            const Point rCurPos = curpos;
-            generateCorridor(map, doorMap, rCurPos, test, 2);
-            generateCorridor(map, doorMap, rCurPos, test, 0);
+            generateCorridor(map, doorMap, curpos, temp, 2);
+            generateCorridor(map, doorMap, curpos, temp, 0);
+            std::cout << "curpos.x : " << curpos.x << " .y : " << curpos.y << std::endl << "rooms: " << rooms.size() << std::endl;
+            if (!rooms.empty()) 
+            {
+                curpos.x += cordorSz;
+                curpos.y -= temp->yS;
+                temp = rooms.top();
+            }
         }
     }
 };

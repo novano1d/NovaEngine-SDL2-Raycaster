@@ -36,7 +36,7 @@ https://creativecommons.org/licenses/by-sa/4.0/
 */
 
 //Global def
-#define SCREEN_WIDTH nva::SCREEN_WIDTH 
+//#define SCREEN_WIDTH nva::SCREEN_WIDTH 
 #define SCREEN_HEIGHT nva::SCREEN_HEIGHT
 KeyHandler *keyhandler = new KeyHandler();
 GridGame* game;
@@ -122,7 +122,7 @@ void handleInput()
         game->setAngle(game->getAngle() + ticktime * game->getRotSpeed());
     if (keyhandler->isKeyDown(SDLK_LEFT))
         game->setAngle(game->getAngle() - ticktime * game->getRotSpeed());
-    if (keyhandler->isKeyDown(SDLK_ESCAPE) && game->getTicks() % 17 == 0) //mod by random prime to prevent spamming the key lol
+    if (keyhandler->isKeyDown(SDLK_ESCAPE)) //mod by random prime to prevent spamming the key lol
         SDL_SetRelativeMouseMode(static_cast<SDL_bool>((!SDL_GetRelativeMouseMode())));
     if (keyhandler->isKeyDown(SDLK_LSHIFT) && game->getMoveSpeed() != 3)
     {
@@ -247,11 +247,11 @@ int main(int argc, char** argv)
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     TTF_Init();
     FOX_Init();
-    window = SDL_CreateWindow("3D!! Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("3D!! Raycaster", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, nva::SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     // Create SDL renderer with target texture flag
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); // for resolution scaling
-    game = new GridGame(SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
+    game = new GridGame(nva::SCREEN_WIDTH, SCREEN_HEIGHT, window, renderer);
     TextureHandler *myTexture = new TextureHandler(renderer, {"wood.jpg", "floor.jpg", "wooddoor.jpg", "globe.png", "bri.jpg", "wolf3d-guard_01.gif", "wolf3d-guard_02.gif", "wolf3d-guard_03.gif", "wolf3d-guard_04.gif", "wolf3d-guard_05.gif", "wolf3d-guard_06.png", "wolf3d-guard_07.gif", "wolf3d-guard_08.gif", "wolf-shoot_01.png", "wolf-shoot_02.png", "wolf-shoot_03.png", "texlibdoor.gif", "DESuperShotgun_f02.png", "DESuperShotgun_f03.png"});
     levelGen *generator = new levelGen();
 

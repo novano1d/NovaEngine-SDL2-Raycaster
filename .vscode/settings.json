@@ -57,6 +57,7 @@
         "thread": "cpp",
         "condition_variable": "cpp",
         "mutex": "cpp",
-        "*.dll": "cpp"
+        "*.dll": "cpp",
+        "ER-OLED0.32-1-I2C.C": "cpp"
     }
 }
